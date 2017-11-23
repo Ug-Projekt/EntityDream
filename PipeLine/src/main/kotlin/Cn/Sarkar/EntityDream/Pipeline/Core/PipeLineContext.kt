@@ -27,7 +27,6 @@ class PipeLineContext<TSubject, TFeatureProvider>(val pipeLine: PipeLine<TSubjec
 
     fun respond(subject: TSubject) : TSubject
     {
-        finish()
         this.subject = this.pipeLine.execute(featureContext, subject)
         return this.subject!!
     }

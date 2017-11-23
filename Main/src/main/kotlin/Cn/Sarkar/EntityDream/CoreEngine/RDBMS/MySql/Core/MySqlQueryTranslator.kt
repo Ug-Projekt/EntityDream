@@ -6,16 +6,14 @@ Date : 11/15/17
 Time: 1:57 AM
  */
 
-package Cn.SarkarMMS.DataAccessLayer.CoreEngine.RDBMS.MySql.Core
+package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryTranslator
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Common.*
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Select.*
-import Cn.SarkarMMS.DataAccessLayer.CoreEngine.RDBMS.Core.QueryBlocks.Common.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Delete.DeleteQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Insert.InsertQueryExpression
-import Cn.SarkarMMS.DataAccessLayer.CoreEngine.RDBMS.Core.QueryBlocks.Select.*
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Select.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Update.UpdateQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.TranslateResult
 import sun.misc.BASE64Encoder
@@ -55,7 +53,6 @@ class MySqlQueryTranslator : IQueryTranslator {
 
     fun recursiveWhereBlock(where: WhereItemCondition): String {
         return when (where) {
-            is AlwaysSelect -> ""
             is And -> {
                 "(${where.conditions.joinToString(separator = " AND ") { recursiveWhereBlock(it) }})"
             }
@@ -128,7 +125,7 @@ class MySqlQueryTranslator : IQueryTranslator {
                     }
                     retv
                 })
-                buffer.append(expression.Where.condition.run { if (this is AlwaysSelect) "" else "WHERE ${recursiveWhereBlock(expression.Where.condition)}" })
+                buffer.append(expression.Where?.condition.run { if (this == null) "" else "WHERE ${recursiveWhereBlock(expression.Where!!.condition)}" })
                 buffer.append(expression.OrderBy.run { if (this == null) "" else "ORDER BY ${this.Name} ${this.orderMode.Name} " })
                 buffer.append(expression.Select.top.run { if (this == null) "" else "LIMIT $this" })
                 buffer.append(";")

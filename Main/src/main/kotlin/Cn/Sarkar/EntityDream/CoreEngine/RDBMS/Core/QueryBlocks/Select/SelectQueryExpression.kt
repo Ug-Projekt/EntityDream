@@ -14,8 +14,8 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Common.Where
 class SelectQueryExpression(
         var Select: Select,
         var From: From,
-        var Where: Where?,
-        var GroupBy: GroupBy?,
-        var Having: Having?,
+        var Where: Where? = null,
+        var GroupBy: GroupBy? = null,
+        var Having: Having? = null,
         var OrderBy: OrderBy? = null
 ) : IQueryExpression

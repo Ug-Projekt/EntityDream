@@ -15,7 +15,7 @@
 //import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Common.Equal
 //import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Common.Where
 //import Cn.SarkarMMS.DataAccessLayer.CoreEngine.RDBMS.Core.QueryBlocks.Select.*
-//import Cn.SarkarMMS.DataAccessLayer.CoreEngine.RDBMS.WriteParameters
+//import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.WriteParameters
 //import java.sql.PreparedStatement
 //import kotlin.reflect.KProperty
 //

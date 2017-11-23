@@ -1,70 +1,72 @@
-///**
-//Company: Sarkar software technologys
-//WebSite: http://www.sarkar.cn
-//Author: yeganaaa
-//Date : 11/14/17
-//Time: 3:41 PM
-// */
-//
-//package Cn.SarkarMMS.DataAccessLayer.CoreEngine.RDBMS
-//
-//import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBEntity
-//import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryExpression
-//import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryTranslator
-//import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Delete.DeleteQueryExpression
-//import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Insert.InsertQueryExpression
-//import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Update.UpdateQueryExpression
-//import java.sql.Connection
-//import java.sql.PreparedStatement
-//import java.sql.Statement
-//import java.sql.Timestamp
-//import java.util.*
-//import java.util.Date
-//import kotlin.collections.HashMap
-//
-//fun PreparedStatement.WriteParameters(index: Int, value: Any){
-//    when (value)
-//    {
-//        is String -> this.setString(index, value)
-//        is Boolean -> this.setBoolean(index, value)
-//        is Byte -> this.setByte(index, value)
-//        is Short -> this.setShort(index, value)
-//        is Int -> this.setInt(index, value)
-//        is Long -> this.setLong(index, value)
-//        is Float -> this.setFloat(index, value)
-//        is Double -> this.setDouble(index, value)
-////                is Decimal -> statement.setDouble(index, value)
-//        is ByteArray -> this.setBytes(index, value)
-//        is Date -> this.setDate(index, java.sql.Date(value.time))
-//        is Timestamp -> this.setTimestamp(index, value)
-//        else -> throw Exception("قوللىمايدىغان پارامىتىر تىپى...")
-//    }
-//}
-//
-//abstract class IDataContext {
-//
-//    open var updateTasks: HashMap<String, UpdateQueryExpression> = HashMap()
-//    open var deleteTasks: HashMap<String, DeleteQueryExpression> = HashMap()
-//    open var insertTasks: HashMap<String, Pair<InsertQueryExpression, IDBEntity>> = HashMap()
-//    open var itemFactories: HashMap<Class<*>, (context: IDataContext) -> Any> = HashMap()
-//
-//    inline fun <reified T : IDBEntity>registerGenerator(noinline generator: (context: IDataContext) -> T){
-//        itemFactories.put(T::class.java, generator as (context: IDataContext) -> Any)
-//    }
-//
-//    inline fun <reified T : IDBEntity> generateNew() : T =  itemFactories[T::class.java]?.invoke(this) as T? ?: throw Exception("ئاۋال ھاسىللىغۇچ تىزىملاڭ!")
-//
-//    abstract fun queryTranslator(): IQueryTranslator
-//    abstract var connection: Connection
-//
-//    open fun closeConnection(): Boolean {
-//        connection.close()
-//        return true
-//    }
-//
-//    open fun saveChanges(): Int {
-//
-//        var retv = 0
+/**
+Company: Sarkar software technologys
+WebSite: http://www.sarkar.cn
+Author: yeganaaa
+Date : 11/14/17
+Time: 3:41 PM
+ */
+
+package Cn.Sarkar.EntityDream.CoreEngine.RDBMS
+
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBEntity
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryTranslator
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Delete.DeleteQueryExpression
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Insert.InsertQueryExpression
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Update.UpdateQueryExpression
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.PipeLine.CorePipeLine
+import Cn.Sarkar.EntityDream.Pipeline.Extension.installFeature
+import java.sql.Connection
+import java.sql.PreparedStatement
+import java.sql.Timestamp
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.collections.LinkedHashMap
+
+fun PreparedStatement.WriteParameters(index: Int, value: Any){
+    when (value)
+    {
+        is String -> this.setString(index, value)
+        is Boolean -> this.setBoolean(index, value)
+        is Byte -> this.setByte(index, value)
+        is Short -> this.setShort(index, value)
+        is Int -> this.setInt(index, value)
+        is Long -> this.setLong(index, value)
+        is Float -> this.setFloat(index, value)
+        is Double -> this.setDouble(index, value)
+//                is Decimal -> statement.setDouble(index, value)
+        is ByteArray -> this.setBytes(index, value)
+        is Date -> this.setDate(index, java.sql.Date(value.time))
+        is Timestamp -> this.setTimestamp(index, value)
+        else -> throw Exception("قوللىمايدىغان پارامىتىر تىپى...")
+    }
+}
+
+abstract class IDataContext {
+
+    open var updateTasks: HashMap<String, UpdateQueryExpression> = LinkedHashMap()
+    open var deleteTasks: HashMap<String, DeleteQueryExpression> = LinkedHashMap()
+    open var insertTasks: HashMap<String, Pair<InsertQueryExpression, IDBEntity>> = LinkedHashMap()
+    open var itemFactories: HashMap<Class<*>, (context: IDataContext) -> Any> = HashMap()
+
+    var pipeLine = CorePipeLine()
+
+    inline fun <reified T : IDBEntity>registerGenerator(noinline generator: (context: IDataContext) -> T){
+        itemFactories.put(T::class.java, generator as (context: IDataContext) -> Any)
+    }
+
+    inline fun <reified T : IDBEntity> generateNew() : T =  itemFactories[T::class.java]?.invoke(this) as T? ?: throw Exception("ئاۋال ھاسىللىغۇچ تىزىملاڭ!")
+
+    abstract fun queryTranslator(): IQueryTranslator
+    abstract var connection: Connection
+
+    open fun closeConnection(): Boolean {
+        connection.close()
+        return true
+    }
+
+    open fun saveChanges(): Int {
+
+        var retv = 0
 //
 //
 //        class TaskContainer(var Query: String, var parameters: ArrayList<Pair<IDBEntity?, Collection<Any>>> = ArrayList())
@@ -124,7 +126,11 @@
 //        deleteTasks.clear()
 //        updateTasks.clear()
 //        insertTasks.clear()
-//
-//        return retv
-//    }
-//}
+
+        return retv
+    }
+
+    init {
+
+    }
+}

@@ -4,6 +4,6 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBPlainDataType
 import kotlin.Float
 
-class Decimal(override var DefaultValue: Float = 0f) : IDBPlainDataType<Float>, IDBNumberType {
+class Decimal(override var DefaultValue: Float = 0f, override var Unsigned: Boolean = false) : IDBPlainDataType<Float>, IDBNumberType {
     override var Name: String = "Decimal"
 }

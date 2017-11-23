@@ -23,6 +23,8 @@ dependencies {
     // https://mvnrepository.com/artifact/joda-time/joda-time
     compile group: 'joda-time', name: 'joda-time', version: '2.3'
 
+    testCompile 'junit:junit:4.12'
+
 }
 
 compileKotlin {

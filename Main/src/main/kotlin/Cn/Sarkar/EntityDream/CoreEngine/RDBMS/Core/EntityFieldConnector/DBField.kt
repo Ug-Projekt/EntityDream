@@ -16,7 +16,7 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector
 //import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Common.Where
 //import Cn.SarkarMMS.DataAccessLayer.CoreEngine.RDBMS.Core.QueryBlocks.Select.*
 //import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Util.readResult
-//import Cn.SarkarMMS.DataAccessLayer.CoreEngine.RDBMS.WriteParameters
+//import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.WriteParameters
 //import kotlin.reflect.KProperty
 //
 data class KeyValuePair<K, V>(var key: K, var value: V)
