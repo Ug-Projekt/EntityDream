@@ -4,20 +4,16 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBTable
 
-interface IDBColumn<T> {
+interface IDBColumn<KOTLINDATATYPE> {
     var Table: IDBTable
 
     var ColumnName: String
     var NotNull: Boolean
-    var DataType: IDataType<T>
+    var DataType: IDataType<KOTLINDATATYPE>
     var AutoIncrement: Boolean
     var Unique: Boolean
     var ForeignKey: IDBColumn<*>?
     var Index: Boolean
-
-    companion object {
-        val autoDetect = "****Auto Detect****"
-    }
 }
 
 fun <T> IDBColumn<T>.getDefaultValue() : T = DataType.DefaultValue

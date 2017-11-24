@@ -14,9 +14,9 @@ interface FromWhat
 
 data class FromColumn(var SourceName: String, var AliasName: String? = null) : FromWhat
 data class FromFunction(var Function: IDBFunction, var AliasName: String? = null) : FromWhat
-class Select(vararg select: FromColumn, var top: Int? = null, var distinct: Boolean = false) : SuperBlock
+class Select(vararg select: FromWhat, var top: Int? = null, var distinct: Boolean = false) : SuperBlock
 {
-    val selectors = ArrayList<FromColumn>()
+    val selectors = ArrayList<FromWhat>()
     init {
         selectors.addAll(select)
     }

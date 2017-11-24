@@ -1,6 +1,5 @@
-package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.QueryBuilderExtensions
+package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions
 
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.DBCollection
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.IDBColumn
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBEntity
@@ -123,10 +122,29 @@ internal class SelectQuerryExpressionKtTest {
         Assert.assertEquals(conditions[2].last(), "Hello")
     }
 
+    object InputMode
+    {
+        val Text = 1
+        val Number = 2
+        val PhoneNumber = 4
+        val EMail = 8
+        val WebAddr = 16
+        val Decimal = 32
+    }
+
+    infix fun Int.isIn(destination: Int) : Boolean = (this and destination) > 0
+
     @Test
     fun go(){
-        val result = (Person.Name notEquals "yeganaaa") and (Person.Age greater 20) or (Person.Name equals "Hello") or (Person.Age lessOrEqual 18)
+        val result = InputMode.run { PhoneNumber or EMail or Decimal }
 
+        val numbers = InputMode.run {
+            arrayOf(Text, Number, PhoneNumber, EMail, WebAddr, Decimal)
+        }
+
+        numbers.forEach {
+            println(it isIn result)
+        }
     }
 
     @Test

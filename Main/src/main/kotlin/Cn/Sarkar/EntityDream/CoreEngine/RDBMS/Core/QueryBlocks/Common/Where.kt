@@ -12,14 +12,14 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.SuperBlock
 
 interface WhereItemCondition
 
-class And(vararg conditions: WhereItemCondition) : WhereItemCondition //ھەمدە
+class And(vararg conditions: WhereItemCondition) : Cloneable, WhereItemCondition //ھەمدە
 {
     var conditions: ArrayList<WhereItemCondition> = ArrayList()
     init {
         this.conditions.addAll(conditions)
     }
 }
-class Or(vararg conditions: WhereItemCondition) : WhereItemCondition  //ياكى
+class Or(vararg conditions: WhereItemCondition) : Cloneable, WhereItemCondition  //ياكى
 {
     var conditions: ArrayList<WhereItemCondition> = ArrayList()
     init {

@@ -11,8 +11,12 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryTranslator
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core.MySqlQueryTranslator
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core.QueryTranslatorInterpolatory
+import Cn.Sarkar.EntityDream.Pipeline.Extension.installFeature
 import java.sql.Connection
 
 abstract class MySqlDataContext(override var connection: Connection) : IDataContext() {
-    override fun queryTranslator(): IQueryTranslator = MySqlQueryTranslator()
+    init {
+        pipeLine.installFeature(QueryTranslatorInterpolatory)
+    }
 }

@@ -8,7 +8,7 @@ Time: 1:55 AM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core
 
-data class TranslateResult(var md5Key: String, var sqlQuery: String, var parameters: Collection<Any>)
+data class TranslateResult(var md5Key: String, var sqlQuery: String, var parameters: Collection<Any>, var fullSqlQuery: String)
 
 interface IQueryTranslator {
     fun Translate(expression: IQueryExpression) : TranslateResult

@@ -9,12 +9,11 @@ Time: 3:41 PM
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBEntity
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryTranslator
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryContext
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Delete.DeleteQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Insert.InsertQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Update.UpdateQueryExpression
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.PipeLine.CorePipeLine
-import Cn.Sarkar.EntityDream.Pipeline.Extension.installFeature
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.CorePipeLine
 import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.Timestamp
@@ -41,22 +40,15 @@ fun PreparedStatement.WriteParameters(index: Int, value: Any){
     }
 }
 
-abstract class IDataContext {
+abstract class IDataContext : IQueryContext {
+    override var updateTasks: HashMap<String, UpdateQueryExpression> = LinkedHashMap()
+    override var deleteTasks: HashMap<String, DeleteQueryExpression> = LinkedHashMap()
+    override var insertTasks: HashMap<String, Pair<InsertQueryExpression, IDBEntity>> = LinkedHashMap()
 
-    open var updateTasks: HashMap<String, UpdateQueryExpression> = LinkedHashMap()
-    open var deleteTasks: HashMap<String, DeleteQueryExpression> = LinkedHashMap()
-    open var insertTasks: HashMap<String, Pair<InsertQueryExpression, IDBEntity>> = LinkedHashMap()
     open var itemFactories: HashMap<Class<*>, (context: IDataContext) -> Any> = HashMap()
 
     var pipeLine = CorePipeLine()
 
-    inline fun <reified T : IDBEntity>registerGenerator(noinline generator: (context: IDataContext) -> T){
-        itemFactories.put(T::class.java, generator as (context: IDataContext) -> Any)
-    }
-
-    inline fun <reified T : IDBEntity> generateNew() : T =  itemFactories[T::class.java]?.invoke(this) as T? ?: throw Exception("ئاۋال ھاسىللىغۇچ تىزىملاڭ!")
-
-    abstract fun queryTranslator(): IQueryTranslator
     abstract var connection: Connection
 
     open fun closeConnection(): Boolean {
@@ -67,65 +59,6 @@ abstract class IDataContext {
     open fun saveChanges(): Int {
 
         var retv = 0
-//
-//
-//        class TaskContainer(var Query: String, var parameters: ArrayList<Pair<IDBEntity?, Collection<Any>>> = ArrayList())
-//
-//        val group = HashMap<String, TaskContainer>()
-//
-//        fun group(key: String, value: IQueryExpression, entity: IDBEntity?) {
-//            val result = queryTranslator().Translate(value)
-//            var containItem = group[result.md5Key]
-//            if (containItem == null) {
-//                containItem = TaskContainer(result.sqlQuery)
-//                group.put(result.md5Key, containItem)
-//            }
-//
-//            containItem.parameters.add(Pair(entity, result.parameters))
-//        }
-//
-//
-//
-//        updateTasks.forEach { key, value -> group(key, value, null) }
-//        deleteTasks.forEach { key, value -> group(key, value, null) }
-//
-//
-////        connection.autoCommit = false
-//        group.forEach { key, value ->
-//            val statement = connection.prepareStatement(value.Query)
-//            value.parameters.forEach {
-//                it.second.forEachIndexed {
-//                    index, any -> statement.WriteParameters(index + 1, any)
-//                }
-//                statement.addBatch()
-//            }
-//            retv += statement.executeBatch().sumBy { it }
-//            statement.close()
-//        }
-//
-//        group.clear()
-//
-//        insertTasks.forEach { key, value -> group(key, value.first, value.second) }
-//
-//        group.forEach { key, value ->
-//            val statement = connection.prepareStatement(value.Query, Statement.RETURN_GENERATED_KEYS)
-//            value.parameters.forEach {
-//                it.second.forEachIndexed {
-//                    index, any -> statement.WriteParameters(index + 1, any)
-//                }
-//                retv += statement.executeUpdate()
-//                val idResult = statement.generatedKeys
-//                if (idResult.next()) {
-//                    it.first?.ID = idResult.getInt(1)
-//                }
-//                idResult.close()
-//            }
-//            statement.close()
-//        }
-//
-//        deleteTasks.clear()
-//        updateTasks.clear()
-//        insertTasks.clear()
 
         return retv
     }
@@ -134,3 +67,10 @@ abstract class IDataContext {
 
     }
 }
+
+/*Begin For Entity Generate*/
+inline fun <reified T : IDBEntity>IDataContext.registerGenerator(noinline generator: (context: IDataContext) -> T){
+    itemFactories.put(T::class.java, generator as (context: IDataContext) -> Any)
+}
+inline fun <reified T : IDBEntity> IDataContext.generateNew() : T =  itemFactories[T::class.java]?.invoke(this) as T? ?: throw Exception("ئاۋال ھاسىللىغۇچ تىزىملاڭ!")
+/*End For Entity Generate*/

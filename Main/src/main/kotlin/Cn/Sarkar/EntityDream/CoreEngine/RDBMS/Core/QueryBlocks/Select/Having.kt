@@ -12,5 +12,5 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Common.Function.I
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Common.WhereItemCondition
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.SuperBlock
 
-class Having(var function: IDBFunction, condition: WhereItemCondition) : SuperBlock {
+class Having(var function: IDBFunction, var condition: WhereItemCondition) : SuperBlock {
 }
