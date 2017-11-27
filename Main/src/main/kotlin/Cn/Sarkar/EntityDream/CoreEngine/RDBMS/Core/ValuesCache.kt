@@ -11,6 +11,6 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.IDBColumn
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.IDBField
 
-class ValuesCache {
-    var FieldValues: HashMap<IDBColumn<*>, Any> = LinkedHashMap()
+class ValuesCache(context: IQueryContext) : LinkedHashMap<IDBColumn<*>, Any>() {
+
 }

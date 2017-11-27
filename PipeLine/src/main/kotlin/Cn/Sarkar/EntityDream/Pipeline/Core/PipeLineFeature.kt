@@ -10,7 +10,7 @@ package Cn.Sarkar.EntityDream.Pipeline.Core
 
 import Cn.Sarkar.EntityDream.Pipeline.Core.Info.FeatureInfo
 
-abstract class PipeLineFeature<TSubject, TFeatureProvider> {
+abstract class PipeLineFeature<TSubject, TFeatureProvider, T> {
     val childPipeLines = ChildPipeLineContainer()
     open var enable: Boolean = true
 

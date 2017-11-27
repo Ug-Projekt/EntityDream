@@ -10,6 +10,7 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBEntity
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryContext
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.InsertContent
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Delete.DeleteQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Insert.InsertQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Update.UpdateQueryExpression
@@ -43,7 +44,7 @@ fun PreparedStatement.WriteParameters(index: Int, value: Any){
 abstract class IDataContext : IQueryContext {
     override var updateTasks: HashMap<String, UpdateQueryExpression> = LinkedHashMap()
     override var deleteTasks: HashMap<String, DeleteQueryExpression> = LinkedHashMap()
-    override var insertTasks: HashMap<String, Pair<InsertQueryExpression, IDBEntity>> = LinkedHashMap()
+    override var insertTasks: HashMap<String, InsertContent> = LinkedHashMap()
 
     open var itemFactories: HashMap<Class<*>, (context: IDataContext) -> Any> = HashMap()
 

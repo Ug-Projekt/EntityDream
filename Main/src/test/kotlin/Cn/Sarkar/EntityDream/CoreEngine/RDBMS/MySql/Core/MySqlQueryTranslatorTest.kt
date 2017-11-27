@@ -31,7 +31,7 @@ internal class MySqlQueryTranslatorTest {
 
     class UserEntity(override var DataContext: IDataContext) : IDBEntity {
         override var DBTable: IDBTable = Users
-        override var fieldValues: ValuesCache = ValuesCache()
+        override var fieldValues: ValuesCache = ValuesCache(DataContext)
     }
 
     val translator: IQueryTranslator
@@ -39,7 +39,7 @@ internal class MySqlQueryTranslatorTest {
 
     @Test
     fun translate() {
-        var expr = Users.SelectQuery.where { Users.Age greater 18 and (Users.Age less 30) }.slice() avg Users.Age count Users.ID
+        var expr = Users.SelectQuery.where { Users.Age greater 18 and (Users.Age less 30) }
 
         val result = translator.Translate(expr)
         println(result.fullSqlQuery)

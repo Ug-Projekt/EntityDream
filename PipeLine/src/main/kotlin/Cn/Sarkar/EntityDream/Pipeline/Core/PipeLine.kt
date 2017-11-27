@@ -12,7 +12,7 @@ import Cn.Sarkar.EntityDream.Pipeline.Core.Info.PipeLineInfo
 
 abstract class PipeLine<TSubject, TFeatureProvider>(vararg phases: Phase) {
     private val features: ArrayList<PipeLineFeatureContainer<TSubject, TFeatureProvider>> = ArrayList()
-    internal val cachedFeatures: ArrayList<PipeLineFeature<TSubject, TFeatureProvider>> = ArrayList()
+    internal val cachedFeatures: ArrayList<PipeLineFeature<TSubject, TFeatureProvider, Any?>> = ArrayList()
 
     abstract val info: PipeLineInfo
 

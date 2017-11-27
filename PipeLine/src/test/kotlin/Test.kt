@@ -28,7 +28,7 @@ class Writer{
     }
 }
 
-class Translator: PipeLineFeature<Student, Writer>(){
+class Translator: PipeLineFeature<Student, Writer, Any?>(){
     companion object {
         val beginActionKey = ChildPipeLineKey<String, Student>("brginActionKey")
     }

@@ -10,7 +10,7 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.CorePipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.ITranslationSubject
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.TranslationSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 import Cn.Sarkar.EntityDream.Pipeline.Core.Info.FeatureInfo
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineContext
@@ -19,11 +19,11 @@ import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeatureMetaData
 
 class QueryTranslatorInterpolatory(var context: PipeLineContext<IPipeLineSubject, IDataContext>) {
     val translator = MySqlQueryTranslator()
-    fun process(subject: ITranslationSubject) {
+    fun process(subject: TranslationSubject) {
         subject.translationResult = translator.Translate(subject.expression)
     }
 
-    companion object : PipeLineFeature<IPipeLineSubject, IDataContext>() {
+    companion object : PipeLineFeature<IPipeLineSubject, IDataContext, Any?>() {
         override val getMetaData: PipeLineFeatureMetaData = PipeLineFeatureMetaData(CorePipeLine.process, "Cn.Sarkar.EntityDreams.MySql.QueryTranslationInterpolatory")
         override val info: FeatureInfo = FeatureInfo(
                 "Query Trnalsator",
@@ -35,7 +35,7 @@ class QueryTranslatorInterpolatory(var context: PipeLineContext<IPipeLineSubject
         )
 
         override fun PipeLineContext<IPipeLineSubject, IDataContext>.onExecute(subject: IPipeLineSubject) {
-            if (subject is ITranslationSubject)
+            if (subject is TranslationSubject)
                 QueryTranslatorInterpolatory(this).process(subject)
         }
 

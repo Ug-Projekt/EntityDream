@@ -12,8 +12,10 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Delete.DeleteQuer
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Insert.InsertQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Update.UpdateQueryExpression
 
+data class InsertContent(var expression: InsertQueryExpression, var uniqueKey: String)
+
 interface IQueryContext {
     var updateTasks: HashMap<String, UpdateQueryExpression>
     var deleteTasks: HashMap<String, DeleteQueryExpression>
-    var insertTasks: HashMap<String, Pair<InsertQueryExpression, IDBEntity>>
+    var insertTasks: HashMap<String, InsertContent>
 }

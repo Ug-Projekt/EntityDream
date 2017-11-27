@@ -1,5 +1,6 @@
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions
 
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.DBCollection
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.IDBColumn
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBEntity
@@ -7,12 +8,15 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBTable
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Common.Equal
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.ValuesCache
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core.MySqlQueryTranslator
 import org.junit.Assert
 import org.junit.Test
 
 internal class SelectQuerryExpressionKtTest {
 
-    class PersonTable : IDBTable{
+    val translator = MySqlQueryTranslator()
+
+    object PersonTable : IDBTable{
         override var TableName: String = "USers"
             set(value) {}
         override var PrimaryKey: IDBColumn<*>
@@ -27,7 +31,7 @@ internal class SelectQuerryExpressionKtTest {
     object Person
     {
         val Name = object : IDBColumn<String>{
-            override var Table: IDBTable = PersonTable()
+            override var Table: IDBTable = PersonTable
             override var NotNull: Boolean
                 get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
                 set(value) {}
@@ -85,7 +89,7 @@ internal class SelectQuerryExpressionKtTest {
         override var DataContext: IDataContext
             get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
             set(value) {}
-        override var DBTable: IDBTable = PersonTable()
+        override var DBTable: IDBTable = PersonTable
 
     }
 
@@ -121,42 +125,39 @@ internal class SelectQuerryExpressionKtTest {
         Assert.assertEquals(conditions[2].first(), Person.Name.ColumnName)
         Assert.assertEquals(conditions[2].last(), "Hello")
     }
-
-    object InputMode
-    {
-        val Text = 1
-        val Number = 2
-        val PhoneNumber = 4
-        val EMail = 8
-        val WebAddr = 16
-        val Decimal = 32
-    }
-
-    infix fun Int.isIn(destination: Int) : Boolean = (this and destination) > 0
-
-    @Test
-    fun go(){
-        val result = InputMode.run { PhoneNumber or EMail or Decimal }
-
-        val numbers = InputMode.run {
-            arrayOf(Text, Number, PhoneNumber, EMail, WebAddr, Decimal)
-        }
-
-        numbers.forEach {
-            println(it isIn result)
-        }
-    }
+//
+//    object InputMode
+//    {
+//        val Text = 1
+//        val Number = 2
+//        val PhoneNumber = 4
+//        val EMail = 8
+//        val WebAddr = 16
+//        val Decimal = 32
+//    }
+//
+//    infix fun Int.isIn(destination: Int) : Boolean = (this and destination) > 0
+//
+//    @Test
+//    fun go(){
+//        val result = InputMode.run { PhoneNumber or EMail or Decimal }
+//
+//        val numbers = InputMode.run {
+//            arrayOf(Text, Number, PhoneNumber, EMail, WebAddr, Decimal)
+//        }
+//
+//        numbers.forEach {
+//            println(it isIn result)
+//        }
+//    }
 
     @Test
     fun where(){
-//        val collection: DBCollection<PersonEntity>? = null
-//
-//        val result = collection!! where {
-//            Person.Name.like("%yeganaaa%").and(Person.Age.greater(18)).or(Person.Age.between(0.to(100))).or(Person.Name.iN("yeganaaa", "hello", "Go"))
-//            Person.Name like "%yeganaaa%" and (Person.Age greater 18) or (Person.Age between (0 to 100)) or (Person.Name.iN("yeganaaa", "hello", "Go"))
-//        }
-//
-//        val result2 = collection!! where {Person.Name equals "yeganaaa" and (Person.Age greater 20)}
+
+        val expr = PersonTable.SelectQuery
+        val result = translator.Translate(expr)
+
+        println(result.fullSqlQuery)
     }
 
 }
