@@ -10,7 +10,8 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.IDBColumn
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.IDBField
+class ValuesCacheItem(val uniqueMd5Key: String) : LinkedHashMap<IDBColumn<*>, Any>()
 
-class ValuesCache(context: IQueryContext) : LinkedHashMap<IDBColumn<*>, Any>() {
+class ValuesCache : LinkedHashMap<String, ValuesCacheItem>(){
 
 }

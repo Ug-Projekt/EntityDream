@@ -8,11 +8,11 @@ Time: 12:29 AM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Insert
 
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryExpression
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.IUpdateQueryExpression
 
 class InsertQueryExpression(
         var insertInto: InsertInto,
         var values: Values
-) : IQueryExpression {
+) : IUpdateQueryExpression {
 
 }

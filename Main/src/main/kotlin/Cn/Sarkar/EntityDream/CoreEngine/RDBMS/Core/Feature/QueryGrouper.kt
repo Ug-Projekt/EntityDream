@@ -1,6 +1,9 @@
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Feature
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.*
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.ParameterContent
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.QueryGroup
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.QueryGroupSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 import Cn.Sarkar.EntityDream.Pipeline.Core.Info.FeatureInfo
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineContext

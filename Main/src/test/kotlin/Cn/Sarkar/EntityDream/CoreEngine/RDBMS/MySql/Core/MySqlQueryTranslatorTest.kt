@@ -10,6 +10,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.ValuesCache
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.*
 import org.junit.Test
+import kotlin.system.measureTimeMillis
 
 typealias DBInt = Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.Int
 
@@ -31,7 +32,7 @@ internal class MySqlQueryTranslatorTest {
 
     class UserEntity(override var DataContext: IDataContext) : IDBEntity {
         override var DBTable: IDBTable = Users
-        override var fieldValues: ValuesCache = ValuesCache(DataContext)
+        override var fieldValues: ValuesCache = ValuesCache()
     }
 
     val translator: IQueryTranslator

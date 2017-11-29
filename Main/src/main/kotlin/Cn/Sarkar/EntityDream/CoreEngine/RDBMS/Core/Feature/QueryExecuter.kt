@@ -2,8 +2,11 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Feature
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.CorePipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.QueryExecutionSubject
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.QueryExecutionSubject
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.ISelectQueryExpression
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.IUpdateQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.WriteParameters
 import Cn.Sarkar.EntityDream.Pipeline.Core.Info.FeatureInfo
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineContext
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeature
@@ -21,9 +24,20 @@ object QueryExecuter : PipeLineFeature<IPipeLineSubject, IDataContext, Unit>() {
     )
 
     override fun PipeLineContext<IPipeLineSubject, IDataContext>.onExecute(subject: IPipeLineSubject) {
-        if (subject is QueryExecutionSubject)
-        {
-            subject.
+        if (subject is QueryExecutionSubject) {
+
+            try {
+                subject.statement = subject.connection.prepareStatement(subject.group.query.sqlQuery)
+                subject.group.content.forEach {
+                    it.parameters.forEachIndexed { index, any -> subject.statement!!.WriteParameters(index + 1, any) }
+                    subject.statement!!.addBatch()
+                }
+                if (subject.group.query.expression is ISelectQueryExpression) subject.statement!!.executeQuery()
+                if (subject.group.query.expression is IUpdateQueryExpression) subject.effectedRows = subject.statement!!.executeBatch()
+            } catch (exception: Exception) {
+                subject.exception = exception
+                return
+            }
         }
     }
 }

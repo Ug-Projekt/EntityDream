@@ -10,6 +10,7 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Select
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Common.Where
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.ISelectQueryExpression
 
 class SelectQueryExpression(
         var Select: Select,
@@ -18,4 +19,4 @@ class SelectQueryExpression(
         var GroupBy: GroupBy? = null,
         var Having: Having? = null,
         var OrderBy: OrderBy? = null
-) : IQueryExpression
+) : ISelectQueryExpression

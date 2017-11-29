@@ -190,7 +190,7 @@ class MySqlQueryTranslator : IQueryTranslator {
         params.forEach {
             fullQuery = fullQuery.replaceFirst("?", if (it.toString()[0] != '\'') it.toSqlString() else it.toString())
         }
-        val retv = TranslateResult(encryptWithMD5(query), query, params.toList(), fullQuery)
+        val retv = TranslateResult(encryptWithMD5(query), query, params.toList(), fullQuery, expression)
         params.clear()
         return retv
     }

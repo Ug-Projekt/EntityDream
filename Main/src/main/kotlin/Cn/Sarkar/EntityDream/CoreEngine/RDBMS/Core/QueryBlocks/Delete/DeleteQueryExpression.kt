@@ -10,9 +10,10 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Delete
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Common.Where
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.IUpdateQueryExpression
 
 class DeleteQueryExpression(
         var deleteFrom: DeleteFrom,
         var where: Where
-) : IQueryExpression {
+) : IUpdateQueryExpression {
 }

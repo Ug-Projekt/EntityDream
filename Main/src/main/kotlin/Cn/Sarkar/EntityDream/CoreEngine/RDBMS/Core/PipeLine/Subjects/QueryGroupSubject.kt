@@ -6,8 +6,9 @@ Date : 11/24/17
 Time: 4:53 PM
  */
 
-package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine
+package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects
 
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.TranslateResult
 
 data class ParameterContent(var uniqueMd5Key: String, var parameters: Array<Any>)
