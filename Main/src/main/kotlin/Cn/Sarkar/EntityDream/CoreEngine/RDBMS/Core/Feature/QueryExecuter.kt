@@ -32,8 +32,14 @@ object QueryExecuter : PipeLineFeature<IPipeLineSubject, IDataContext, Unit>() {
                     it.parameters.forEachIndexed { index, any -> subject.statement!!.WriteParameters(index + 1, any) }
                     subject.statement!!.addBatch()
                 }
-                if (subject.group.query.expression is ISelectQueryExpression) subject.statement!!.executeQuery()
-                if (subject.group.query.expression is IUpdateQueryExpression) subject.effectedRows = subject.statement!!.executeBatch()
+                when(subject.group.query.expression)
+                {
+                    is ISelectQueryExpression -> subject.statement!!.executeQuery()
+                    is IUpdateQueryExpression -> subject.effectedRows = subject.statement!!.executeBatch()
+                    else -> throw Exception("""Query must be instanceof ISelectQueryExpression or IUpdateQueryExpression
+                        چوقۇم Query IUpdateQueryExpression ياكى IUpdateQueryExpression غا ۋارىسلىق قىلىشى كىرەك
+                    """.trimMargin())
+                }
             } catch (exception: Exception) {
                 subject.exception = exception
                 return
