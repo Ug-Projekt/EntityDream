@@ -19,7 +19,7 @@ internal class SelectQuerryExpressionKtTest {
     object PersonTable : IDBTable{
         override var TableName: String = "USers"
             set(value) {}
-        override var PrimaryKey: IDBColumn<*>
+        override var PrimaryKey: Array<IDBColumn<*>>
             get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
             set(value) {}
         override var Columns: Array<IDBColumn<*>>

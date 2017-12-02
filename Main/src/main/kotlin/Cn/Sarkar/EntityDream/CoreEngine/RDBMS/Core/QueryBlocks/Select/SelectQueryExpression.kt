@@ -8,15 +8,18 @@ Time: 11:19 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Select
 
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBTable
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Common.Where
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.IForTable
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.ISelectQueryExpression
 
 class SelectQueryExpression(
+        override var table: IDBTable,
         var Select: Select,
         var From: From,
         var Where: Where? = null,
         var GroupBy: GroupBy? = null,
         var Having: Having? = null,
         var OrderBy: OrderBy? = null
-) : ISelectQueryExpression
+) : ISelectQueryExpression, IForTable

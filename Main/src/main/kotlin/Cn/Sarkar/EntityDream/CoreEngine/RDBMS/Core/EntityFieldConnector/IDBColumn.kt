@@ -4,13 +4,21 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBTable
 
+class AutoIncrementProperty(var autoIncrement: Boolean, var start: Int, var step: Int)
+{
+    companion object {
+        val default = AutoIncrementProperty(true, 1, 1)
+        val none = AutoIncrementProperty(false, 1, 1)
+    }
+}
+
 interface IDBColumn<KOTLINDATATYPE> {
     var Table: IDBTable
 
     var ColumnName: String
     var NotNull: Boolean
     var DataType: IDataType<KOTLINDATATYPE>
-    var AutoIncrement: Boolean
+    var AutoIncrement: AutoIncrementProperty
     var Unique: Boolean
     var ForeignKey: IDBColumn<*>?
     var Index: Boolean

@@ -12,6 +12,17 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.*
 import org.junit.Test
 import kotlin.system.measureTimeMillis
 
+typealias ھەرقانداق_نەرسە = Any
+typealias خەت = String
+typealias پۈتۈن_سان = Int
+typealias لوگىكىلىق_قىممەت = Boolean
+typealias پارچە_سان = Float
+
+val ھەئە = true
+val راس = true
+val ياق = false
+val يالغان = false
+
 typealias DBInt = Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.Int
 
 internal class MySqlQueryTranslatorTest {
@@ -26,7 +37,7 @@ internal class MySqlQueryTranslatorTest {
         val Age = DBIntColumn(this, "Age")
 
         override var TableName: String = "User"
-        override var PrimaryKey: IDBColumn<*> = ID
+        override var PrimaryKey: Array<IDBColumn<*>> = arrayOf(ID)
         override var Columns: Array<IDBColumn<*>> = arrayOf(ID, Name, EMail, Age)
     }
 
@@ -44,5 +55,11 @@ internal class MySqlQueryTranslatorTest {
 
         val result = translator.Translate(expr)
         println(result.fullSqlQuery)
+    }
+
+
+    @Test
+    fun ULanguage(){
+
     }
 }

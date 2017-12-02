@@ -12,6 +12,6 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.IDBColum
 
 interface IDBTable {
     var TableName: String //جەدۋەل ئىسمى
-    var PrimaryKey: IDBColumn<*>
+    var PrimaryKey: Array<IDBColumn<*>>
     var Columns: Array<IDBColumn<*>>
 }

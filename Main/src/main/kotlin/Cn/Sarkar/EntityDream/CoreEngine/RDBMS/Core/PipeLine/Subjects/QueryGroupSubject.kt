@@ -11,13 +11,27 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.TranslateResult
 
-data class ParameterContent(var uniqueMd5Key: String, var parameters: Array<Any>)
+/**
+ * @param parameters
+ * پارامىتىرلار
+ * @param uniqueIdentificationKey
+ * بۇ بولسا تەرجىمە قىلىنىپ بولغان SQL جۈملىسىنىڭ MD5 قىممىتى بولماستىن بەلكى مۇشۇ ھەر بىر گورۇپپا ئەزاسىنى بىر بىرىدىن پەرىقلەندۈرىدىغان كود،
+ * بۇنى ئاساسەن ساندانغا ئۇچۇر كىرگۈزگەندە ئاپتوماتىك ئاينىيدىغان قىممەتنى سانداندىن قايتۇرۇپ ئىلىپ ساندانغا قىستۇرۇلغان ئوبىيكىتنىڭ ماس خاسلىقلىرىغا قىممەت بەرگەندە بىز مۇشۇ خاسلىققا
+ * ئاساسەن ئاۋال ساندانغا قىستۇرۇلغان ئوبىيكىتنى ئىزدەپ تاپىمىز، قىسقىسى بۇ خاسلىق نۆۋەتتىكى مەشغۇلات قىلىنغان ئوبىيكىتكە ئىرىشىشتىكى ھالقىلىق قىممەت
+ */
+data class ParameterContent(var uniqueIdentificationKey: String, var parameters: Array<Any>)
 data class QueryGroup(
         var query: TranslateResult,
         var content: MutableList<ParameterContent> = ArrayList()
 )
 
-data class QueryGroupSubject(val groups: HashMap<String, QueryGroup> = HashMap(), val translateResult: TranslateResult) : IPipeLineSubject {
+/**
+ * @param groups gdfgdf
+ * ئاچقۇچى تەرجىمە قىلىنىپ بولغان SQL جۈملىسىنىڭ MD5 قىممىتى
+ * @param translateResult
+ *تەرجىمە نەتىجىسى
+ */
+data class QueryGroupSubject(val groups: HashMap<String, QueryGroup> = LinkedHashMap(), val translateResult: TranslateResult) : IPipeLineSubject {
     override val operationName: String = "Group SQL Query"
     override val operationDescription: String = "ئوخشاش قۇرۇلمىدىكى SQL جۈملىرىنى گورۇپپىلايدۇ"
 }

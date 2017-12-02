@@ -46,9 +46,9 @@ infix fun WhereItemCondition.or(condition: WhereItemCondition) : Or =
             Or(this, condition)
 val IDBTable.SelectAllColumns: Select get() = Select(*(this.Columns.map { FromColumn(it.fullColumnName)}.toTypedArray()))
 val IDBTable.FromThis: From get() = From(FromTable(TableName))
-val IDBTable.SelectQuery: SelectQueryExpression get() = SelectQueryExpression(SelectAllColumns, FromThis)
+val IDBTable.SelectQuery: SelectQueryExpression get() = SelectQueryExpression(this, SelectAllColumns, FromThis)
 val IDBTable.FromColumns: Array<FromColumn> get() = arrayOf(*(this.Columns.map { FromColumn(it.ColumnName) }.toTypedArray()))
-private fun <T> QueriableCollection<T>.generateSelectQueryExpression() : SelectQueryExpression = SelectQueryExpression(table.SelectAllColumns, From(FromTable(table.TableName)))
+private fun <T> QueriableCollection<T>.generateSelectQueryExpression() : SelectQueryExpression = SelectQueryExpression(table, table.SelectAllColumns, From(FromTable(table.TableName)))
 infix fun SelectQueryExpression.where(condition: () -> WhereItemCondition) : SelectQueryExpression = this.apply { Where = Where(condition()) }
 infix fun SelectQueryExpression.andWhere(condition: () -> WhereItemCondition) : SelectQueryExpression = this.apply { Where!!.condition = Where!!.condition and condition() }
 infix fun SelectQueryExpression.orWhere(condition: () -> WhereItemCondition) : SelectQueryExpression = this.apply { Where!!.condition = Where!!.condition or condition() }

@@ -9,7 +9,14 @@ Time: 4:44 PM
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
-data class IDItem(var uniqueMd5Key: String, var id: Int)
+
+/**
+ * @param id يىڭى ھاسىل قىلىنغان تەرتىپ نومۇرى
+ * @param uniqueMd5Key
+ * پەرىقلەندۈرۈش ئاچقۇچ قىممەت،
+ * ئاساسلىقى يىڭى قوشۇلغان Entity نىڭ Auto Increment خاسلىق
+ */
+data class IDItem(var uniqueMd5Key: String, var id: Long)
 
 data class InsertResultSubject(var result: QueryExecutionSubject, var Ids: Array<IDItem>) : IPipeLineSubject {
     override val operationName: String = "Insert Result Subject"

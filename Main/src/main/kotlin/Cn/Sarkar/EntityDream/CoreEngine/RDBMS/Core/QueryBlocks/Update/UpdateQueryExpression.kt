@@ -8,13 +8,16 @@ Time: 12:38 AM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Update
 
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBTable
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Common.Where
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.IForTable
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.IUpdateQueryExpression
 
 class UpdateQueryExpression(
+        override var table: IDBTable,
         var update: Update,
         var set: Set,
         var where: Where
-) : IUpdateQueryExpression {
+) : IUpdateQueryExpression, IForTable {
 }
