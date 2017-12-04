@@ -10,6 +10,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core.MySqlQueryTranslator
 import org.junit.Assert
 import org.junit.Test
+import kotlin.reflect.KProperty
 
 internal class SelectQuerryExpressionKtTest {
 
@@ -30,6 +31,14 @@ internal class SelectQuerryExpressionKtTest {
     object Person
     {
         val Name = object : IDBColumn<String> {
+            override fun getValue(thisRef: IDBEntity, property: KProperty<*>): String {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun setValue(thisRef: IDBEntity, property: KProperty<*>, value: String) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
             override var Table: IDBTable = PersonTable
             override var NotNull: Boolean
                 get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
@@ -54,6 +63,14 @@ internal class SelectQuerryExpressionKtTest {
         }
 
         val Age = object : IDBColumn<Int> {
+            override fun getValue(thisRef: IDBEntity, property: KProperty<*>): Int {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun setValue(thisRef: IDBEntity, property: KProperty<*>, value: Int) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
             override var Table: IDBTable
                 get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
                 set(value) {}
@@ -82,7 +99,10 @@ internal class SelectQuerryExpressionKtTest {
 
     class PersonEntity : IDBEntity
     {
-        override var fieldValues: ValuesCacheItem
+        override var currentValues: ValuesCacheItem?
+            get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+            set(value) {}
+        override var srcValues: ValuesCacheItem?
             get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
             set(value) {}
         override var DataContext: IDataContext

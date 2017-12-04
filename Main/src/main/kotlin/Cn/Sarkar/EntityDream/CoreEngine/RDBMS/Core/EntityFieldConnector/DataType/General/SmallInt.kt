@@ -3,6 +3,6 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataTyp
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBNumberType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBPlainDataType
 
-class SmallInt(override var DefaultValue: Short = 0, override var Unsigned: Boolean = false) : IDBPlainDataType<Short>, IDBNumberType {
+class SmallInt(override var DefaultValue: Short = 0, override var Unsigned: Boolean = false) : IDBPlainDataType<Short>, IDBNumberType<Short> {
     override var Name: String = "SmallInt"
 }

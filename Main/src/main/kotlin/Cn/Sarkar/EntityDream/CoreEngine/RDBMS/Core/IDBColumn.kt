@@ -2,6 +2,7 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBNumberType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDataType
+import kotlin.properties.ReadWriteProperty
 
 class AutoIncrementProperty(var autoIncrement: Boolean, var start: Int = 1, var step: Int = 1)
 {
@@ -13,7 +14,7 @@ class AutoIncrementProperty(var autoIncrement: Boolean, var start: Int = 1, var 
 
 data class ForeignKey(var column: IDBColumn<*>, var referenced: IDBColumn<*>)
 
-interface IDBColumn<KOTLINDATATYPE> {
+interface IDBColumn<KOTLINDATATYPE> : ReadWriteProperty<IDBEntity, KOTLINDATATYPE> {
     var Table: IDBTable
 
     var ColumnName: String

@@ -3,6 +3,6 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataTyp
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBNumberType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBPlainDataType
 
-class BigInt(override var DefaultValue: Long, override var Unsigned: Boolean = false) : IDBPlainDataType<Long>, IDBNumberType {
+class BigInt(override var DefaultValue: Long, override var Unsigned: Boolean = false) : IDBPlainDataType<Long>, IDBNumberType<Long> {
     override var Name: String = "BigInt"
 }

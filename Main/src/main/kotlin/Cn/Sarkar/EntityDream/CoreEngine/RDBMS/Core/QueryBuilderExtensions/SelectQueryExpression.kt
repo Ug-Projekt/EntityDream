@@ -65,8 +65,8 @@ val IDBTable.FromColumns: Array<FromColumn> get() = arrayOf(*(this.Columns.map {
 /*************************************************************************/
 infix fun ISelectQueryExpression.where(condition: () -> WhereItemCondition): ISelectQueryExpression = this.apply { Where = Where(condition()) }
 
-infix fun ISelectQueryExpression.andWhere(condition: () -> WhereItemCondition): ISelectQueryExpression = this.apply { Where!!.condition = Where!!.condition and condition() }
-infix fun ISelectQueryExpression.orWhere(condition: () -> WhereItemCondition): ISelectQueryExpression = this.apply { Where!!.condition = Where!!.condition or condition() }
+infix fun ISelectQueryExpression.andWhere(condition: (table: IDBTable) -> WhereItemCondition): ISelectQueryExpression = this.apply { Where!!.condition = Where!!.condition and condition(this.table) }
+infix fun ISelectQueryExpression.orWhere(condition: (table: IDBTable) -> WhereItemCondition): ISelectQueryExpression = this.apply { Where!!.condition = Where!!.condition or condition(this.table) }
 fun ISelectQueryExpression.slice(vararg columns: IDBColumn<*>): ISelectQueryExpression = this.apply { this.Select.selectors.clear(); this.Select.selectors.addAll(columns.map { FromColumn(it.fullColumnName, DefaultValue = it.DataType.DefaultValue!!) }) }
 internal fun ISelectQueryExpression.removeFromColumnIfExists(column: IDBColumn<*>) {
     val col = this.Select.selectors.firstOrNull { it is FromColumn && it.SourceName == column.fullColumnName } as FromColumn?

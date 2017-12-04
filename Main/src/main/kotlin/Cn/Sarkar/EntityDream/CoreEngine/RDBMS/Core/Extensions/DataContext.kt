@@ -17,8 +17,8 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.clonedPipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.execute
 
 
-fun <T : IDBEntity> IDataContext.defineTable(table: IDBTable, itemGenerator: (context: IDataContext) -> T) : QueriableCollection<T> =
-        QueriableCollection(this, table, null, { itemGenerator(this@defineTable) })
+fun <TABLE: IDBTable, ENTITY : IDBEntity> IDataContext.dbCollection(table: TABLE, itemGenerator: (context: IDataContext) -> ENTITY) : QueriableCollection<TABLE, ENTITY> =
+        QueriableCollection(this, table, null, { itemGenerator(this@dbCollection) })
 
 
 /**

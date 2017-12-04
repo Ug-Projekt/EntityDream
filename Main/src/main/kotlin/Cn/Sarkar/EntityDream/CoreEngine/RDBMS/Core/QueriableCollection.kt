@@ -14,7 +14,9 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.ISelectQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 
-class QueriableCollection<ENTITY: IDBEntity>(var context: IDataContext, override var table: IDBTable, where: WhereItemCondition? = null, itemFactoriy: () -> ENTITY) : ArrayList<ENTITY>(), ISelectQueryExpression by table.SelectQuery {
+fun <TABLE: IDBTable, ENTITY: IDBEntity> QueriableCollection<TABLE, ENTITY>.query(queryAction: QueriableCollection<TABLE, ENTITY>.(table: TABLE) -> Unit) = this.apply{ queryAction(table as TABLE) } as ISelectQueryExpression
+
+class QueriableCollection<TABLE: IDBTable, ENTITY: IDBEntity>(var context: IDataContext, override var table: IDBTable, where: WhereItemCondition? = null, itemFactoriy: () -> ENTITY) : ArrayList<ENTITY>(), ISelectQueryExpression by table.SelectQuery {
     init {
         /**
          * ئەگەر نۆۋەتتىكى ئوبىيكىت بىرگە كۆپ ماسلىق مۇناسىۋەت تۈپەيلى كىلىپ چىققان ئوبىيكىت بولسا

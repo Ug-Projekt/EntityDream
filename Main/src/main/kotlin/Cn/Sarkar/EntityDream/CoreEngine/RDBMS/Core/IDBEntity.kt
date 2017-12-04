@@ -13,7 +13,8 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 interface IDBEntity {
     var DataContext: IDataContext
     var DBTable: IDBTable
-    var fieldValues: ValuesCacheItem
+    var srcValues: ValuesCacheItem?
+    var currentValues: ValuesCacheItem?
 
     companion object {
         //val autoDetectID = "****Auto Detect****"
