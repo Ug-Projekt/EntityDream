@@ -26,12 +26,12 @@ data class QueryGroup(
 )
 
 /**
- * @param groups gdfgdf
+ * @param groups
  * ئاچقۇچى تەرجىمە قىلىنىپ بولغان SQL جۈملىسىنىڭ MD5 قىممىتى
  * @param translateResult
  *تەرجىمە نەتىجىسى
  */
-data class QueryGroupSubject(val groups: HashMap<String, QueryGroup> = LinkedHashMap(), val translateResult: TranslateResult) : IPipeLineSubject {
+data class QueryGroupSubject(val groups: HashMap<String, QueryGroup> = LinkedHashMap(), var translateResult: TranslateResult? = null) : IPipeLineSubject {
     override val operationName: String = "Group SQL Query"
     override val operationDescription: String = "ئوخشاش قۇرۇلمىدىكى SQL جۈملىرىنى گورۇپپىلايدۇ"
 }

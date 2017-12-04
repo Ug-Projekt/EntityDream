@@ -17,6 +17,8 @@ class PipeLineContext<TSubject, TFeatureProvider>(val pipeLine: PipeLine<TSubjec
     {
         this.subject = subject
 
+        if (pipeLine.cachedFeatures.isEmpty()) pipeLine.cache()
+
         while (index < pipeLine.cachedFeatures.size) {
             index++
             this.pipeLine.cachedFeatures[index - 1].apply { if (this.enable) onExecute(this@PipeLineContext.subject!!) }

@@ -8,8 +8,6 @@ Time: 2:12 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core
 
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.IDBColumn
-
 interface IDBTable {
     var TableName: String //جەدۋەل ئىسمى
     var PrimaryKey: Array<IDBColumn<*>>

@@ -14,20 +14,19 @@ import java.math.BigDecimal
 import java.sql.ResultSet
 import java.util.*
 
-internal inline fun readResult(resultSet: ResultSet, fieldName: String, readType: Any) : Any? = when(readType){
-    is String -> resultSet.getString(fieldName)
-    is Boolean -> resultSet.getBoolean(fieldName)
-    is Byte -> resultSet.getByte(fieldName)
-    is Short -> resultSet.getShort(fieldName)
-    is Int -> resultSet.getInt(fieldName)
-    is Long -> resultSet.getLong(fieldName)
-    is Float -> resultSet.getFloat(fieldName)
-    is Double -> resultSet.getDouble(fieldName)
-    is BigDecimal -> resultSet.getBigDecimal(fieldName)
-    is ByteArray -> resultSet.getBytes(fieldName)
-    is Date -> resultSet.getDate(fieldName)
-    is InputStream -> resultSet.getBinaryStream(fieldName)
-    is Any -> resultSet.getObject(fieldName)
-    is Reader -> resultSet.getCharacterStream(fieldName)
-    else -> null
-}
+internal fun ResultSet.readResult(fieldName: String, value: Any?) : Any? = when(value){
+    is String -> this.getString(fieldName)
+    is Boolean -> this.getBoolean(fieldName)
+    is Byte -> this.getByte(fieldName)
+    is Short -> this.getShort(fieldName)
+    is Int -> this.getInt(fieldName)
+    is Long -> this.getLong(fieldName)
+    is Float -> this.getFloat(fieldName)
+    is Double -> this.getDouble(fieldName)
+    is BigDecimal -> this.getBigDecimal(fieldName)
+    is ByteArray -> this.getBytes(fieldName)
+    is Date -> this.getDate(fieldName)
+    is InputStream -> this.getBinaryStream(fieldName)
+    is Reader -> this.getCharacterStream(fieldName)
+    else -> this.getObject(fieldName)
+} ?: null

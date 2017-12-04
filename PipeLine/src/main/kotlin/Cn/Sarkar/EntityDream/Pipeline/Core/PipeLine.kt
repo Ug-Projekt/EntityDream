@@ -12,10 +12,13 @@ import Cn.Sarkar.EntityDream.Pipeline.Core.Info.PipeLineInfo
 
 abstract class PipeLine<TSubject, TFeatureProvider>(vararg phases: Phase) {
     private val features: ArrayList<PipeLineFeatureContainer<TSubject, TFeatureProvider>> = ArrayList()
-    internal val cachedFeatures: ArrayList<PipeLineFeature<TSubject, TFeatureProvider, Any?>> = ArrayList()
+    internal val cachedFeatures: ArrayList<PipeLineFeature<TSubject, TFeatureProvider>> = ArrayList()
 
     abstract val info: PipeLineInfo
 
+    /**
+     * دەسلەپلەشتۈرۈش
+     */
     init {
         phases.forEach(this::addPhase)
     }
@@ -30,6 +33,10 @@ abstract class PipeLine<TSubject, TFeatureProvider>(vararg phases: Phase) {
         return features.filter { innerItem -> innerItem.key.name == phase.name }.isNotEmpty()
     }
 
+    /**
+     * ھەر بىر Phase ئۈچۈن بىر دانە FeatureContainer قۇرۇلىدۇ
+     * يەنى نۆۋەتتىكى ئوبىيكىت قۇرۇلغان ۋاقىتتا ئاپتوماتىك قۇرۇلىدۇ
+     */
     fun addPhase(phase: Phase) {
         if (isExistsThisPhase(phase)) throw Exception("This phase: ${phase} is allready exists.")
         features.add(PipeLineFeatureContainer(phase))

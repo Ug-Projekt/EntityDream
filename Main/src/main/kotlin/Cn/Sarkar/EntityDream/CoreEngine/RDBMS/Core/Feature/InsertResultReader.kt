@@ -16,14 +16,14 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.CorePipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.IDItem
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.InsertResultSubject
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.IForTable
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.ITableOperationQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 import Cn.Sarkar.EntityDream.Pipeline.Core.Info.FeatureInfo
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineContext
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeature
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeatureMetaData
 
-object InsertResultReader : PipeLineFeature<IPipeLineSubject, IDataContext, Unit>() {
+object InsertResultReader : PipeLineFeature<IPipeLineSubject, IDataContext>() {
     override val getMetaData: PipeLineFeatureMetaData by lazy { PipeLineFeatureMetaData(CorePipeLine.process, "Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Feature.InsertResultReader") }
     override val info: FeatureInfo by lazy {
         FeatureInfo(
@@ -40,8 +40,13 @@ object InsertResultReader : PipeLineFeature<IPipeLineSubject, IDataContext, Unit
         if (subject is InsertResultSubject) {
             val ids = ArrayList<IDItem>()
             val keys = subject.result.statement!!.generatedKeys
-            val table = (subject.result.group.query.expression as IForTable).table
-            val incrementColumn = table.Columns.singleOrNull { it.AutoIncrement }
+            val table = (subject.result.group.query.expression as ITableOperationQueryExpression).table
+            val ics = table.Columns.filter { it.AutoIncrement.autoIncrement }
+            if (ics.size > 1) throw Exception("""
+                ساندان بىر جەدۋەلدە بىردىن ئارتۇق ئاپتوماتىك ئاينىيدىغان ئىستوننى قوللىمايدۇ، چوقۇم پەقەت بىر دانىلا ئاپتوماتىك ئاينىيدىغان ئىستون بولىشى كىرەك
+                Table ${table.TableName} Must be have a single auto increment columnn, Data base not supported multi auto increment Column.
+            """.trimIndent())
+            val incrementColumn = ics.singleOrNull()
             if (incrementColumn != null) {
                 subject.result.group.content.forEach {
                     keys.next()

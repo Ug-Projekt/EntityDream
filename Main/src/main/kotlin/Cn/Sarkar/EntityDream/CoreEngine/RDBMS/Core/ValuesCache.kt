@@ -8,10 +8,14 @@ Time: 9:16 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core
 
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.IDBColumn
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.IDBField
-class ValuesCacheItem(val uniqueMd5Key: String) : LinkedHashMap<IDBColumn<*>, Any>()
+class ValuesCacheItem : LinkedHashMap<String, Any?>()
+{
+    operator fun <T> get(column: IDBColumn<T>) : T? = get(column.ColumnName) as? T
+    operator fun <T> set(column: IDBColumn<T>, value: T){
+        set(column.ColumnName, value)
+    }
+}
 
-class ValuesCache : LinkedHashMap<String, ValuesCacheItem>(){
+class ValuesCache : ArrayList<ValuesCacheItem>(){
 
 }

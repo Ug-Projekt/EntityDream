@@ -10,14 +10,15 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryTranslator
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Common.*
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Common.Function.Aggregate.*
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Common.Function.IDBFunction
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Common.Function.Scalar.*
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Delete.DeleteQueryExpression
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Insert.InsertQueryExpression
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Select.*
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Update.UpdateQueryExpression
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.*
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.Aggregate.*
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.IDBFunction
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.Scalar.*
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Delete.DeleteQueryExpression
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.ISelectQueryExpression
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Insert.InsertQueryExpression
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Select.*
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Update.UpdateQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.TranslateResult
 import sun.misc.BASE64Encoder
 import java.security.MessageDigest
@@ -88,10 +89,10 @@ class MySqlQueryTranslator : IQueryTranslator {
     fun recursiveWhereBlock(where: WhereItemCondition, isTrunk: Boolean = false): String {
         return when (where) {
             is And -> {
-                if (isTrunk) where.conditions.joinToString(separator = " AND ") { recursiveWhereBlock(it) } else "(${where.conditions.joinToString(separator = " AND ") { recursiveWhereBlock(it) }})"
+                if (isTrunk) where.conditions.joinToString(separator = " AND ") { recursiveWhereBlock(it) } else "(${where.conditions.joinToString(separator = " AND ") { recursiveWhereBlock(it) }}) "
             }
             is Or -> {
-                if (isTrunk) where.conditions.joinToString(separator = " OR ") { recursiveWhereBlock(it) } else "(${where.conditions.joinToString(separator = " OR ") { recursiveWhereBlock(it) }})"
+                if (isTrunk) where.conditions.joinToString(separator = " OR ") { recursiveWhereBlock(it) } else "(${where.conditions.joinToString(separator = " OR ") { recursiveWhereBlock(it) }}) "
             }
             is Equal -> {
                 params.add(where.last())
@@ -138,7 +139,7 @@ class MySqlQueryTranslator : IQueryTranslator {
         val buffer = StringBuffer()
 
         when (expression) {
-            is SelectQueryExpression -> {
+            is ISelectQueryExpression -> {
 
                 buffer.append("SELECT ")
                 buffer.append(expression.Select.selectors.joinToString { it.renderToString() })

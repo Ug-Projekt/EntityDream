@@ -11,7 +11,7 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 import Cn.SarkarMMS.DataAccessLayer.CoreEngine.RDBMS.IDBCollection
 
-open class DBCollection<ITEM : IDBEntity>(var context: IDataContext, val table: IDBTable, var itemGenerator: () -> ITEM) : ArrayList<ITEM>(), IDBCollection {
+//open class DBCollection<ITEM : IDBEntity>(var context: IDataContext, val table: IDBTable, var itemGenerator: () -> ITEM) : ArrayList<ITEM>(), IDBCollection {
 //    override var Fields: MutableList<IDBField<Any>> = ArrayList()
 //
 //    private var reCache = true
@@ -22,7 +22,7 @@ open class DBCollection<ITEM : IDBEntity>(var context: IDataContext, val table: 
 ////            super.clear()
 ////            var item = itemGenerator()
 ////
-////            val expression = SelectQueryExpression(Select(FromColumn(primaryKey)), From(FromTable(item.TableName)), Where(whereItemCondition))
+////            val expression = ISelectQueryExpression(Select(FromColumn(primaryKey)), From(FromTable(item.TableName)), Where(whereItemCondition))
 ////            val query = context.queryTranslator().Translate(expression)
 ////
 ////            val statement = context.connection.prepareStatement(query.sqlQuery)
@@ -92,4 +92,4 @@ open class DBCollection<ITEM : IDBEntity>(var context: IDataContext, val table: 
 //    override fun get(index: Int): ITEM { load();return super.get(index) }
 //
 //    override fun isEmpty(): Boolean { load();return super.isEmpty() }
-}
+//}

@@ -3,16 +3,16 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Feature
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.CorePipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.QueryExecutionSubject
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.ISelectQueryExpression
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.IUpdateQueryExpression
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.ISelectQueryExpression
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.IUpdateQueryExpression
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Util.WriteParameters
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.WriteParameters
 import Cn.Sarkar.EntityDream.Pipeline.Core.Info.FeatureInfo
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineContext
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeature
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeatureMetaData
 
-object QueryExecuter : PipeLineFeature<IPipeLineSubject, IDataContext, Unit>() {
+object QueryExecuter : PipeLineFeature<IPipeLineSubject, IDataContext>() {
     override val getMetaData: PipeLineFeatureMetaData = PipeLineFeatureMetaData(CorePipeLine.process, "Cn.Sarkar.EntityDreams.Core.QueryExecute")
     override val info: FeatureInfo = FeatureInfo(
             "Query Execute",

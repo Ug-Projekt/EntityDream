@@ -9,7 +9,7 @@ import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineContext
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeature
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeatureMetaData
 
-object UpdateAndDeleteResultReader : PipeLineFeature<IPipeLineSubject, IDataContext, Unit>() {
+object UpdateAndDeleteResultReader : PipeLineFeature<IPipeLineSubject, IDataContext>() {
     override val getMetaData: PipeLineFeatureMetaData = PipeLineFeatureMetaData(CorePipeLine.process, "Cn.Sarkar.EntityDreams.Core.UpdateAndDeleteResultReader")
     override val info: FeatureInfo by lazy { FeatureInfo(
             "UpdateAndDeleteResultReader",

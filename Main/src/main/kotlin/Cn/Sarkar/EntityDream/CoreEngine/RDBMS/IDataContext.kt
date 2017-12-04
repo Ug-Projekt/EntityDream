@@ -8,43 +8,33 @@ Time: 3:41 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS
 
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Feature.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBEntity
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryContext
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.InsertContent
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Delete.DeleteQueryExpression
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Insert.InsertQueryExpression
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBlocks.Update.UpdateQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.CorePipeLine
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Delete.DeleteQueryExpression
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Insert.InsertQueryExpression
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Update.UpdateQueryExpression
+import Cn.Sarkar.EntityDream.Pipeline.Extension.installFeature
 import java.sql.Connection
-import java.sql.PreparedStatement
-import java.sql.Timestamp
-import java.util.*
-import kotlin.collections.HashMap
-import kotlin.collections.LinkedHashMap
 
-fun PreparedStatement.WriteParameters(index: Int, value: Any){
-    when (value)
-    {
-        is String -> this.setString(index, value)
-        is Boolean -> this.setBoolean(index, value)
-        is Byte -> this.setByte(index, value)
-        is Short -> this.setShort(index, value)
-        is Int -> this.setInt(index, value)
-        is Long -> this.setLong(index, value)
-        is Float -> this.setFloat(index, value)
-        is Double -> this.setDouble(index, value)
-//                is Decimal -> statement.setDouble(index, value)
-        is ByteArray -> this.setBytes(index, value)
-        is Date -> this.setDate(index, java.sql.Date(value.time))
-        is Timestamp -> this.setTimestamp(index, value)
-        else -> throw Exception("قوللىمايدىغان پارامىتىر تىپى...")
+fun <T : IPipeLineSubject> IDataContext.execute(clonedPipeLine: CorePipeLine, subject: T) : T = clonedPipeLine.execute(this, subject) as T
+
+/**
+ *كلونلانغان يىڭى PipeLine ئوبىيكىتى
+ */
+internal val IDataContext.clonedPipeLine: CorePipeLine get() = CorePipeLine().apply {
+    val oldPipeLine = this@clonedPipeLine.pipeLine
+    oldPipeLine.getAllContainer().forEach {
+        this[it.key].merge(it)
     }
 }
 
 abstract class IDataContext : IQueryContext {
     override var updateTasks: HashMap<String, UpdateQueryExpression> = LinkedHashMap()
     override var deleteTasks: HashMap<String, DeleteQueryExpression> = LinkedHashMap()
-    override var insertTasks: HashMap<String, InsertContent> = LinkedHashMap()
+    override var insertTasks: HashMap<String, InsertQueryExpression> = LinkedHashMap()
 
     open var itemFactories: HashMap<Class<*>, (context: IDataContext) -> Any> = HashMap()
 
@@ -65,7 +55,11 @@ abstract class IDataContext : IQueryContext {
     }
 
     init {
-
+        pipeLine.installFeature(QueryGrouper)
+        pipeLine.installFeature(QueryExecuter)
+        pipeLine.installFeature(SelectResultReader)
+        pipeLine.installFeature(InsertResultReader)
+        pipeLine.installFeature(UpdateAndDeleteResultReader)
     }
 }
 
