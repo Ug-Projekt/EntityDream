@@ -8,10 +8,11 @@ Time: 6:24 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks
 
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBTable
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBEntity
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Where
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Select.*
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 
 /**
  * ئىزدەش تۈرىگە تەۋە ئىپادە

@@ -11,7 +11,15 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBColumn
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBTable
 
-abstract class DBTable(override var TableName: String) : IDBTable {
+abstract class DBTable(override var TableName: String = AutoDetect) : IDBTable {
 //    override var PrimaryKey: Array<IDBColumn<*>> = arrayOf(*primaryKeys())
     override var Columns: Array<IDBColumn<*>> = arrayOf()
+
+    companion object {
+        val AutoDetect = "****Auto Detect****"
+    }
+
+    init {
+        if (TableName == AutoDetect) TableName = this::class.java.simpleName
+    }
 }

@@ -10,14 +10,13 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.*
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.WhereItemCondition
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.ISelectQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.clonedPipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.execute
 
 
-fun <TABLE: IDBTable, ENTITY : IDBEntity> IDataContext.dbCollection(table: TABLE, itemGenerator: (context: IDataContext) -> ENTITY) : QueriableCollection<TABLE, ENTITY> =
+fun <TABLE: IDBTable, ENTITY : IDBEntity> IDataContext.dbCollection(table: TABLE, itemGenerator: (context: IDataContext) -> ENTITY) : QueriableCollection<ENTITY> =
         QueriableCollection(this, table, null, { itemGenerator(this@dbCollection) })
 
 
@@ -36,7 +35,7 @@ fun IDataContext.executeSelectQuery(expression: ISelectQueryExpression): ValuesC
 /**
  * يىڭىلاش ۋە ئۆچۈرۈش جۈملىسى يۈرگۈزۈش
  */
-fun IDataContext.executeUpdateQuery(queryContext: IQueryContext = this): IntArray {
+fun IDataContext.executeUpdateQuery(): IntArray {
     val retv = ArrayList<Int>()
 
     val cpl = clonedPipeLine
@@ -63,7 +62,7 @@ fun IDataContext.executeUpdateQuery(queryContext: IQueryContext = this): IntArra
 /**
  * قىستۇرۇش جۈملىسى يۈرگۈزۈش
  */
-fun IDataContext.executeInsertQuery(queryContext: IQueryContext = this): IntArray {
+fun IDataContext.executeInsertQuery(): IntArray {
     val retv = ArrayList<Int>()
 
     val cpl = clonedPipeLine
