@@ -12,6 +12,9 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryTranslator
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.Aggregate.*
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.FuncFromColumn
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.FuncFromFunction
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.FuncFromWhat
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.IDBFunction
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.Scalar.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Delete.DeleteQueryExpression
@@ -33,30 +36,47 @@ class MySqlQueryTranslator : IQueryTranslator {
 
     fun IDBFunction.renderToString() : String
     {
+        val excep = Exception("""
+            بۇ تىپنى تەرجىمان قوللىمايدۇ
+            This translator is not supported this type.
+            此翻译器不支持该类型
+        """.trimIndent())
+
         var retv = ""
+
+        fun FuncFromWhat.recursiveRender() : String = this.run {
+            when(this)
+            {
+                is FuncFromColumn -> this.Value()
+                is FuncFromFunction -> this.Value().renderToString()
+                else-> throw excep
+            }
+        }
+
         when (this)
         {
             /*Aggregate Functions*/
-            is Avg -> retv = "AVG(${this.Value()}) "
-            is Count -> retv = "COUNT(${if (!this.Distinct) "" else "DISTINCT "}${this.Value()}) "
-            is Max -> retv = "MAX(${this.Value()}) "
-            is Min -> retv = "MIN(${this.Value()}) "
-            is Sum -> retv = "SUM(${this.Value()}) "
+            is Avg -> retv = "AVG(${this.Value.recursiveRender()})"
+
+            is Count -> retv = "COUNT(${this.Value.recursiveRender()})"
+            is Max -> retv = "MAX(${this.Value.recursiveRender()})"
+            is Min -> retv = "MIN(${this.Value.recursiveRender()})"
+            is Sum -> retv = "SUM(${this.Value.recursiveRender()})"
             /*Scalar Functions*/
-            is Format -> retv = "FORMAT(${this.Value()}, ${this.Format}) "
-            is LCase -> retv = "LCASE(${this.Value()}) "
-            is UCase -> retv = "UCASE(${this.Value()}) "
-            is Len -> retv = "LEN(${this.Value()}) "
-            is Mid -> retv = "MID(${this.Value()}, ${this.From}${this.Length.run { if (this == null) "" else ", ${this}" }}) "
-            is Round -> retv = "ROUND(${this.Value()}, ${this.Decimals}) "
-            is Now -> retv = "NOW() "
+            is Format -> retv = "FORMAT(${this.Value.recursiveRender()}, ${this.Format})"
+            is LCase -> retv = "LCASE(${this.Value.recursiveRender()})"
+            is UCase -> retv = "UCASE(${this.Value.recursiveRender()})"
+            is Len -> retv = "LEN(${this.Value.recursiveRender()})"
+            is Mid -> retv = "MID(${this.Value.recursiveRender()}, ${this.From}${this.Length.run { if (this == null) "" else ", ${this}" }})"
+            is Round -> retv = "ROUND(${this.Value.recursiveRender()}, ${this.Decimals})"
+            is Now -> retv = "NOW()"
         }
         return retv
     }
 
     fun FromWhat.renderToString() : String {
         return when (this) {
-            is FromColumn -> "${this.SourceName}${this.AliasName.run { if (this == null) "" else " AS ${this}" }}"
+            is FromColumn -> "${this.SourceColumnName}${this.AliasName.run { if (this == null) "" else " AS ${this}" }}"
             is FromFunction -> "${this.Function.renderToString()}${this.AliasName.run { if (this == null) "" else " AS ${this}" }}"
             else -> error("تەرجىمان نۆۋەتتىكى تىپنى تەرجىمە قىلىش ئىقتىدارىنى تەمىنلىمىگەن، تەرجىماننىڭ نەشىرىنى ئۆستۈرۈڭ ياكى نۆۋەتتىكى قوللىمايدىغان تىپنى قوللاش ئىقتىدارىنى قوشۇڭ!")
         }

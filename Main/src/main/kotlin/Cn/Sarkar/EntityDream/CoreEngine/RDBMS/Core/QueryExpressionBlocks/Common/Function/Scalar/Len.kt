@@ -8,8 +8,10 @@ Time: 5:40 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.Scalar
 
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.FromWhat
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.IDBParameterizedFunction
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.IDBScalarFunction
 
-class Len(var Value: () -> Any) : IDBScalarFunction {
+class Len(override var Value: FromWhat) : IDBScalarFunction, IDBParameterizedFunction {
     override val Name: String = "LEN"
 }

@@ -8,8 +8,10 @@ Time: 5:44 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.Scalar
 
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.FromWhat
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.IDBParameterizedFunction
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.IDBScalarFunction
 
-class Round(var Value: () -> Any, var Decimals: Float) : IDBScalarFunction {
+class Round(override var Value: FromWhat, var Decimals: Float) : IDBScalarFunction, IDBParameterizedFunction {
     override val Name: String = "ROUND"
 }

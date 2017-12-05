@@ -8,8 +8,10 @@ Time: 5:28 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.Aggregate
 
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.FromWhat
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.IDBAggregateFunction
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.IDBParameterizedFunction
 
-class Max(var Value: () -> Any) : IDBAggregateFunction {
+class Max(override var Value: FromWhat) : IDBAggregateFunction, IDBParameterizedFunction {
     override val Name: String = "MAX"
 }

@@ -14,7 +14,7 @@ interface FromWhat{
     var DefaultValue: Any
 }
 
-data class FromColumn(var SourceName: String, var AliasName: String? = null, override var DefaultValue: Any) : FromWhat
+data class FromColumn(var SourceColumnName: String, var AliasName: String? = null, override var DefaultValue: Any) : FromWhat
 data class FromFunction(var Function: IDBFunction, var AliasName: String, override var DefaultValue: Any) : FromWhat
 class Select(vararg select: FromWhat, var top: Int? = null, var distinct: Boolean = false) : SuperBlock
 {
@@ -25,4 +25,4 @@ class Select(vararg select: FromWhat, var top: Int? = null, var distinct: Boolea
 }
 
 
-val FromColumn.validName: String get() = if (this.AliasName != null) this.AliasName!! else this.SourceName
+val FromColumn.validName: String get() = if (this.AliasName != null) this.AliasName!! else this.SourceColumnName

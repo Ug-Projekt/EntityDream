@@ -31,8 +31,7 @@ object Users : DBTable() {
     override var PrimaryKey: Array<IDBColumn<*>> = arrayOf(ID)
 }
 
-class User(DataContext: IDataContext) : DBEntity(DataContext, Users)
-{
+class User(DataContext: IDataContext) : DBEntity(DataContext, Users) {
     var ID by Users.ID
     var Name by Users.Name
     var Pwd by Users.Pwd
@@ -64,21 +63,13 @@ internal class DataContextKtTest {
     fun executeSelectQuery() {
         db.pipeLine.installFeature(logger)
 
-        var usrs = db.Users where {Users.Age greater 17}
+        var usrs = db.Users.mid(Users.Name, 2, 2) uCase Users.Name
 
         usrs.forEach {
             println("ID: ${it.ID} Name: ${it.Name} Age: ${it.Age} Pwd: ${it.Pwd} EMail: ${it.EMail}")
         }
 
-        usrs orderByDesc Users.Age
-
-        usrs.forEach {
-
-            it.Name = "Okay1"
-
-            println("ID: ${it.ID} Name: ${it.Name} Age: ${it.Age} Pwd: ${it.Pwd} EMail: ${it.EMail}")
-        }
-
+        println(usrs.Level)
 
         db.saveChanges()
     }

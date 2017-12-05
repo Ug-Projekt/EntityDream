@@ -18,7 +18,8 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 fun <TABLE: IDBTable, ENTITY: IDBEntity> QueriableCollection<ENTITY>.query(queryAction: QueriableCollection<ENTITY>.(table: TABLE) -> Unit) = this.apply{ queryAction(table as TABLE) }
 
 class QueriableCollection<ENTITY: IDBEntity>(override var Context: IDataContext, override var table: IDBTable, where: WhereItemCondition? = null, override var ItemGenerator: () -> ENTITY) : ArrayList<ENTITY>(), ISelectQueryExpression by table.SelectQuery, IQueriableCollection<ENTITY> {
-    var cached = false
+    override var cached: Boolean = false
+    override var Level: Int = 0
     init {
         /**
          * ئەگەر نۆۋەتتىكى ئوبىيكىت بىرگە كۆپ ماسلىق مۇناسىۋەت تۈپەيلى كىلىپ چىققان ئوبىيكىت بولسا
