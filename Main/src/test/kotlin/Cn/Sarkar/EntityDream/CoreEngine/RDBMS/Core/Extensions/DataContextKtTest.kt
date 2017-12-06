@@ -1,14 +1,10 @@
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBColumn
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBEntity
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBTable
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.CorePipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.TranslationSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.*
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Update.UpdateQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.MySqlDataContext
 import Cn.Sarkar.EntityDream.Pipeline.Core.Info.FeatureInfo
@@ -17,6 +13,7 @@ import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeature
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeatureMetaData
 import Cn.Sarkar.EntityDream.Pipeline.Extension.installFeature
 import org.junit.Test
+import java.io.Serializable
 import java.sql.DriverManager
 
 
@@ -27,6 +24,7 @@ object Users : DBTable() {
     val Pwd = stringColumn("Pwd")
     val Age = byteColumn("Age")
     val EMail = stringColumn("EMail")
+    val Money =doubleColumn("Money") notNull false
 
     override var PrimaryKey: Array<IDBColumn<*>> = arrayOf(ID)
 }
@@ -37,6 +35,7 @@ class User(DataContext: IDataContext) : DBEntity(DataContext, Users) {
     var Pwd by Users.Pwd
     var Age by Users.Age
     var EMail by Users.EMail
+    var Money by Users.Money
 }
 
 internal class DataContextKtTest {
@@ -44,7 +43,6 @@ internal class DataContextKtTest {
 
         val Users = dbCollection(Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.Users) { User(it) }
     }
-
     val logger = object : PipeLineFeature<IPipeLineSubject, IDataContext>() {
         override val getMetaData: PipeLineFeatureMetaData by lazy { PipeLineFeatureMetaData(CorePipeLine.after, "Logger") }
         override val info: FeatureInfo by lazy { FeatureInfo("Logger", "Demo", "Sarkar Software Technologys", "yeganaaa", 1, "v0.1") }
@@ -54,7 +52,7 @@ internal class DataContextKtTest {
 
             if (subject is TranslationSubject) {
 
-                println(">>>" + subject.translationResult!!.fullSqlQuery)
+                println("Generated SQL ->> " + subject.translationResult!!.fullSqlQuery)
             }
         }
     }
@@ -63,14 +61,16 @@ internal class DataContextKtTest {
     fun executeSelectQuery() {
         db.pipeLine.installFeature(logger)
 
-        var usrs = db.Users.mid(Users.Name, 2, 2) uCase Users.Name
+        val result = db.Users take 4
 
-        usrs.forEach {
-            println("ID: ${it.ID} Name: ${it.Name} Age: ${it.Age} Pwd: ${it.Pwd} EMail: ${it.EMail}")
+        result.forEach {
+            println("Age: ${it.Age}, Name: ${it.Name}, Money: ${it.Money} ID: ${it.ID}")
         }
 
-        println(usrs.Level)
+    }
 
-        db.saveChanges()
+    @Test
+    fun test(){
+
     }
 }

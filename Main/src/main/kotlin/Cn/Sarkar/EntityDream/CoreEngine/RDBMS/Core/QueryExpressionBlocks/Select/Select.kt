@@ -10,7 +10,9 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Select
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.IDBFunction
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.SuperBlock
-interface FromWhat{
+import java.io.Serializable
+
+interface FromWhat : Serializable{
     var DefaultValue: Any
 }
 

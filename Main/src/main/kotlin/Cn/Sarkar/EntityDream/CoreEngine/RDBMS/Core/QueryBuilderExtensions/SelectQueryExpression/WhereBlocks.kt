@@ -20,17 +20,23 @@ infix fun <T> IDBColumn<T>.less(value: T): LessThen = LessThen({ fullColumnName 
 infix fun <T> IDBColumn<T>.lessOrEqual(value: T): LessOrEqualThen = LessOrEqualThen({ fullColumnName }, { value as Any })
 /****************************Begin Like Exttended*********************************/
 infix fun <T> IDBColumn<T>.like(value: T): Like = Like({ fullColumnName }, { value as Any })
+infix fun <T> IDBColumn<T>.notLike(value: T): NotLike = NotLike({ fullColumnName }, { value as Any })
 
 infix fun <T> IDBColumn<T>.startsWith(value: T): Like = Like({ fullColumnName }, { "$value%" })
-infix fun <T> IDBColumn<T>.endsWithWith(value: T): Like = Like({ fullColumnName }, { "%$value" })
+infix fun <T> IDBColumn<T>.notStartsWith(value: T): NotLike = NotLike({ fullColumnName }, { "$value%" })
+infix fun <T> IDBColumn<T>.endsWith(value: T): Like = Like({ fullColumnName }, { "%$value" })
+infix fun <T> IDBColumn<T>.notEndsWith(value: T): NotLike = NotLike({ fullColumnName }, { "%$value" })
 infix fun <T> IDBColumn<T>.contains(value: T): Like = Like({ fullColumnName }, { "%$value%" })
+infix fun <T> IDBColumn<T>.notContains(value: T): NotLike = NotLike({ fullColumnName }, { "%$value%" })
 /****************************End Like Exttended*********************************/
 data class BetWeenPairs<T>(var from: T, var to: T)
 
 infix fun <T> T.to(value: T): BetWeenPairs<T> = BetWeenPairs(this, value)
 infix fun <T> IDBColumn<T>.between(value: IntRange): Between = Between({ fullColumnName }, { value.first as Any }, { value.last as Any })
+infix fun <T> IDBColumn<T>.notBetween(value: IntRange): NotBetween = NotBetween({ fullColumnName }, { value.first as Any }, { value.last as Any })
 /*************************************************************************/
 fun <T> IDBColumn<T>.iN(vararg values: T): In = In({ fullColumnName }, { ArrayList<Any>().apply { addAll(values.map { it as Any }) }.toTypedArray() })
+fun <T> IDBColumn<T>.notiN(vararg values: T): NotIn = NotIn({ fullColumnName }, { ArrayList<Any>().apply { addAll(values.map { it as Any }) }.toTypedArray() })
 
 /*************************************************************************/
 infix fun WhereItemCondition.and(condition: WhereItemCondition): And =

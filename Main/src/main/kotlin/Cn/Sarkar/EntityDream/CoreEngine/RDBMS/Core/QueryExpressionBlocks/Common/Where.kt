@@ -9,8 +9,9 @@ Time: 11:27 PM
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.SuperBlock
+import java.io.Serializable
 
-interface WhereItemCondition
+interface WhereItemCondition : Serializable
 
 class And(vararg conditions: WhereItemCondition) : Cloneable, WhereItemCondition //ھەمدە
 {
@@ -34,8 +35,11 @@ class LessThen(var first: () -> String, var last: () -> Any) : WhereItemConditio
 class GreaterOrEqualThen(var first: () -> String, var last: () -> Any) : WhereItemCondition //چوڭ ياكى تەڭ
 class LessOrEqualThen(var first: () -> String, var last: () -> Any) : WhereItemCondition //چوڭ ياكى كىچىك
 class Between(var first: () -> String, var from: () -> Any, var to: () -> Any) : WhereItemCondition  //ئارىلىقىدا
+class NotBetween(var first: () -> String, var from: () -> Any, var to: () -> Any) : WhereItemCondition  //ئارىلىقىدا ئەمەس
 class Like(var first: () -> String, var last: () -> Any) : WhereItemCondition  //Like
+class NotLike(var first: () -> String, var last: () -> Any) : WhereItemCondition  //Not Like
 class In(var first: () -> String, var others: () -> Array<Any>) : WhereItemCondition // ئىچىدە
+class NotIn(var first: () -> String, var others: () -> Array<Any>) : WhereItemCondition // ئىچىدە ئەمەس
 
 class Where(
         var condition: WhereItemCondition

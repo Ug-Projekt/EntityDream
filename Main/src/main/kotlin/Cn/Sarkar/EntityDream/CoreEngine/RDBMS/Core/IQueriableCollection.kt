@@ -8,6 +8,8 @@ Time: 9:46 AM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core
 
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Where
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Select.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 
 interface IQueriableCollection<ENTITY : IDBEntity> {
@@ -26,4 +28,11 @@ interface IQueriableCollection<ENTITY : IDBEntity> {
      * غەملەككە غەملەپ بولدىمۇ؟
      */
     var cached: Boolean
+
+    val clonedSelect: Select
+    val clonedFrom: From
+    val clonedWhere: Where?
+    val clonedGroupBy: GroupBy?
+    val clonedHaving: Having?
+    val clonedOrderby: OrderBy?
 }

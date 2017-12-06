@@ -16,8 +16,11 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.ForeignKey
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBColumn
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBTable
+import java.math.BigDecimal
 
 typealias DBInt = Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.Int
+typealias DBFloat = Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.Float
+typealias DBDouble = Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.Double
 
 /*Begin Extension Infix Functions*/
 infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.notNull(notNull: Boolean) = this.apply { this.NotNull = notNull }
@@ -44,7 +47,7 @@ class DBIdColumn(
     }
 }
 
-fun IDBTable.idColumn(ColumnName: String): DBIdColumn = DBIdColumn(this, ColumnName)
+fun IDBTable.idColumn(ColumnName: String) = DBIdColumn(this, ColumnName)
 
 
 class DBStringColumn(
@@ -62,7 +65,7 @@ class DBStringColumn(
     }
 }
 
-fun IDBTable.stringColumn(ColumnName: String, length: Int = 100): DBStringColumn = DBStringColumn(this, ColumnName, DataType = VarChar(length))
+fun IDBTable.stringColumn(ColumnName: String, length: Int = 100) = DBStringColumn(this, ColumnName, DataType = VarChar(length))
 
 class DBIntColumn(
         override var Table: IDBTable,
@@ -79,7 +82,7 @@ class DBIntColumn(
     }
 }
 
-fun IDBTable.intColumn(ColumnName: String): DBIntColumn = DBIntColumn(this, ColumnName)
+fun IDBTable.intColumn(ColumnName: String) = DBIntColumn(this, ColumnName)
 
 class DBTinyIntColumn(
         override var Table: IDBTable,
@@ -96,4 +99,38 @@ class DBTinyIntColumn(
     }
 }
 
-fun IDBTable.byteColumn(ColumnName: String): DBTinyIntColumn = DBTinyIntColumn(this, ColumnName)
+fun IDBTable.byteColumn(ColumnName: String) = DBTinyIntColumn(this, ColumnName)
+
+class DBFloatColumn(
+        override var Table: IDBTable,
+        override var ColumnName: String,
+        override var NotNull: Boolean = true,
+        override var DataType: IDataType<Float> = DBFloat(),
+        override var AutoIncrement: AutoIncrementProperty = AutoIncrementProperty(false),
+        override var Unique: Boolean = false,
+        override var ForeignKey: ForeignKey? = null,
+        override var Index: Boolean = false
+) : AbstractDBColumnConnector<Float>() {
+    init {
+        setup()
+    }
+}
+
+fun IDBTable.floatColumn(ColumnName: String) = DBFloatColumn(this, ColumnName)
+
+class DBDoubleColumn(
+        override var Table: IDBTable,
+        override var ColumnName: String,
+        override var NotNull: Boolean = true,
+        override var DataType: IDataType<Double> = DBDouble(),
+        override var AutoIncrement: AutoIncrementProperty = AutoIncrementProperty(false),
+        override var Unique: Boolean = false,
+        override var ForeignKey: ForeignKey? = null,
+        override var Index: Boolean = false
+) : AbstractDBColumnConnector<Double>() {
+    init {
+        setup()
+    }
+}
+
+fun IDBTable.doubleColumn(ColumnName: String) = DBDoubleColumn(this, ColumnName)

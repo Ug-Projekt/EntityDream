@@ -58,7 +58,7 @@ class MySqlQueryTranslator : IQueryTranslator {
             /*Aggregate Functions*/
             is Avg -> retv = "AVG(${this.Value.recursiveRender()})"
 
-            is Count -> retv = "COUNT(${this.Value.recursiveRender()})"
+            is Count -> retv = "COUNT(${if (this.Distinct) "DISTINCT " else ""}${this.Value.recursiveRender()})"
             is Max -> retv = "MAX(${this.Value.recursiveRender()})"
             is Min -> retv = "MIN(${this.Value.recursiveRender()})"
             is Sum -> retv = "SUM(${this.Value.recursiveRender()})"
@@ -143,13 +143,26 @@ class MySqlQueryTranslator : IQueryTranslator {
                 params.add(where.to())
                 "${where.first()} BETWEEN ? AND ? "
             }
+            is NotBetween -> {
+                params.add(where.from())
+                params.add(where.to())
+                "${where.first()} NOT BETWEEN ? AND ? "
+            }
             is Like -> {
                 params.add(where.last())
                 "${where.first()} LIKE ? "
             }
+            is NotLike -> {
+                params.add(where.last())
+                "${where.first()} NOT LIKE ? "
+            }
             is In -> {
                 params.add(where.others().joinToString{ it.toSqlString() })
                 "${where.first()} IN (?) "
+            }
+            is NotIn -> {
+                params.add(where.others().joinToString{ it.toSqlString() })
+                "${where.first()} NOT IN (?) "
             }
             else -> throw Exception("Not Supported!قوللىمايدۇ")
         }

@@ -11,8 +11,9 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Select
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.WhereItemCondition
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.ISelectQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.SuperBlock
+import java.io.Serializable
 
-interface FromSelector
+interface FromSelector : Serializable
 
 class FromQueryContainer(var select: ISelectQueryExpression, var aliasName: String) : FromSelector
 class FromTable(var tableName: String) : FromSelector
