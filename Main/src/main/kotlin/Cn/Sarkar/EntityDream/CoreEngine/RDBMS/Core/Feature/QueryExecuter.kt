@@ -42,6 +42,7 @@ object QueryExecuter : PipeLineFeature<IPipeLineSubject, IDataContext>() {
                 }
             } catch (exception: Exception) {
                 subject.exception = exception
+                exception.printStackTrace()
                 return
             }
         }

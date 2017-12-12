@@ -8,6 +8,8 @@ Time: 8:00 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Util
 
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBColumn
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.ColumnParameter
 import java.sql.PreparedStatement
 import java.sql.Timestamp
 import java.util.*
@@ -27,6 +29,10 @@ fun PreparedStatement.WriteParameters(index: Int, value: Any){
         is ByteArray -> this.setBytes(index, value)
         is Date -> this.setDate(index, java.sql.Date(value.time))
         is Timestamp -> this.setTimestamp(index, value)
+    /**
+     * جەدۋەل پارامىتىر ئۈچۈن
+     */
+//        is IDBColumn<*> -> this.setObject(index, value.toString())
         else -> throw Exception("قوللىمايدىغان پارامىتىر تىپى...")
     }
 }

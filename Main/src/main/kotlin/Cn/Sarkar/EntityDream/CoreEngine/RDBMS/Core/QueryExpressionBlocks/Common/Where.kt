@@ -8,6 +8,8 @@ Time: 11:27 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common
 
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBColumn
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.fullColumnName
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.SuperBlock
 import java.io.Serializable
 
@@ -45,4 +47,9 @@ class Where(
         var condition: WhereItemCondition
 ) : SuperBlock {
 
+}
+
+data class ColumnParameter(var prefix: String, var column: IDBColumn<*>, var postfix: String)
+{
+    override fun toString(): String = "${if (prefix != "") prefix else ""}${column.fullColumnName}${if (postfix != "") postfix else ""}"
 }

@@ -134,3 +134,5 @@ Any
 infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.any(condition: () -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression, COLLECTION : Collection<ENTITY> = applyUpdate {
     if (this.Where == null) this.Where = Where(condition()) else this.Where!!.condition = condition()
 }.run { size > 0 }
+
+infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.skip(number: Int) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = this.applyUpdate { Select.offset = number }

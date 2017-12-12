@@ -53,7 +53,11 @@ abstract class IDataContext : IQueryContext {
     open fun saveChanges(): Int {
         var retv = 0
         retv = executeInsertQuery().sum()
-        retv = executeUpdateQuery().sum()
+        retv += executeUpdateQuery().sum()
+
+        updateTasks.clear()
+        deleteTasks.clear()
+        updateTasks.clear()
         return retv
     }
 
@@ -66,6 +70,7 @@ abstract class IDataContext : IQueryContext {
         pipeLine.installFeature(EntityFieldSetter)
         pipeLine.installFeature(EntityFieldGetter)
         pipeLine.installFeature(GenerateUpdateTask)
+        pipeLine.installFeature(GenerateDeleteTask)
     }
 }
 

@@ -12,6 +12,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBColumn
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBEntity
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.GetEntityFieldValueSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.SetEntityFieldValueSubject
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.fullColumnName
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.getDefaultValue
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.clonedPipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.execute
@@ -33,4 +34,6 @@ abstract class AbstractDBColumnConnector<KOTLINDATATYPE> : IDBColumn<KOTLINDATAT
         val cpl = entity.DataContext.clonedPipeLine
         val result = entity.DataContext.execute(cpl, SetEntityFieldValueSubject(this, entity, value as Any))
     }
+
+    override fun toString(): String = fullColumnName
 }

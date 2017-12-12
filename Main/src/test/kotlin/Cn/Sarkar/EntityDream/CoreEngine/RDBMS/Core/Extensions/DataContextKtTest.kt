@@ -13,7 +13,6 @@ import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeature
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeatureMetaData
 import Cn.Sarkar.EntityDream.Pipeline.Extension.installFeature
 import org.junit.Test
-import java.io.Serializable
 import java.sql.DriverManager
 
 
@@ -24,7 +23,18 @@ object Users : DBTable() {
     val Pwd = stringColumn("Pwd")
     val Age = byteColumn("Age")
     val EMail = stringColumn("EMail")
-    val Money =doubleColumn("Money") notNull false
+    val Money = doubleColumn("Money") notNull false
+
+    override var PrimaryKey: Array<IDBColumn<*>> = arrayOf(ID)
+}
+
+typealias users = Users
+
+object Companys : DBTable("Company") {
+
+    val ID = idColumn("ID")
+    val Name = stringColumn("Name", 200)
+    var WebSite = stringColumn("WebSite", 200)
 
     override var PrimaryKey: Array<IDBColumn<*>> = arrayOf(ID)
 }
@@ -38,11 +48,19 @@ class User(DataContext: IDataContext) : DBEntity(DataContext, Users) {
     var Money by Users.Money
 }
 
+class Company(DataContext: IDataContext) : DBEntity(DataContext, Companys) {
+    var ID by Companys.ID
+    var Name by Companys.Name
+    var WebSite by Companys.WebSite
+}
+
 internal class DataContextKtTest {
     object db : MySqlDataContext(DriverManager.getConnection("jdbc:mysql://127.0.0.1:3308/Hello", "yeganaaa", "Developer653125")) {
 
-        val Users = dbCollection(Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.Users) { User(it) }
+        val Users = dbCollection(users) { User(it) }
+        val Companies = dbCollection(Companys) { Company(it) }
     }
+
     val logger = object : PipeLineFeature<IPipeLineSubject, IDataContext>() {
         override val getMetaData: PipeLineFeatureMetaData by lazy { PipeLineFeatureMetaData(CorePipeLine.after, "Logger") }
         override val info: FeatureInfo by lazy { FeatureInfo("Logger", "Demo", "Sarkar Software Technologys", "yeganaaa", 1, "v0.1") }
@@ -57,11 +75,14 @@ internal class DataContextKtTest {
         }
     }
 
+    init {
+        db.pipeLine.installFeature(logger)
+    }
+
     @Test
     fun executeSelectQuery() {
-        db.pipeLine.installFeature(logger)
 
-        val result = db.Users take 4
+        val result = db.Users.where { Users.Name notEquals Users.EMail } skip 3 take 4
 
         result.forEach {
             println("Age: ${it.Age}, Name: ${it.Name}, Money: ${it.Money} ID: ${it.ID}")
@@ -70,7 +91,27 @@ internal class DataContextKtTest {
     }
 
     @Test
-    fun test(){
+    fun delete() {
+        val entitys = db.Users.where { Users.Name equals "aaa" or (Users.Name equals "bbb") or (Users.Name equals "ccc") }
 
+        entitys.forEach {
+            db.Users.remove(it)
+        }
+
+        println(db.saveChanges())
+    }
+
+    @Test
+    fun selectCompanies() {
+        db.Companies.take(5).skip(5).orderByDesc(Companys.ID).forEach {
+            println(it.Name)
+        }
+
+        db.Companies.where { Companys.Name startsWith "Name" }.forEach {
+            db.Companies.remove(it)
+        }
+
+        println(db.saveChanges())
     }
 }
+

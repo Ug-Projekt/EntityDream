@@ -45,6 +45,7 @@ object InsertResultReader : PipeLineFeature<IPipeLineSubject, IDataContext>() {
             if (ics.size > 1) throw Exception("""
                 ساندان بىر جەدۋەلدە بىردىن ئارتۇق ئاپتوماتىك ئاينىيدىغان ئىستوننى قوللىمايدۇ، چوقۇم پەقەت بىر دانىلا ئاپتوماتىك ئاينىيدىغان ئىستون بولىشى كىرەك
                 Table ${table.TableName} Must be have a single auto increment columnn, Data base not supported multi auto increment Column.
+                必须只有一个自动编号的列， 数据库不支持多个自动编号的列
             """.trimIndent())
             val incrementColumn = ics.singleOrNull()
             if (incrementColumn != null) {

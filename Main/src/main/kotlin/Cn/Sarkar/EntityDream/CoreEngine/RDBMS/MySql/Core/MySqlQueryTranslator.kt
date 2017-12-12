@@ -8,8 +8,10 @@ Time: 1:57 AM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core
 
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBColumn
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryTranslator
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.fullColumnName
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.Aggregate.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.FuncFromColumn
@@ -107,6 +109,17 @@ class MySqlQueryTranslator : IQueryTranslator {
     }
 
     fun recursiveWhereBlock(where: WhereItemCondition, isTrunk: Boolean = false): String {
+        fun Any.renderHere() = run {
+            var retv = "?"
+            if (this is IDBColumn<*>){
+                retv = this.toString()
+            }
+            else
+            {
+                params.add(this)
+            }
+            retv
+        }
         return when (where) {
             is And -> {
                 if (isTrunk) where.conditions.joinToString(separator = " AND ") { recursiveWhereBlock(it) } else "(${where.conditions.joinToString(separator = " AND ") { recursiveWhereBlock(it) }}) "
@@ -115,46 +128,36 @@ class MySqlQueryTranslator : IQueryTranslator {
                 if (isTrunk) where.conditions.joinToString(separator = " OR ") { recursiveWhereBlock(it) } else "(${where.conditions.joinToString(separator = " OR ") { recursiveWhereBlock(it) }}) "
             }
             is Equal -> {
-                params.add(where.last())
-                "${where.first()} = ? "
+                "${where.first()} = ${where.last().renderHere()} "
             }
             is NotEqual -> {
-                params.add(where.last())
-                "${where.first()} != ? "
+                "${where.first()} != ${where.last().renderHere()} "
             }
             is GreaterThen -> {
-                params.add(where.last())
-                "${where.first()} > ? "
+                "${where.first()} > ${where.last().renderHere()} "
             }
             is LessThen -> {
-                params.add(where.last())
-                "${where.first()} < ? "
+                "${where.first()} < ${where.last().renderHere()} "
             }
             is GreaterOrEqualThen -> {
-                params.add(where.last())
-                "${where.first()} <= ? "
+                "${where.first()} <= ${where.last().renderHere()} "
             }
             is LessOrEqualThen -> {
-                params.add(where.last())
-                "${where.first()} >= ? "
+                "${where.first()} >= ${where.last().renderHere()} "
             }
             is Between -> {
-                params.add(where.from())
-                params.add(where.to())
-                "${where.first()} BETWEEN ? AND ? "
+                "${where.first()} BETWEEN ${where.from().renderHere()} AND ${where.to().renderHere()} "
             }
             is NotBetween -> {
                 params.add(where.from())
                 params.add(where.to())
-                "${where.first()} NOT BETWEEN ? AND ? "
+                "${where.first()} NOT BETWEEN ${where.from().renderHere()} AND ${where.to().renderHere()} "
             }
             is Like -> {
-                params.add(where.last())
-                "${where.first()} LIKE ? "
+                "${where.first()} LIKE ${where.last().renderHere()} "
             }
             is NotLike -> {
-                params.add(where.last())
-                "${where.first()} NOT LIKE ? "
+                "${where.first()} NOT LIKE ${where.last().renderHere()} "
             }
             is In -> {
                 params.add(where.others().joinToString{ it.toSqlString() })
@@ -198,6 +201,7 @@ class MySqlQueryTranslator : IQueryTranslator {
                 buffer.append(expression.Having.run {if (this == null) "" else "HAVING ${function.renderToString()} ${recursiveWhereBlock(condition)} "})
                 buffer.append(expression.OrderBy.run { if (this == null) "" else "ORDER BY ${this.Name} ${this.orderMode.Name} " })
                 buffer.append(expression.Select.top.run { if (this == null) "" else "LIMIT $this" })
+                buffer.append(expression.Select.offset.run { if (this == null) "" else ", $this" })
                 buffer.append(";")
 //                println(buffer)
             }
@@ -222,7 +226,7 @@ class MySqlQueryTranslator : IQueryTranslator {
         val query = buffer.toString()
         var fullQuery = query
         params.forEach {
-            fullQuery = fullQuery.replaceFirst("?", if (it.toString()[0] != '\'') it.toSqlString() else it.toString())
+            fullQuery = fullQuery.replaceFirst("?", it.toSqlString())
         }
         val retv = TranslateResult(encryptWithMD5(query), query, params.toList(), fullQuery, expression)
         params.clear()

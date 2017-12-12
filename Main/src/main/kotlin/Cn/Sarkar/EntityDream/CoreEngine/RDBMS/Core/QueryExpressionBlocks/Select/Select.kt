@@ -18,7 +18,7 @@ interface FromWhat : Serializable{
 
 data class FromColumn(var SourceColumnName: String, var AliasName: String? = null, override var DefaultValue: Any) : FromWhat
 data class FromFunction(var Function: IDBFunction, var AliasName: String, override var DefaultValue: Any) : FromWhat
-class Select(vararg select: FromWhat, var top: Int? = null, var distinct: Boolean = false) : SuperBlock
+class Select(vararg select: FromWhat, var top: Int? = null, var offset: Int? = null, var distinct: Boolean = false) : SuperBlock
 {
     val selectors = ArrayList<FromWhat>()
     init {
