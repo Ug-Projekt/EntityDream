@@ -15,6 +15,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.GenerateUpdateTaskSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.SetEntityFieldValueSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.fullColumnName
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.ValuesCacheItem
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.clonedPipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.execute
@@ -36,9 +37,17 @@ object EntityFieldSetter : PipeLineFeature<IPipeLineSubject, IDataContext>() {
 
     override fun PipeLineContext<IPipeLineSubject, IDataContext>.onExecute(subject: IPipeLineSubject) {
         if (subject is SetEntityFieldValueSubject) {
-            if (subject.value == subject.entity.values!![subject.column]) return
+
             val cpl = featureContext.clonedPipeLine
-            val result = featureContext.execute(cpl, GenerateUpdateTaskSubject(subject.entity, KeyValuePair(subject.column.fullColumnName, subject.value)))
+            if (subject.entity.FromDB) {
+                if (subject.value == subject.entity.values!![subject.column]) return
+                val result = featureContext.execute(cpl, GenerateUpdateTaskSubject(subject.entity, KeyValuePair(subject.column.fullColumnName, subject.value)))
+            }
+            else
+            {
+                if (subject.entity.values == null) subject.entity.values = ValuesCacheItem()
+                subject.entity.values!!.put(subject.column.fullColumnName, subject.value)
+            }
         }
     }
 }

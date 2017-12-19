@@ -20,3 +20,11 @@ class QueryExecutionSubject(var group: QueryGroup, var connection: Connection) :
     var statement: PreparedStatement? = null
     var exception: Exception? = null
 }
+
+
+
+
+
+
+
+

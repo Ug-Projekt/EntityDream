@@ -38,6 +38,7 @@ abstract class IDataContext : IQueryContext {
     override var updateTasks: HashMap<String, UpdateQueryExpression> = LinkedHashMap()
     override var deleteTasks: HashMap<String, DeleteQueryExpression> = LinkedHashMap()
     override var insertTasks: HashMap<String, InsertQueryExpression> = LinkedHashMap()
+    val insertedIntities = HashMap<String, IDBEntity>()
 
     open var itemFactories: HashMap<Class<*>, (context: IDataContext) -> Any> = HashMap()
 
@@ -52,10 +53,19 @@ abstract class IDataContext : IQueryContext {
 
     open fun saveChanges(): Int {
         var retv = 0
-        retv = executeInsertQuery().sum()
+        val ids = executeInsertQuery()
+        retv = ids.size
         retv += executeUpdateQuery().sum()
 
-        updateTasks.clear()
+        ids.filter { it.id != -1L }.forEach {
+            val entity = insertedIntities[it.uniqueMd5Key]!!
+            val col = entity.Table.PrimaryKey.single { it.AutoIncrement.autoIncrement }
+            entity.values!![col.ColumnName] = it.id
+            entity.FromDB = true
+        }
+
+        insertedIntities.clear()
+        insertTasks.clear()
         deleteTasks.clear()
         updateTasks.clear()
         return retv
@@ -69,6 +79,7 @@ abstract class IDataContext : IQueryContext {
         pipeLine.installFeature(UpdateAndDeleteResultReader)
         pipeLine.installFeature(EntityFieldSetter)
         pipeLine.installFeature(EntityFieldGetter)
+        pipeLine.installFeature(GenerateInsertTask)
         pipeLine.installFeature(GenerateUpdateTask)
         pipeLine.installFeature(GenerateDeleteTask)
     }

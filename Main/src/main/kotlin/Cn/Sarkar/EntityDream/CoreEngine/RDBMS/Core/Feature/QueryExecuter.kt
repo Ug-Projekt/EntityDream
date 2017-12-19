@@ -11,6 +11,7 @@ import Cn.Sarkar.EntityDream.Pipeline.Core.Info.FeatureInfo
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineContext
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeature
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeatureMetaData
+import java.sql.PreparedStatement
 
 object QueryExecuter : PipeLineFeature<IPipeLineSubject, IDataContext>() {
     override val getMetaData: PipeLineFeatureMetaData = PipeLineFeatureMetaData(CorePipeLine.process, "Cn.Sarkar.EntityDreams.Core.QueryExecute")
@@ -27,7 +28,7 @@ object QueryExecuter : PipeLineFeature<IPipeLineSubject, IDataContext>() {
         if (subject is QueryExecutionSubject) {
 
             try {
-                subject.statement = subject.connection.prepareStatement(subject.group.query.sqlQuery)
+                subject.statement = subject.connection.prepareStatement(subject.group.query.sqlQuery, PreparedStatement.RETURN_GENERATED_KEYS)
                 subject.group.content.forEach {
                     it.parameters.forEachIndexed { index, any -> subject.statement!!.WriteParameters(index + 1, any) }
                     subject.statement!!.addBatch()

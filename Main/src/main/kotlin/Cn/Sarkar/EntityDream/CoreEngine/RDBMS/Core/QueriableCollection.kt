@@ -10,12 +10,15 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.executeSelectQuery
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.simpleWhereCondition
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.uniqueKey
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.GenerateDeleteTaskSubject
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.GenerateInsertTaskSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.And
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Where
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.WhereItemCondition
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.ISelectQueryExpression
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Insert.InsertQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Select.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Util.deserializeFromByteArray
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Util.serializeToByteArray
@@ -43,7 +46,7 @@ class QueriableCollection<ENTITY : IDBEntity>(override var Context: IDataContext
     override var cached: Boolean = false
     override var Level: Int = 0
 
-    private fun ValuesCacheItem.toEntity() : ENTITY = ItemGenerator().apply { values = this@toEntity }
+    private fun ValuesCacheItem.toEntity() : ENTITY = ItemGenerator().apply { values = this@toEntity; FromDB = true }
 
     /**
      * پەقەت نۆۋەتتىكى QueriableCollection قۇرۇلۇپ بولغاندىن كىيىن كىلونلايدىغان ئوبىيكىتلىرىنى ئۆزگەرتىشنىڭ زۆرۈرىيىتى بولمىغانلىقى ۋە
@@ -95,6 +98,13 @@ class QueriableCollection<ENTITY : IDBEntity>(override var Context: IDataContext
             val size = this count key
             return if (cached) super.size + size else size
         }
+
+
+    override fun add(element: ENTITY): Boolean {
+        val cpl = Context.clonedPipeLine
+        val result = Context.execute(cpl, GenerateInsertTaskSubject(Context, table, element))
+        return super.add(element)
+    }
 
     override fun remove(element: ENTITY): Boolean {
         var whereCondition = where { element.simpleWhereCondition }

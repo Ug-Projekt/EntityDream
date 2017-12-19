@@ -24,6 +24,7 @@ object Users : DBTable() {
     val Age = byteColumn("Age")
     val EMail = stringColumn("EMail")
     val Money = doubleColumn("Money") notNull false
+    val CompanyID = intColumn("CompanyID") notNull true
 
     override var PrimaryKey: Array<IDBColumn<*>> = arrayOf(ID)
 }
@@ -46,6 +47,7 @@ class User(DataContext: IDataContext) : DBEntity(DataContext, Users) {
     var Age by Users.Age
     var EMail by Users.EMail
     var Money by Users.Money
+    var CompanyID by users.CompanyID
 }
 
 class Company(DataContext: IDataContext) : DBEntity(DataContext, Companys) {
@@ -103,15 +105,38 @@ internal class DataContextKtTest {
 
     @Test
     fun selectCompanies() {
-        db.Companies.take(5).skip(5).orderByDesc(Companys.ID).forEach {
+        db.Companies.forEach {
             println(it.Name)
         }
-
-        db.Companies.where { Companys.Name startsWith "Name" }.forEach {
-            db.Companies.remove(it)
-        }
-
         println(db.saveChanges())
     }
+
+    @Test
+    fun insertCompany(){
+
+        val company = Company(db).apply {
+            Name = "يىڭى شىركەت"
+            WebSite = "يىڭى ئادېرىس"
+        }
+
+        db.Companies.add(company)
+        db.saveChanges()
+
+        val usr = User(db).apply {
+            Name = "مۇختەر"
+            this.Age = 23
+            this.EMail = "yeganaaa@163.com"
+            this.Pwd = "653125"
+            this.Money = 415.414
+            this.CompanyID = company.ID
+        }
+
+        db.Users.add(usr)
+
+        println(usr.ID)
+        db.saveChanges()
+        println(usr.ID)
+    }
 }
+
 

@@ -62,8 +62,8 @@ fun IDataContext.executeUpdateQuery(): IntArray {
 /**
  * قىستۇرۇش جۈملىسى يۈرگۈزۈش
  */
-fun IDataContext.executeInsertQuery(): IntArray {
-    val retv = ArrayList<Int>()
+fun IDataContext.executeInsertQuery(): Array<IDItem> {
+    val retv = ArrayList<IDItem>()
 
     val cpl = clonedPipeLine
     val groupSubject = QueryGroupSubject()
@@ -78,9 +78,15 @@ fun IDataContext.executeInsertQuery(): IntArray {
 
     groupSubject.groups.forEach { queryMd5Key, groupItem ->
         val result1 = execute(cpl, QueryExecutionSubject(groupItem, this.connection))
-        val result2 = execute(cpl, UpdateAndDeleteResultSubject(result1))
-        retv.add(result2.EffectedRows.sum())
+        val result2 = execute(cpl, InsertResultSubject(result1, arrayOf()))
+        retv.addAll(result2.Ids)
     }
 
-    return retv.toIntArray()
+    return retv.toTypedArray()
 }
+
+        //ۋەلىسپىتنىڭ ياكى موتوسىكىلىتنىڭ كەينىگە قىزلارنى مىندۈرۈپ ماڭغاندا موللاق ئەتتۈرۈش ۋەقەسى
+        //قىزلارغا قاراپ پۇتلىشىپ كىتىش ۋەقەسى
+//ئەڭ ئازاپلىق يىمىگەن مانتىنىڭ پۇلىنى تۆلەش ۋەقەسى
+//پالاكەتلىك قىلىپ باشقىلارنىڭ نەرسىسىنى بۇزۇپ قويۇش ۋەقەسى
+// ئەڭ ئازاپلىق ئاچقۇچ ئۇنتۇپ قىلىش ۋەقەسى

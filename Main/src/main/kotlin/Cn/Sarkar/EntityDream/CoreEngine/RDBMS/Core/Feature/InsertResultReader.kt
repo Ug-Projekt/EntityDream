@@ -51,17 +51,26 @@ object InsertResultReader : PipeLineFeature<IPipeLineSubject, IDataContext>() {
             if (incrementColumn != null) {
                 subject.result.group.content.forEach {
                     keys.next()
-
                     when (incrementColumn.DataType)
                     {
                         is Int -> ids.add(IDItem(it.uniqueIdentificationKey, keys.getInt(1).toLong()))
                         is MediumInt -> ids.add(IDItem(it.uniqueIdentificationKey, keys.getInt(1).toLong()))
                         is SmallInt -> ids.add(IDItem(it.uniqueIdentificationKey, keys.getShort(1).toLong()))
                         is BigInt -> ids.add(IDItem(it.uniqueIdentificationKey, keys.getLong(1)))
-                        else -> throw Exception("Not supported this Column type, Recommanded Int type.")
+                        else -> throw Exception("""
+                            نۆۋەتتىكى تىپنى قوللىمايدۇ، Int تىپى تەۋسىيە قىلىنىدۇ
+                            不支持该类型, 推荐Int类型
+                            Not supported this Column type, Recommanded Int type.""".trimIndent())
                     }
                 }
             }
+            else
+            {
+                subject.result.group.content.forEach {
+                    ids.add(IDItem(it.uniqueIdentificationKey, -1))
+                }
+            }
+            subject.Ids = ids.toTypedArray()
         }
     }
 }
