@@ -84,7 +84,7 @@ internal class DataContextKtTest {
     @Test
     fun executeSelectQuery() {
 
-        val result = db.Users.where { Users.Name notEquals Users.EMail } skip 3 take 4
+        val result = db.Users.where { Users.Name notEquals Users.EMail } uCase Users.Name skip 3 take 4
 
         result.forEach {
             println("Age: ${it.Age}, Name: ${it.Name}, Money: ${it.Money} ID: ${it.ID}")
@@ -114,20 +114,14 @@ internal class DataContextKtTest {
     @Test
     fun insertCompany(){
 
-        val company = Company(db).apply {
-            Name = "يىڭى شىركەت"
-            WebSite = "يىڭى ئادېرىس"
-        }
-
-        db.Companies.add(company)
-        db.saveChanges()
+        val company = db.Companies.first { Companys.WebSite equals "http://www.sarkar.cn" }
 
         val usr = User(db).apply {
-            Name = "مۇختەر"
-            this.Age = 23
-            this.EMail = "yeganaaa@163.com"
-            this.Pwd = "653125"
-            this.Money = 415.414
+            Name = "ئابدۇلئىزىز"
+            this.Age = 20
+            this.EMail = "abduleziz@163.com"
+            this.Pwd = "abduleziz008"
+            this.Money = 664.414
             this.CompanyID = company.ID
         }
 

@@ -46,7 +46,7 @@ class QueriableCollection<ENTITY : IDBEntity>(override var Context: IDataContext
     override var cached: Boolean = false
     override var Level: Int = 0
 
-    private fun ValuesCacheItem.toEntity() : ENTITY = ItemGenerator().apply { values = this@toEntity; FromDB = true }
+    override fun ValuesCacheItem.toEntity() : ENTITY = ItemGenerator().apply { values = this@toEntity; FromDB = true }
 
     /**
      * پەقەت نۆۋەتتىكى QueriableCollection قۇرۇلۇپ بولغاندىن كىيىن كىلونلايدىغان ئوبىيكىتلىرىنى ئۆزگەرتىشنىڭ زۆرۈرىيىتى بولمىغانلىقى ۋە

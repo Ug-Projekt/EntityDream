@@ -9,6 +9,7 @@ Time: 11:06 PM
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.*
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.autoIncrementColumn
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.executeSelectQuery
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.Aggregate.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.FuncFromColumn
@@ -126,7 +127,7 @@ infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.orderBy(column: IDBColumn<
 
 infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.orderByDesc(column: IDBColumn<*>) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = this.applyUpdate { OrderBy = OrderBy(column.fullColumnName, Order.Desc) }
 infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.take(number: Int) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = this.applyUpdate { Select.top = number }
-
+infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.skip(number: Int) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = this.applyUpdate { Select.offset = number }
 
 /*
 Any
@@ -135,4 +136,27 @@ infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.any(condition: () -> Where
     if (this.Where == null) this.Where = Where(condition()) else this.Where!!.condition = condition()
 }.run { size > 0 }
 
-infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.skip(number: Int) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = this.applyUpdate { Select.offset = number }
+infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.firstOrNull(condition: () -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = applyUpdate {
+    if (this.Where == null) this.Where = Where(condition()) else this.Where!!.condition = condition()
+}.run { this take 1 }.run {
+    Context.executeSelectQuery(this).firstOrNull()?.toEntity()
+}
+
+infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.lastOrNull(condition: () -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = applyUpdate {
+    if (this.Where == null) this.Where = Where(condition()) else this.Where!!.condition = condition()
+}.run { this orderBy table.autoIncrementColumn!! take 1 }.run {
+    Context.executeSelectQuery(this).firstOrNull()?.toEntity()
+}
+
+infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.singleOrNull(condition: () -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = applyUpdate {
+    if (this.Where == null) this.Where = Where(condition()) else this.Where!!.condition = condition()
+}.run { this orderBy table.autoIncrementColumn!! take 1 }.run {
+    Context.executeSelectQuery(this).singleOrNull()?.toEntity()
+}
+
+
+
+infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.first(condition: () -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = firstOrNull(condition)!!
+infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.last(condition: () -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = lastOrNull(condition)!!
+infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.single(condition: () -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = singleOrNull(condition)!!
+

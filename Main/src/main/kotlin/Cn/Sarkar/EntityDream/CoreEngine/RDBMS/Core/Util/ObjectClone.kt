@@ -32,3 +32,4 @@ fun <T : Serializable> ByteArray.deserializeFromByteArray() : T
 }
 
 fun <T : Serializable> T.clone() : T = this.serializeToByteArray().deserializeFromByteArray()
+

@@ -15,6 +15,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 interface IQueriableCollection<ENTITY : IDBEntity> {
     var Context: IDataContext
     var ItemGenerator: () -> ENTITY
+    fun ValuesCacheItem.toEntity() : ENTITY
     /**
      * دەرىجە قاتلىمى،
      * يەنى مەسىلەن where {} orderBy xxxx take xxxx شەكلىدە نۇرغۇن شەرىت، بۆلەكلەرنى بىر بىرىگە ئۇلاپ يازغان ۋاقتىمىزدا
