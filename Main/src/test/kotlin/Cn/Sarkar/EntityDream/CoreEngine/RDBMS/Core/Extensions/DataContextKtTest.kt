@@ -64,11 +64,14 @@ internal class DataContextKtTest {
     }
 
     val logger = object : PipeLineFeature<IPipeLineSubject, IDataContext>() {
+
+        var index = 0
+
         override val getMetaData: PipeLineFeatureMetaData by lazy { PipeLineFeatureMetaData(CorePipeLine.after, "Logger") }
         override val info: FeatureInfo by lazy { FeatureInfo("Logger", "Demo", "Sarkar Software Technologys", "yeganaaa", 1, "v0.1") }
 
         override fun PipeLineContext<IPipeLineSubject, IDataContext>.onExecute(subject: IPipeLineSubject) {
-//                println(subject.operationName + "***********" + subject::class.java.simpleName)
+//                println((++index).toString() + "---" + subject.operationName + "***********" + subject::class.java.simpleName)
 
             if (subject is TranslationSubject) {
 
@@ -130,6 +133,19 @@ internal class DataContextKtTest {
         println(usr.ID)
         db.saveChanges()
         println(usr.ID)
+    }
+
+    @Test
+    fun selectCompany() {
+        val company = db.Companies.single { Companys.Name equals "سەركار" }
+
+        println(company.Name)
+        println(company.WebSite)
+        println(company.ID)
+
+        company.Name = "سەركار"
+
+        db.saveChanges()
     }
 }
 

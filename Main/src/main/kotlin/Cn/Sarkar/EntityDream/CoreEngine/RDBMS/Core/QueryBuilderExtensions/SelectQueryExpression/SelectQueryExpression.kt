@@ -150,7 +150,8 @@ infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.lastOrNull(condition: () -
 
 infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.singleOrNull(condition: () -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = applyUpdate {
     if (this.Where == null) this.Where = Where(condition()) else this.Where!!.condition = condition()
-}.run { this orderBy table.autoIncrementColumn!! take 1 }.run {
+}.run { if (this.size > 1) throw Exception("Collection contains more elements!, توپلامدا بىردىن ئارتۇق ئىلىمىنىت مەۋجۇت، 集合存在多个元素"); this take 1 }.run {
+    Select = table.SelectAllColumns
     Context.executeSelectQuery(this).singleOrNull()?.toEntity()
 }
 

@@ -36,4 +36,5 @@ interface IQueriableCollection<ENTITY : IDBEntity> {
     val clonedGroupBy: GroupBy?
     val clonedHaving: Having?
     val clonedOrderby: OrderBy?
+    val size: Int
 }
