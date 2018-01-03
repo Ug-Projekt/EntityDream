@@ -13,7 +13,6 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.Abstract
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.TinyInt
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.VarChar
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDataType
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.ForeignKey
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBColumn
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBTable
 import java.math.BigDecimal
@@ -29,6 +28,7 @@ infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.autoInc(autoIncrement: Bool
 infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.unique(unique: Boolean) = this.apply { this.Unique = unique }
 infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.index(index: Boolean) = this.apply { this.Index = index }
 infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.default(default: KOTLINDATATYPE) = this.apply { this.DataType.DefaultValue = default }
+infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.reference(column: IDBColumn<KOTLINDATATYPE>) = this.apply { ForeignKey = column }
 /*End Extension Infix Functions*/
 
 
@@ -39,7 +39,7 @@ class DBIdColumn(
         override var DataType: IDataType<Int> = DBInt(Unsigned = true),
         override var AutoIncrement: AutoIncrementProperty = AutoIncrementProperty(true),
         override var Unique: Boolean = true,
-        override var ForeignKey: ForeignKey? = null,
+        override var ForeignKey: IDBColumn<*>? = null,
         override var Index: Boolean = true
 ) : AbstractDBColumnConnector<Int>() {
     init {
@@ -57,7 +57,7 @@ class DBStringColumn(
         override var DataType: IDataType<String> = VarChar(100),
         override var AutoIncrement: AutoIncrementProperty = AutoIncrementProperty(false),
         override var Unique: Boolean = false,
-        override var ForeignKey: ForeignKey? = null,
+        override var ForeignKey: IDBColumn<*>? = null,
         override var Index: Boolean = false
 ) : AbstractDBColumnConnector<String>() {
     init {
@@ -74,7 +74,7 @@ class DBIntColumn(
         override var DataType: IDataType<Int> = DBInt(),
         override var AutoIncrement: AutoIncrementProperty = AutoIncrementProperty(false),
         override var Unique: Boolean = false,
-        override var ForeignKey: ForeignKey? = null,
+        override var ForeignKey: IDBColumn<*>? = null,
         override var Index: Boolean = false
 ) : AbstractDBColumnConnector<Int>() {
     init {
@@ -91,7 +91,7 @@ class DBTinyIntColumn(
         override var DataType: IDataType<Byte> = TinyInt(),
         override var AutoIncrement: AutoIncrementProperty = AutoIncrementProperty(false),
         override var Unique: Boolean = false,
-        override var ForeignKey: ForeignKey? = null,
+        override var ForeignKey: IDBColumn<*>? = null,
         override var Index: Boolean = false
 ) : AbstractDBColumnConnector<Byte>() {
     init {
@@ -108,7 +108,7 @@ class DBFloatColumn(
         override var DataType: IDataType<Float> = DBFloat(),
         override var AutoIncrement: AutoIncrementProperty = AutoIncrementProperty(false),
         override var Unique: Boolean = false,
-        override var ForeignKey: ForeignKey? = null,
+        override var ForeignKey: IDBColumn<*>? = null,
         override var Index: Boolean = false
 ) : AbstractDBColumnConnector<Float>() {
     init {
@@ -125,7 +125,7 @@ class DBDoubleColumn(
         override var DataType: IDataType<Double> = DBDouble(),
         override var AutoIncrement: AutoIncrementProperty = AutoIncrementProperty(false),
         override var Unique: Boolean = false,
-        override var ForeignKey: ForeignKey? = null,
+        override var ForeignKey: IDBColumn<*>? = null,
         override var Index: Boolean = false
 ) : AbstractDBColumnConnector<Double>() {
     init {

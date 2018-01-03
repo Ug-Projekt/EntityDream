@@ -10,7 +10,6 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.executeSelectQuery
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.simpleWhereCondition
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.uniqueKey
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.GenerateDeleteTaskSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.GenerateInsertTaskSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.*
@@ -18,7 +17,6 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Where
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.WhereItemCondition
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.ISelectQueryExpression
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Insert.InsertQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Select.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Util.deserializeFromByteArray
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Util.serializeToByteArray
@@ -53,6 +51,7 @@ class QueriableCollection<ENTITY : IDBEntity>(override var Context: IDataContext
      * ئۈنۈمنى ئاشۇرۇش ئۈچۈن ھەر قىتىم كىلونلايدىغان مۇھىم ئوبىيكىتلارنى غەملەككە كىلونلاپ ساقلىۋالدۇق
      */
     private fun cloneObjects() {
+
         cachedFromBytes = From.serializeToByteArray()
         cachedSelectBytes = Select.serializeToByteArray()
         cachedWhereBytes = Where?.serializeToByteArray()
@@ -74,8 +73,8 @@ class QueriableCollection<ENTITY : IDBEntity>(override var Context: IDataContext
             else this.Where!!.condition = And(this.Where!!.condition, where!!)
         }
 
-        cloneObjects()
 
+        cloneObjects()
     }
 
     fun loadFromLocal() {
@@ -118,4 +117,7 @@ class QueriableCollection<ENTITY : IDBEntity>(override var Context: IDataContext
 
     fun first() : ENTITY = Context.executeSelectQuery(this take 1)[0].toEntity()
     fun last() : ENTITY = Context.executeSelectQuery(this take 1 orderByDesc table.Columns.first { it.AutoIncrement.autoIncrement })[0].toEntity()
+
+    fun single() = if (size == 1) first() else throw Exception("contains more items, بىردىن ئارتۇق ئەزا بار، 已存在多个元素")
 }
+

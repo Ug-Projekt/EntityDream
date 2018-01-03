@@ -40,7 +40,7 @@ abstract class IDataContext : IQueryContext {
     override var insertTasks: HashMap<String, InsertQueryExpression> = LinkedHashMap()
     val insertedIntities = HashMap<String, IDBEntity>()
 
-    open var itemFactories: HashMap<Class<*>, (context: IDataContext) -> Any> = HashMap()
+//    open var itemFactories: HashMap<Class<*>, (context: IDataContext) -> Any> = HashMap()
 
     var pipeLine = CorePipeLine()
 
@@ -82,13 +82,16 @@ abstract class IDataContext : IQueryContext {
         pipeLine.installFeature(GenerateInsertTask)
         pipeLine.installFeature(GenerateUpdateTask)
         pipeLine.installFeature(GenerateDeleteTask)
+        pipeLine.installFeature(RelationShipOneFieldGetter)
+        pipeLine.installFeature(RelationShipOneFieldSetter)
+        pipeLine.installFeature(RelationShipManyFieldGetter)
     }
 }
 
-/*Begin For Entity Generate*/
-inline fun <reified T : IDBEntity> IDataContext.registerGenerator(noinline generator: (context: IDataContext) -> T) {
-    itemFactories.put(T::class.java, generator as (context: IDataContext) -> Any)
-}
-
-inline fun <reified T : IDBEntity> IDataContext.generateNew(): T = itemFactories[T::class.java]?.invoke(this) as T? ?: throw Exception("ئاۋال ھاسىللىغۇچ تىزىملاڭ!")
-/*End For Entity Generate*/
+///*Begin For Entity Generator*/
+//inline fun <reified T : IDBEntity> IDataContext.registerGenerator(noinline generator: (context: IDataContext) -> T) {
+//    itemFactories.put(T::class.java, generator as (context: IDataContext) -> Any)
+//}
+//
+//inline fun <reified T : IDBEntity> IDataContext.generateNew(): T = itemFactories[T::class.java]?.invoke(this) as T? ?: throw Exception("ئاۋال ھاسىللىغۇچ تىزىملاڭ!")
+///*End For Entity Generator*/

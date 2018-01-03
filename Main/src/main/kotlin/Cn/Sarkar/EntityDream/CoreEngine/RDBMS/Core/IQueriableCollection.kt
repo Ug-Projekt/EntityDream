@@ -9,10 +9,11 @@ Time: 9:46 AM
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Where
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.ISelectQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Select.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 
-interface IQueriableCollection<ENTITY : IDBEntity> {
+interface IQueriableCollection<ENTITY : IDBEntity> : ISelectQueryExpression, MutableCollection<ENTITY> {
     var Context: IDataContext
     var ItemGenerator: () -> ENTITY
     fun ValuesCacheItem.toEntity() : ENTITY
@@ -36,5 +37,5 @@ interface IQueriableCollection<ENTITY : IDBEntity> {
     val clonedGroupBy: GroupBy?
     val clonedHaving: Having?
     val clonedOrderby: OrderBy?
-    val size: Int
+    override val size: Int
 }

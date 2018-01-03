@@ -8,15 +8,14 @@ Time: 12:25 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions
 
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.KeyValuePair
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBColumn
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBEntity
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBTable
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.RelationShip.RelationShipManyFieldConnector
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.RelationShip.RelationShipOneFieldConnector
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.fullColumnName
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.And
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Equal
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.WhereItemCondition
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.ValuesCacheItem
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 
 abstract class DBEntity(override var DataContext: IDataContext, override var Table: IDBTable) : IDBEntity {
@@ -53,6 +52,8 @@ internal val IDBEntity.simpleWhereCondition: WhereItemCondition get(){
     this.PrimaryKeyValues.forEach {
         conditions.add(Equal({it.key}, {it.value}))
     }
+
+
     if (conditions.isEmpty()) throw Exception("چوقۇم Entity دا ئەڭ ئاز بولغاندا بىر دانە ئاچقۇچلۇق ئىستون بولىشى كىرەك")
     if (conditions.size == 1) return conditions.single()
     return And(*conditions.toTypedArray())
@@ -66,3 +67,6 @@ internal fun IDBEntity.generateRandomUnique() {
         values!![key] = values!![key]!!.toInt() - 1
     }
 }
+
+fun <ENTITY: IDBEntity, KOTLINDATATYPE: IDBEntity>ENTITY.hasOne(relationShipColumn: IDBColumn<*>, entityGenerator: (context: IDataContext) -> KOTLINDATATYPE) : RelationShipOneFieldConnector<ENTITY, KOTLINDATATYPE> = RelationShipOneFieldConnector(relationShipColumn, entityGenerator)
+fun <ENTITY: IDBEntity, KOTLINDATATYPE: IQueriableCollection<*>>ENTITY.hasMany(relationShipColumn: IDBColumn<*>, entityGenerator: (context: IDataContext) -> ENTITY) = RelationShipManyFieldConnector<ENTITY, KOTLINDATATYPE>(relationShipColumn, entityGenerator)

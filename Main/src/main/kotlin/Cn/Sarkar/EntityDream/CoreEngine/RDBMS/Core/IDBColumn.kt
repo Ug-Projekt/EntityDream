@@ -13,8 +13,6 @@ class AutoIncrementProperty(var autoIncrement: Boolean, var start: Int = 1, var 
     }
 }
 
-data class ForeignKey(var column: IDBColumn<*>, var referenced: IDBColumn<*>)
-
 interface IDBColumn<KOTLINDATATYPE> : ReadWriteProperty<IDBEntity, KOTLINDATATYPE> {
     var Table: IDBTable
 
@@ -23,7 +21,7 @@ interface IDBColumn<KOTLINDATATYPE> : ReadWriteProperty<IDBEntity, KOTLINDATATYP
     var DataType: IDataType<KOTLINDATATYPE>
     var AutoIncrement: AutoIncrementProperty
     var Unique: Boolean
-    var ForeignKey: ForeignKey?
+    var ForeignKey: IDBColumn<*>?
     var Index: Boolean
 }
 

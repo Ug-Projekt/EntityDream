@@ -4,6 +4,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBColumn
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.CorePipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.TranslationSubject
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueriableCollection
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.MySqlDataContext
@@ -24,7 +25,7 @@ object Users : DBTable() {
     val Age = byteColumn("Age")
     val EMail = stringColumn("EMail")
     val Money = doubleColumn("Money") notNull false
-    val CompanyID = intColumn("CompanyID") notNull true
+    val CompanyID = intColumn("CompanyID") notNull true reference Companys.ID
 
     override var PrimaryKey: Array<IDBColumn<*>> = arrayOf(ID)
 }
@@ -47,17 +48,20 @@ class User(DataContext: IDataContext) : DBEntity(DataContext, Users) {
     var Age by Users.Age
     var EMail by Users.EMail
     var Money by Users.Money
-    var CompanyID by users.CompanyID
+    var CompanyID by Users.CompanyID
+    var Company by hasOne(Users.CompanyID){ Company(it) }
 }
 
 class Company(DataContext: IDataContext) : DBEntity(DataContext, Companys) {
     var ID by Companys.ID
     var Name by Companys.Name
     var WebSite by Companys.WebSite
+    val Users: QueriableCollection<User> by hasMany(users.CompanyID) {User(it)}
 }
 
 internal class DataContextKtTest {
-    object db : MySqlDataContext(DriverManager.getConnection("jdbc:mysql://127.0.0.1:3308/Hello", "yeganaaa", "Developer653125")) {
+    object db : MySqlDataContext(DriverManager.getConnection("jdbc:mysql://127.0.0.1:3308/Hello", "yeganaaa", "Developer653125"))
+    {
 
         val Users = dbCollection(users) { User(it) }
         val Companies = dbCollection(Companys) { Company(it) }
@@ -87,12 +91,11 @@ internal class DataContextKtTest {
     @Test
     fun executeSelectQuery() {
 
-        val result = db.Users.where { Users.Name notEquals Users.EMail } uCase Users.Name skip 3 take 4
-
+        val result = db.Users
         result.forEach {
-            println("Age: ${it.Age}, Name: ${it.Name}, Money: ${it.Money} ID: ${it.ID}")
+//            println("Age: ${it.Age}, Name: ${it.Name}, Money: ${it.Money} ID: ${it.ID}")
+            println("${it.Company.Name}, ${it.Company.WebSite}")
         }
-
     }
 
     @Test
@@ -133,20 +136,60 @@ internal class DataContextKtTest {
         println(usr.ID)
         db.saveChanges()
         println(usr.ID)
+
     }
 
     @Test
     fun selectCompany() {
-        val company = db.Companies.single { Companys.Name equals "سەركار" }
 
-        println(company.Name)
-        println(company.WebSite)
-        println(company.ID)
-
-        company.Name = "سەركار"
+        val newCompany = db.Companies.single { Companys.Name equals "NewCopany" }
+        val users = db.Users.where { Users.CompanyID equals 2 or (Users.CompanyID equals 15) }.forEach {
+            it.Company = newCompany
+        }
 
         db.saveChanges()
     }
+
+    @Test
+    fun selectCompanyUsers()
+    {
+        val comp = db.Companies.first { Companys.Name equals "سەركار" }
+        println(comp.WebSite)
+
+        comp.Users.forEach {
+            println(it.Name)
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
