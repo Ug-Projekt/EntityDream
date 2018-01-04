@@ -6,6 +6,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.TranslationSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueriableCollection
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.*
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.isUnsigned
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.MySqlDataContext
 import Cn.Sarkar.EntityDream.Pipeline.Core.Info.FeatureInfo
@@ -22,10 +23,10 @@ object Users : DBTable() {
     val ID = idColumn("ID")
     val Name = stringColumn("Name", 200)
     val Pwd = stringColumn("Pwd")
-    val Age = byteColumn("Age")
+    val Age = byteColumn("Age") unsigned true notNull true
     val EMail = stringColumn("EMail")
     val Money = doubleColumn("Money") notNull false
-    val CompanyID = intColumn("CompanyID") notNull true reference Companys.ID
+    val CompanyID = intColumn("CompanyID") notNull true reference Companys.ID unsigned true
 
     override var PrimaryKey: Array<IDBColumn<*>> = arrayOf(ID)
 }
@@ -56,7 +57,7 @@ class Company(DataContext: IDataContext) : DBEntity(DataContext, Companys) {
     var ID by Companys.ID
     var Name by Companys.Name
     var WebSite by Companys.WebSite
-    val Users: QueriableCollection<User> by hasMany(users.CompanyID) {User(it)}
+    val Users: QueriableCollection<User> by hasMany(users.CompanyID) { User(it) }
 }
 
 internal class DataContextKtTest {

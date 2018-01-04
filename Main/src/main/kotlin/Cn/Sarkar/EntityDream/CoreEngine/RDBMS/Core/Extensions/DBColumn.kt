@@ -10,12 +10,12 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.AutoIncrementProperty
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.AbstractDBColumnConnector
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.NVarChar
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.TinyInt
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.VarChar
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBNumberType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBColumn
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBTable
-import java.math.BigDecimal
 
 typealias DBInt = Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.Int
 typealias DBFloat = Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.Float
@@ -23,7 +23,7 @@ typealias DBDouble = Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConn
 
 /*Begin Extension Infix Functions*/
 infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.notNull(notNull: Boolean) = this.apply { this.NotNull = notNull }
-
+infix fun <KOTLINDATATYPE : Number> IDBColumn<KOTLINDATATYPE>.unsigned(unsigned: Boolean) = this.apply { (DataType as IDBNumberType).Unsigned = unsigned }
 infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.autoInc(autoIncrement: Boolean) = this.apply { this.AutoIncrement.autoIncrement = autoIncrement }
 infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.unique(unique: Boolean) = this.apply { this.Unique = unique }
 infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.index(index: Boolean) = this.apply { this.Index = index }
@@ -54,7 +54,7 @@ class DBStringColumn(
         override var Table: IDBTable,
         override var ColumnName: String,
         override var NotNull: Boolean = true,
-        override var DataType: IDataType<String> = VarChar(100),
+        override var DataType: IDataType<String> = NVarChar(100),
         override var AutoIncrement: AutoIncrementProperty = AutoIncrementProperty(false),
         override var Unique: Boolean = false,
         override var ForeignKey: IDBColumn<*>? = null,
@@ -65,7 +65,7 @@ class DBStringColumn(
     }
 }
 
-fun IDBTable.stringColumn(ColumnName: String, length: Int = 100) = DBStringColumn(this, ColumnName, DataType = VarChar(length))
+fun IDBTable.stringColumn(ColumnName: String, length: Int = 100) = DBStringColumn(this, ColumnName, DataType = NVarChar(length))
 
 class DBIntColumn(
         override var Table: IDBTable,
