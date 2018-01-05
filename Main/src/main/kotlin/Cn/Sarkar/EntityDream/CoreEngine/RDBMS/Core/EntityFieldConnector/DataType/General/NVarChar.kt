@@ -5,7 +5,7 @@ import kotlin.Int
 
 class NVarChar(size: kotlin.Int, override var DefaultValue: String = "") : IDBPlainScaledDataType<String> {
     override var ScaleValue: Int = size
-    override var Name: String = "VARCHAR"
+    override var Name: String = "NVARCHAR"
     override fun toString(): String = "VARCHAR($ScaleValue)"
 
     init {

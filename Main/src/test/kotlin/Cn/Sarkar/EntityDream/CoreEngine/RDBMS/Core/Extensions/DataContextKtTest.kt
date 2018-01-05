@@ -6,7 +6,6 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.TranslationSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueriableCollection
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.*
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.isUnsigned
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.MySqlDataContext
 import Cn.Sarkar.EntityDream.Pipeline.Core.Info.FeatureInfo
@@ -14,6 +13,7 @@ import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineContext
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeature
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeatureMetaData
 import Cn.Sarkar.EntityDream.Pipeline.Extension.installFeature
+import org.joda.time.DateTime
 import org.junit.Test
 import java.sql.DriverManager
 
@@ -21,13 +21,13 @@ import java.sql.DriverManager
 object Users : DBTable() {
 
     val ID = idColumn("ID")
-    val Name = stringColumn("Name", 200)
-    val Pwd = stringColumn("Pwd")
-    val Age = byteColumn("Age") unsigned true notNull true
-    val EMail = stringColumn("EMail")
-    val Money = doubleColumn("Money") notNull false
+    val Name = stringColumn("Name") isN true default "" size 100
+    val Pwd = stringColumn("Pwd") isN true size 50
+    val Age = byteColumn("Age") unsigned true notNull true default 0
+    val EMail = stringColumn("EMail") size 200
+    val Money = doubleColumn("Money") notNull false precision 4
+    val BirthDay = dateTimeColumn("BirthDay") default DateTime() notNull true
     val CompanyID = intColumn("CompanyID") notNull true reference Companys.ID unsigned true
-
     override var PrimaryKey: Array<IDBColumn<*>> = arrayOf(ID)
 }
 
@@ -36,8 +36,8 @@ typealias users = Users
 object Companys : DBTable("Company") {
 
     val ID = idColumn("ID")
-    val Name = stringColumn("Name", 200)
-    var WebSite = stringColumn("WebSite", 200)
+    val Name = stringColumn("Name")
+    var WebSite = stringColumn("WebSite")
 
     override var PrimaryKey: Array<IDBColumn<*>> = arrayOf(ID)
 }
@@ -49,6 +49,7 @@ class User(DataContext: IDataContext) : DBEntity(DataContext, Users) {
     var Age by Users.Age
     var EMail by Users.EMail
     var Money by Users.Money
+    var BirthDay by Users.BirthDay
     var CompanyID by Users.CompanyID
     var Company by hasOne(Users.CompanyID){ Company(it) }
 }
@@ -61,9 +62,9 @@ class Company(DataContext: IDataContext) : DBEntity(DataContext, Companys) {
 }
 
 internal class DataContextKtTest {
+
     object db : MySqlDataContext(DriverManager.getConnection("jdbc:mysql://127.0.0.1:3308/Hello", "yeganaaa", "Developer653125"))
     {
-
         val Users = dbCollection(users) { User(it) }
         val Companies = dbCollection(Companys) { Company(it) }
     }
@@ -95,19 +96,23 @@ internal class DataContextKtTest {
         val result = db.Users
         result.forEach {
 //            println("Age: ${it.Age}, Name: ${it.Name}, Money: ${it.Money} ID: ${it.ID}")
-            println("${it.Company.Name}, ${it.Company.WebSite}")
+            println("${it.Name}, ${it.BirthDay.toString("yyyy/MM/dd HH:mm:ss")}")
         }
     }
 
     @Test
     fun delete() {
-        val entitys = db.Users.where { Users.Name equals "aaa" or (Users.Name equals "bbb") or (Users.Name equals "ccc") }
+        val all = ArrayList<User>()
 
-        entitys.forEach {
+        db.Users.forEach {
+            all.add(it)
+        }
+
+        all.forEach {
             db.Users.remove(it)
         }
 
-        println(db.saveChanges())
+        db.saveChanges()
     }
 
     @Test
@@ -124,12 +129,14 @@ internal class DataContextKtTest {
         val company = db.Companies.first { Companys.WebSite equals "http://www.sarkar.cn" }
 
         val usr = User(db).apply {
-            Name = "ئابدۇلئىزىز"
+            Name = "北京-白小飞"
             this.Age = 20
-            this.EMail = "abduleziz@163.com"
-            this.Pwd = "abduleziz008"
+            this.EMail = "北京-白小飞@163.com"
+            this.Pwd = "北京-白小飞"
             this.Money = 664.414
             this.CompanyID = company.ID
+            this.BirthDay = DateTime(1994, 3, 1, 8, 9, 10)
+
         }
 
         db.Users.add(usr)
@@ -159,7 +166,10 @@ internal class DataContextKtTest {
 
         comp.Users.forEach {
             println(it.Name)
+            it.EMail = "新邮箱"
         }
+
+        db.saveChanges()
     }
 }
 

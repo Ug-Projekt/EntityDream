@@ -10,7 +10,10 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Util
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBColumn
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.ColumnParameter
+import org.joda.time.DateTime
+import java.sql.Date
 import java.sql.PreparedStatement
+import java.sql.Time
 import java.sql.Timestamp
 import java.util.*
 
@@ -27,8 +30,10 @@ fun PreparedStatement.WriteParameters(index: Int, value: Any){
         is Double -> this.setDouble(index, value)
 //                is Decimal -> statement.setDouble(index, value)
         is ByteArray -> this.setBytes(index, value)
-        is Date -> this.setDate(index, java.sql.Date(value.time))
+        is Date -> this.setDate(index, value)
+        is Time -> this.setTime(index, value)
         is Timestamp -> this.setTimestamp(index, value)
+        is DateTime -> this.setTimestamp(index, java.sql.Timestamp(value.millis))
     /**
      * جەدۋەل پارامىتىر ئۈچۈن
      */

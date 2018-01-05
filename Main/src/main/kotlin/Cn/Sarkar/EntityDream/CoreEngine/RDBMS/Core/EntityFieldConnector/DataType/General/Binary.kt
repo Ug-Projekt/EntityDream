@@ -2,6 +2,6 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataTyp
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBPlainDataType
 
-class Binary(override var DefaultValue: ByteArray) : IDBPlainDataType<ByteArray> {
+class Binary(override var DefaultValue: ByteArray = byteArrayOf()) : IDBPlainDataType<ByteArray> {
     override var Name: String = "Binary"
 }
