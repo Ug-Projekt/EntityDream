@@ -13,16 +13,32 @@ class AutoIncrementProperty(var autoIncrement: Boolean, var start: Int = 1, var 
     }
 }
 
+data class UniqueProperty(var isUnique: Boolean = false, var uniqueGroupIndex: Int = 0)
+data class IndexProperty(var isIndex: Boolean = false, var isUnique: Boolean = false)
+
+//Index
+//Unique
+//ForeignKey
+
 interface IDBColumn<KOTLINDATATYPE> : ReadWriteProperty<IDBEntity, KOTLINDATATYPE> {
     var Table: IDBTable
-
     var ColumnName: String
     var NotNull: Boolean
     var DataType: IDataType<KOTLINDATATYPE>
     var AutoIncrement: AutoIncrementProperty
-    var Unique: Boolean
+    var Unique: UniqueProperty
     var ForeignKey: IDBColumn<*>?
-    var Index: Boolean
+    var Index: IndexProperty
+    var Comment: String
+}
+var IDBColumn<*>.IsPrimaryKey: Boolean
+get() = Table.PrimaryKey.contains(this)
+set(value) {
+    if (value) {
+        if (!Table.PrimaryKey.contains(this)) Table.PrimaryKey = arrayOf(*Table.PrimaryKey, this)
+    }
+    else
+        if (Table.PrimaryKey.contains(this)) Table.PrimaryKey = arrayOf(*Table.PrimaryKey.filter { it != this }.toTypedArray())
 }
 
 fun <T> IDBColumn<T>.getDefaultValue() : T = DataType.DefaultValue

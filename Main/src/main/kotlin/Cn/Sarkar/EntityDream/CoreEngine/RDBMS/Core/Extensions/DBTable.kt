@@ -14,6 +14,8 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBTable
 abstract class DBTable(override var TableName: String = AutoDetect) : IDBTable {
 //    override var PrimaryKey: Array<IDBColumn<*>> = arrayOf(*primaryKeys())
     override var Columns: Array<IDBColumn<*>> = arrayOf()
+    override var Comment: String = ""
+    override var PrimaryKey: Array<IDBColumn<*>> = arrayOf()
 
     companion object {
         val AutoDetect = "****Auto Detect****"

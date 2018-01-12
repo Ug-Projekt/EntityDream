@@ -10,6 +10,7 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.*
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.CreateTable.CreateTableExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.ISelectQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.clonedPipeLine
@@ -90,3 +91,13 @@ fun IDataContext.executeInsertQuery(): Array<IDItem> {
 //ئەڭ ئازاپلىق يىمىگەن مانتىنىڭ پۇلىنى تۆلەش ۋەقەسى
 //پالاكەتلىك قىلىپ باشقىلارنىڭ نەرسىسىنى بۇزۇپ قويۇش ۋەقەسى
 // ئەڭ ئازاپلىق ئاچقۇچ ئۇنتۇپ قىلىش ۋەقەسى
+
+fun IDataContext.createNewTables(vararg tables: IDBTable) : Boolean
+{
+    val cpl = clonedPipeLine
+    val result = execute(cpl, CreateTableSubjet(*tables.map { CreateTableExpression(it) }.toTypedArray()))
+    return result.exception == null
+}
+
+
+

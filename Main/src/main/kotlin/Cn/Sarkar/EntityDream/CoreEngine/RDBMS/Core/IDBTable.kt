@@ -12,4 +12,5 @@ interface IDBTable {
     var TableName: String //جەدۋەل ئىسمى
     var PrimaryKey: Array<IDBColumn<*>>
     var Columns: Array<IDBColumn<*>>
+    var Comment: String
 }

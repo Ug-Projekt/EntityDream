@@ -8,10 +8,11 @@ Time: 1:57 AM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core
 
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBColumn
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryExpression
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryTranslator
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.fullColumnName
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.*
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBNumberType
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBPlainDataType
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBPlainScaledDataType
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBScaledType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.Aggregate.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.FuncFromColumn
@@ -19,14 +20,16 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.FuncFromWhat
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.IDBFunction
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.Scalar.*
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.CreateTable.CreateTableExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Delete.DeleteQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.ISelectQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Insert.InsertQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Select.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Update.UpdateQueryExpression
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.TranslateResult
+import org.joda.time.DateTime
 import sun.misc.BASE64Encoder
 import java.security.MessageDigest
+import java.util.*
 
 class MySqlQueryTranslator : IQueryTranslator {
     val params = ArrayList<Any>()
@@ -87,6 +90,8 @@ class MySqlQueryTranslator : IQueryTranslator {
     fun <T> T.toSqlString() : String = when(this)
     {
         is String -> "'$this'"
+        is DateTime -> "'$this'"
+        is Date -> "'$this'"
         is Int, is Float, is Double -> this.toString()
         else -> this.toString()
     }
@@ -171,6 +176,19 @@ class MySqlQueryTranslator : IQueryTranslator {
         }
     }
 
+    fun IDBTable.renderToSqlString() = """${this.TableName} (
+${this.Columns.joinToString(",\n") { it.renderToSqlString() }}
+
+
+)""".trimIndent()
+
+    fun IDBColumn<*>.renderToSqlString() = "$ColumnName ${when (DataType){
+        is IDBPlainDataType<*> -> this.DataType.Name
+        is IDBPlainScaledDataType<*> -> "${this.DataType.Name}(${(this.DataType as IDBPlainScaledDataType<*>).ScaleValue})"
+        is IDBScaledType<*> -> "${this.DataType.Name}(${(this.DataType as IDBScaledType<*>).run { "${this.ScaleValue}, ${this.PrecisionValue}"}})"
+        else -> throw Exception("Not Support column type.")
+    }} ${if (this.NotNull) "NOT NULL" else "NULL"} ${if (this.AutoIncrement.autoIncrement) "AUTO_INCREMENT" else ""} ${if (this.NotNull && this.getDefaultValue() != null && !this.AutoIncrement.autoIncrement) "DEFAULT ${this.getDefaultValue().toSqlString()}" else ""} ${if (this.Comment != "") "COMMENT '${this.Comment}'" else ""}"
+
     override fun Translate(expression: IQueryExpression): TranslateResult {
         val buffer = StringBuffer()
 
@@ -220,6 +238,10 @@ class MySqlQueryTranslator : IQueryTranslator {
             }
             is DeleteQueryExpression -> {
                 buffer.append("DELETE FROM ${expression.deleteFrom.TableName} WHERE ${recursiveWhereBlock(expression.where.condition)}")
+                buffer.append(";")
+            }
+            is CreateTableExpression -> {
+                buffer.append("CREATE TABLE IF NOT EXISTS ")
                 buffer.append(";")
             }
         }

@@ -7,6 +7,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.Translation
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueriableCollection
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core.MySqlQueryTranslator
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.MySqlDataContext
 import Cn.Sarkar.EntityDream.Pipeline.Core.Info.FeatureInfo
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineContext
@@ -18,17 +19,17 @@ import org.junit.Test
 import java.sql.DriverManager
 
 
-object Users : DBTable() {
+object Users : DBTable("User") {
+    override var Comment: String = "ئەزا"
+    val ID = idColumn("ID") comment "ID" primaryKey true
+    val Name = stringColumn("Name") isN true default "" size 100 comment "ئىسمى"
+    val Pwd = stringColumn("Pwd") isN true size 50 comment "پارولى"
+    val Age = byteColumn("Age") unsigned true notNull true default 0 comment "يىشى"
+    val EMail = stringColumn("EMail") size 200 comment "ئىلخەت"
+    val Money = doubleColumn("Money") notNull false precision 4 comment "پۇلى"
+    val BirthDay = dateTimeColumn("BirthDay") default DateTime() notNull true comment "تۇغۇلغان ۋاقتى"
+    val CompanyID = intColumn("CompanyID") notNull true reference Companys.ID unsigned true comment "CompanyID"
 
-    val ID = idColumn("ID")
-    val Name = stringColumn("Name") isN true default "" size 100
-    val Pwd = stringColumn("Pwd") isN true size 50
-    val Age = byteColumn("Age") unsigned true notNull true default 0
-    val EMail = stringColumn("EMail") size 200
-    val Money = doubleColumn("Money") notNull false precision 4
-    val BirthDay = dateTimeColumn("BirthDay") default DateTime() notNull true
-    val CompanyID = intColumn("CompanyID") notNull true reference Companys.ID unsigned true
-    override var PrimaryKey: Array<IDBColumn<*>> = arrayOf(ID)
 }
 
 typealias users = Users
@@ -38,8 +39,6 @@ object Companys : DBTable("Company") {
     val ID = idColumn("ID")
     val Name = stringColumn("Name")
     var WebSite = stringColumn("WebSite")
-
-    override var PrimaryKey: Array<IDBColumn<*>> = arrayOf(ID)
 }
 
 class User(DataContext: IDataContext) : DBEntity(DataContext, Users) {
@@ -161,15 +160,17 @@ internal class DataContextKtTest {
     @Test
     fun selectCompanyUsers()
     {
-        val comp = db.Companies.first { Companys.Name equals "سەركار" }
-        println(comp.WebSite)
-
-        comp.Users.forEach {
-            println(it.Name)
-            it.EMail = "新邮箱"
+        db.Users.where { Users.BirthDay less DateTime(2000, 1, 1, 1, 2, 3) }.forEach {
+            println(it.BirthDay.toString("yyyy/MM/dd HH:mm:ss"))
         }
+    }
 
-        db.saveChanges()
+    @Test
+    fun printColumnDml(){
+        val tr = MySqlQueryTranslator()
+        tr.apply {
+            println(Users.renderToSqlString())
+        }
     }
 }
 

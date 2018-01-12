@@ -15,6 +15,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.Char
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBColumn
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBTable
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IsPrimaryKey
 import org.joda.time.DateTime
 import java.sql.Date
 import java.sql.Time
@@ -27,12 +28,19 @@ typealias DBDouble = Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConn
 infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.notNull(notNull: Boolean) = this.apply { this.NotNull = notNull }
 infix fun <KOTLINDATATYPE : Number> IDBColumn<KOTLINDATATYPE>.unsigned(unsigned: Boolean) = this.apply { (DataType as IDBNumberType).Unsigned = unsigned }
 infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.autoInc(autoIncrement: Boolean) = this.apply { this.AutoIncrement.autoIncrement = autoIncrement }
-infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.unique(unique: Boolean) = this.apply { this.Unique = unique }
-infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.index(index: Boolean) = this.apply { this.Index = index }
+infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.unique(unique: Boolean) = this.apply { this.Unique.isUnique = unique }
+infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.uniqueGroupIndex(groupIndex: Int) = this.apply { this.Unique.uniqueGroupIndex = groupIndex }
+infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.index(index: Boolean) = this.apply { this.Index.isIndex = index }
+infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.uniqueIndex(unique: Boolean) = this.apply { this.Index.isUnique = unique; this.Index.isIndex = true }
 infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.default(default: KOTLINDATATYPE) = this.apply { this.DataType.DefaultValue = default }
 infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.reference(column: IDBColumn<KOTLINDATATYPE>) = this.apply { ForeignKey = column }
 infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.size(size: Int) = this.apply { if (DataType is IDBPlainScaledDataType<*>) (DataType as IDBPlainScaledDataType<*>).ScaleValue = size }
 infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.precision(precisionValue: Int) = this.apply { if (DataType is IDBScaledType<*>) (DataType as IDBScaledType<*>).PrecisionValue = precisionValue }
+infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.comment(comment: String) = this.apply { this.Comment = comment }
+infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.primaryKey(isPrimaryKey: Boolean) = this.apply { this.IsPrimaryKey = isPrimaryKey }
+
+
+
 
 /**
  * Is NChar Or NVarChar
@@ -73,12 +81,11 @@ class DBIdColumn(
         override var NotNull: Boolean = true,
         override var DataType: IDataType<Int> = DBInt(Unsigned = true),
         override var AutoIncrement: AutoIncrementProperty = AutoIncrementProperty(true),
-        override var Unique: Boolean = true,
-        override var ForeignKey: IDBColumn<*>? = null,
-        override var Index: Boolean = true
+        override var ForeignKey: IDBColumn<*>? = null
 ) : AbstractDBColumnConnector<Int>() {
     init {
         setup()
+        IsPrimaryKey = true
     }
 }
 
@@ -91,9 +98,7 @@ class DBStringColumn(
         override var NotNull: Boolean = true,
         override var DataType: IDataType<String> = NVarChar(100),
         override var AutoIncrement: AutoIncrementProperty = AutoIncrementProperty(false),
-        override var Unique: Boolean = false,
-        override var ForeignKey: IDBColumn<*>? = null,
-        override var Index: Boolean = false
+        override var ForeignKey: IDBColumn<*>? = null
 ) : AbstractDBColumnConnector<String>() {
     init {
         setup()
@@ -108,9 +113,7 @@ class DBIntColumn(
         override var NotNull: Boolean = true,
         override var DataType: IDataType<Int> = DBInt(),
         override var AutoIncrement: AutoIncrementProperty = AutoIncrementProperty(false),
-        override var Unique: Boolean = false,
-        override var ForeignKey: IDBColumn<*>? = null,
-        override var Index: Boolean = false
+        override var ForeignKey: IDBColumn<*>? = null
 ) : AbstractDBColumnConnector<Int>() {
     init {
         setup()
@@ -125,9 +128,7 @@ class DBTinyIntColumn(
         override var NotNull: Boolean = true,
         override var DataType: IDataType<Byte> = TinyInt(),
         override var AutoIncrement: AutoIncrementProperty = AutoIncrementProperty(false),
-        override var Unique: Boolean = false,
-        override var ForeignKey: IDBColumn<*>? = null,
-        override var Index: Boolean = false
+        override var ForeignKey: IDBColumn<*>? = null
 ) : AbstractDBColumnConnector<Byte>() {
     init {
         setup()
@@ -142,9 +143,7 @@ class DBShortColumn(
         override var NotNull: Boolean = true,
         override var DataType: IDataType<Short> = SmallInt(),
         override var AutoIncrement: AutoIncrementProperty = AutoIncrementProperty(false),
-        override var Unique: Boolean = false,
-        override var ForeignKey: IDBColumn<*>? = null,
-        override var Index: Boolean = false
+        override var ForeignKey: IDBColumn<*>? = null
 ) : AbstractDBColumnConnector<Short>() {
     init {
         setup()
@@ -159,9 +158,7 @@ class DBFloatColumn(
         override var NotNull: Boolean = true,
         override var DataType: IDataType<Float> = DBFloat(),
         override var AutoIncrement: AutoIncrementProperty = AutoIncrementProperty(false),
-        override var Unique: Boolean = false,
-        override var ForeignKey: IDBColumn<*>? = null,
-        override var Index: Boolean = false
+        override var ForeignKey: IDBColumn<*>? = null
 ) : AbstractDBColumnConnector<Float>() {
     init {
         setup()
@@ -176,9 +173,7 @@ class DBDoubleColumn(
         override var NotNull: Boolean = true,
         override var DataType: IDataType<Double> = DBDouble(),
         override var AutoIncrement: AutoIncrementProperty = AutoIncrementProperty(false),
-        override var Unique: Boolean = false,
-        override var ForeignKey: IDBColumn<*>? = null,
-        override var Index: Boolean = false
+        override var ForeignKey: IDBColumn<*>? = null
 ) : AbstractDBColumnConnector<Double>() {
     init {
         setup()
@@ -193,9 +188,7 @@ class DBByteArrayColumn(
         override var NotNull: Boolean = true,
         override var DataType: IDataType<ByteArray> = Binary(),
         override var AutoIncrement: AutoIncrementProperty = AutoIncrementProperty(false),
-        override var Unique: Boolean = false,
-        override var ForeignKey: IDBColumn<*>? = null,
-        override var Index: Boolean = false
+        override var ForeignKey: IDBColumn<*>? = null
 ) : AbstractDBColumnConnector<ByteArray>() {
     init {
         setup()
@@ -210,9 +203,7 @@ class DBDateColumn(
         override var NotNull: Boolean = true,
         override var DataType: IDataType<Date> = Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.Date(),
         override var AutoIncrement: AutoIncrementProperty = AutoIncrementProperty(false),
-        override var Unique: Boolean = false,
-        override var ForeignKey: IDBColumn<*>? = null,
-        override var Index: Boolean = false
+        override var ForeignKey: IDBColumn<*>? = null
 ) : AbstractDBColumnConnector<Date>() {
     init {
         setup()
@@ -227,9 +218,7 @@ class DBTimeColumn(
         override var NotNull: Boolean = true,
         override var DataType: IDataType<Time> = Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.Time(),
         override var AutoIncrement: AutoIncrementProperty = AutoIncrementProperty(false),
-        override var Unique: Boolean = false,
-        override var ForeignKey: IDBColumn<*>? = null,
-        override var Index: Boolean = false
+        override var ForeignKey: IDBColumn<*>? = null
 ) : AbstractDBColumnConnector<Time>() {
     init {
         setup()
@@ -244,9 +233,7 @@ class DBDateTimeColumn(
         override var NotNull: Boolean = true,
         override var DataType: IDataType<DateTime> = Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.DateTime(),
         override var AutoIncrement: AutoIncrementProperty = AutoIncrementProperty(false),
-        override var Unique: Boolean = false,
-        override var ForeignKey: IDBColumn<*>? = null,
-        override var Index: Boolean = false
+        override var ForeignKey: IDBColumn<*>? = null
 ) : AbstractDBColumnConnector<DateTime>() {
     init {
         setup()
