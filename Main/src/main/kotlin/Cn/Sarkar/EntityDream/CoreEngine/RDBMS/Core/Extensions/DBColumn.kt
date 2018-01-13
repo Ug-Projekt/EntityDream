@@ -30,6 +30,7 @@ infix fun <KOTLINDATATYPE : Number> IDBColumn<KOTLINDATATYPE>.unsigned(unsigned:
 infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.autoInc(autoIncrement: Boolean) = this.apply { this.AutoIncrement.autoIncrement = autoIncrement }
 infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.unique(unique: Boolean) = this.apply { this.Unique.isUnique = unique }
 infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.uniqueGroupIndex(groupIndex: Int) = this.apply { this.Unique.uniqueGroupIndex = groupIndex }
+infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.indexGroupIndex(groupIndex: Int) = this.apply { this.Index.groupIndex = groupIndex }
 infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.index(index: Boolean) = this.apply { this.Index.isIndex = index }
 infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.uniqueIndex(unique: Boolean) = this.apply { this.Index.isUnique = unique; this.Index.isIndex = true }
 infix fun <KOTLINDATATYPE> IDBColumn<KOTLINDATATYPE>.default(default: KOTLINDATATYPE) = this.apply { this.DataType.DefaultValue = default }
@@ -61,11 +62,11 @@ infix fun IDBColumn<String>.isN(isNcharorNVarchar: Boolean) = this.apply {
     else
     {
         when (DataType) {
-            is Char -> {
+            is NChar -> {
                 val dt = DataType as NChar
                 DataType = Char(dt.ScaleValue, dt.DefaultValue)
             }
-            is VarChar -> {
+            is NVarChar -> {
                 val dt = DataType as NVarChar
                 DataType = VarChar(dt.ScaleValue, dt.DefaultValue)
             }

@@ -14,7 +14,7 @@ class AutoIncrementProperty(var autoIncrement: Boolean, var start: Int = 1, var 
 }
 
 data class UniqueProperty(var isUnique: Boolean = false, var uniqueGroupIndex: Int = 0)
-data class IndexProperty(var isIndex: Boolean = false, var isUnique: Boolean = false)
+data class IndexProperty(var isIndex: Boolean = false, var groupIndex: Int = 0, var isUnique: Boolean = false)
 
 //Index
 //Unique

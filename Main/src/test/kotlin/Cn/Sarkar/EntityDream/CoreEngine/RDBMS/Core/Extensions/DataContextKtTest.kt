@@ -1,6 +1,5 @@
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions
 
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBColumn
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.CorePipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.TranslationSubject
@@ -19,53 +18,50 @@ import org.junit.Test
 import java.sql.DriverManager
 
 
-object Users : DBTable("User") {
-    override var Comment: String = "ئەزا"
-    val ID = idColumn("ID") comment "ID" primaryKey true
-    val Name = stringColumn("Name") isN true default "" size 100 comment "ئىسمى"
-    val Pwd = stringColumn("Pwd") isN true size 50 comment "پارولى"
-    val Age = byteColumn("Age") unsigned true notNull true default 0 comment "يىشى"
-    val EMail = stringColumn("EMail") size 200 comment "ئىلخەت"
-    val Money = doubleColumn("Money") notNull false precision 4 comment "پۇلى"
-    val BirthDay = dateTimeColumn("BirthDay") default DateTime() notNull true comment "تۇغۇلغان ۋاقتى"
-    val CompanyID = intColumn("CompanyID") notNull true reference Companys.ID unsigned true comment "CompanyID"
+class User(DataContext: IDataContext) : DBEntity(DataContext, User) {
+    companion object : DBTable("User") {
+        override var Comment: String = "ئەزا"
+        val ID = idColumn("ID") comment "ID" primaryKey true
+        val Name = stringColumn("Name") isN true default "Name@Empty" size 100 comment "ئىسمى"
+        val Pwd = stringColumn("Pwd") isN false size 50 comment "پارولى" default "Password@Empty"
+        val Age = byteColumn("Age") unsigned true notNull true default 0 comment "يىشى"
+        val EMail = stringColumn("EMail") size 200 comment "ئىلخەت"
+        val Money = doubleColumn("Money") notNull false precision 4 comment "پۇلى"
+        val BirthDay = dateTimeColumn("BirthDay") notNull true comment "تۇغۇلغان ۋاقتى"
+        val CompanyID = intColumn("CompanyID") notNull true reference Company.ID unsigned true comment "CompanyID"
+    }
 
+    var ID by User.ID
+    var Name by User.Name
+    var Pwd by User.Pwd
+    var Age by User.Age
+    var EMail by User.EMail
+    var Money by User.Money
+    var BirthDay by User.BirthDay
+    var CompanyID by User.CompanyID
+    var Company by hasOne(User.CompanyID){ Company(it) }
 }
 
-typealias users = Users
+class Company(DataContext: IDataContext) : DBEntity(DataContext, Company) {
+    companion object : DBTable("Company") {
 
-object Companys : DBTable("Company") {
+        val ID = idColumn("ID")
+        val Name = stringColumn("Name")
+        var WebSite = stringColumn("WebSite")
+    }
 
-    val ID = idColumn("ID")
-    val Name = stringColumn("Name")
-    var WebSite = stringColumn("WebSite")
-}
-
-class User(DataContext: IDataContext) : DBEntity(DataContext, Users) {
-    var ID by Users.ID
-    var Name by Users.Name
-    var Pwd by Users.Pwd
-    var Age by Users.Age
-    var EMail by Users.EMail
-    var Money by Users.Money
-    var BirthDay by Users.BirthDay
-    var CompanyID by Users.CompanyID
-    var Company by hasOne(Users.CompanyID){ Company(it) }
-}
-
-class Company(DataContext: IDataContext) : DBEntity(DataContext, Companys) {
-    var ID by Companys.ID
-    var Name by Companys.Name
-    var WebSite by Companys.WebSite
-    val Users: QueriableCollection<User> by hasMany(users.CompanyID) { User(it) }
+    var ID by Company.ID
+    var Name by Company.Name
+    var WebSite by Company.WebSite
+    val Users: QueriableCollection<User> by hasMany(User.CompanyID) { User(it) }
 }
 
 internal class DataContextKtTest {
 
     object db : MySqlDataContext(DriverManager.getConnection("jdbc:mysql://127.0.0.1:3308/Hello", "yeganaaa", "Developer653125"))
     {
-        val Users = dbCollection(users) { User(it) }
-        val Companies = dbCollection(Companys) { Company(it) }
+        val Users = dbCollection(User) { User(it) }
+        val Companies = dbCollection(Company) { Company(it) }
     }
 
     val logger = object : PipeLineFeature<IPipeLineSubject, IDataContext>() {
@@ -125,7 +121,7 @@ internal class DataContextKtTest {
     @Test
     fun insertCompany(){
 
-        val company = db.Companies.first { Companys.WebSite equals "http://www.sarkar.cn" }
+        val company = db.Companies.first { Company.WebSite equals "http://www.sarkar.cn" }
 
         val usr = User(db).apply {
             Name = "北京-白小飞"
@@ -149,18 +145,18 @@ internal class DataContextKtTest {
     @Test
     fun selectCompany() {
 
-        val newCompany = db.Companies.single { Companys.Name equals "NewCopany" }
-        val users = db.Users.where { Users.CompanyID equals 2 or (Users.CompanyID equals 15) }.forEach {
-            it.Company = newCompany
-        }
+//        val newCompany = db.Companies.single { Companys.Name equals "NewCopany" }
+        val avgMoney = db.Users.where { User.Name startsWith "Hell" and (User.Age greater 18) } skip 0 take 10 avg User.Money
 
-        db.saveChanges()
+        println(avgMoney)
+
+//        db.saveChanges()
     }
 
     @Test
-    fun selectCompanyUsers()
+    fun selectCompanyUser()
     {
-        db.Users.where { Users.BirthDay less DateTime(2000, 1, 1, 1, 2, 3) }.forEach {
+        db.Users.where { User.BirthDay less DateTime(2000, 1, 1, 1, 2, 3) }.forEach {
             println(it.BirthDay.toString("yyyy/MM/dd HH:mm:ss"))
         }
     }
@@ -169,10 +165,11 @@ internal class DataContextKtTest {
     fun printColumnDml(){
         val tr = MySqlQueryTranslator()
         tr.apply {
-            println(Users.renderToSqlString())
+            println(User.renderToCreateTableSqlString())
         }
     }
 }
+
 
 
 

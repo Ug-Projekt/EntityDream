@@ -12,5 +12,6 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBTable
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.ITableOperationQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.IUpdateQueryExpression
 
-class CreateTableExpression(override var table: IDBTable) : IUpdateQueryExpression, ITableOperationQueryExpression{
+data class CreateTableExpression(override var table: IDBTable) : IUpdateQueryExpression, ITableOperationQueryExpression{
+    
 }

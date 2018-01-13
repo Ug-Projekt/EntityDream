@@ -9,7 +9,6 @@ Time: 1:57 AM
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.*
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBNumberType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBPlainDataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBPlainScaledDataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBScaledType
@@ -90,7 +89,7 @@ class MySqlQueryTranslator : IQueryTranslator {
     fun <T> T.toSqlString() : String = when(this)
     {
         is String -> "'$this'"
-        is DateTime -> "'$this'"
+        is DateTime -> "'${this.toString("yyyy-MM-dd hh:mm:ss")}'"
         is Date -> "'$this'"
         is Int, is Float, is Double -> this.toString()
         else -> this.toString()
@@ -176,18 +175,32 @@ class MySqlQueryTranslator : IQueryTranslator {
         }
     }
 
-    fun IDBTable.renderToSqlString() = """${this.TableName} (
-${this.Columns.joinToString(",\n") { it.renderToSqlString() }}
+    fun IDBTable.renderToCreateTableSqlString() = """${this.TableName} (
+${this.Columns.joinToString(",\n") { it.renderToCreateTableSqlString() }}
 
 
 )""".trimIndent()
 
-    fun IDBColumn<*>.renderToSqlString() = "$ColumnName ${when (DataType){
-        is IDBPlainDataType<*> -> this.DataType.Name
-        is IDBPlainScaledDataType<*> -> "${this.DataType.Name}(${(this.DataType as IDBPlainScaledDataType<*>).ScaleValue})"
-        is IDBScaledType<*> -> "${this.DataType.Name}(${(this.DataType as IDBScaledType<*>).run { "${this.ScaleValue}, ${this.PrecisionValue}"}})"
-        else -> throw Exception("Not Support column type.")
-    }} ${if (this.NotNull) "NOT NULL" else "NULL"} ${if (this.AutoIncrement.autoIncrement) "AUTO_INCREMENT" else ""} ${if (this.NotNull && this.getDefaultValue() != null && !this.AutoIncrement.autoIncrement) "DEFAULT ${this.getDefaultValue().toSqlString()}" else ""} ${if (this.Comment != "") "COMMENT '${this.Comment}'" else ""}"
+    fun IDBColumn<*>.renderToCreateTableSqlString(): String {
+        val buffer = StringBuffer()
+        buffer.append("$ColumnName ")
+        val type = when (DataType) {
+            is IDBPlainDataType<*> -> this.DataType.Name
+            is IDBPlainScaledDataType<*> -> "${this.DataType.Name}(${(this.DataType as IDBPlainScaledDataType<*>).ScaleValue})"
+            is IDBScaledType<*> -> "${this.DataType.Name}(${(this.DataType as IDBScaledType<*>).run { "${this.ScaleValue}, ${this.PrecisionValue}" }})"
+            else -> throw Exception("Not Support column type.")
+        }
+        buffer.append(type)
+
+        buffer.append(if (this.NotNull) " NOT NULL " else " NULL ")
+        buffer.append(if (this.AutoIncrement.autoIncrement) "AUTO_INCREMENT " else "")
+        if (this.NotNull && this.getDefaultValue() != null && !this.AutoIncrement.autoIncrement) {
+            if (!(this.DataType.DefaultValue is String && this.getDefaultValue() == ""))
+                buffer.append("DEFAULT ${this.getDefaultValue().toSqlString()} ")
+        }
+        buffer.append(if (this.Comment != "") "COMMENT '${this.Comment}' " else "")
+        return buffer.toString()
+    }
 
     override fun Translate(expression: IQueryExpression): TranslateResult {
         val buffer = StringBuffer()
