@@ -1,8 +1,7 @@
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBNumberType
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDataType
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.fullColumnName
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBDataType
 import kotlin.properties.ReadWriteProperty
 
 class AutoIncrementProperty(var autoIncrement: Boolean, var start: Int = 1, var step: Int = 1)
@@ -24,7 +23,7 @@ interface IDBColumn<KOTLINDATATYPE> : ReadWriteProperty<IDBEntity, KOTLINDATATYP
     var Table: IDBTable
     var ColumnName: String
     var NotNull: Boolean
-    var DataType: IDataType<KOTLINDATATYPE>
+    var DataType: IDBDataType<KOTLINDATATYPE>
     var AutoIncrement: AutoIncrementProperty
     var Unique: UniqueProperty
     var ForeignKey: IDBColumn<*>?

@@ -1,18 +1,5 @@
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions
 
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.*
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDataType
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.SelectQuery
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.and
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.equals
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.fullColumnName
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Equal
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core.MySqlQueryTranslator
-import org.junit.Assert
-import org.junit.Test
-import kotlin.reflect.KProperty
-
 //internal class SelectQuerryExpressionKtTest {
 //
 //    val translator = MySqlQueryTranslator()
@@ -44,7 +31,7 @@ import kotlin.reflect.KProperty
 //            override var NotNull: Boolean
 //                get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
 //                set(value) {}
-//            override var DataType: IDataType<String>
+//            override var DataType: IDBDataType<String>
 //                get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
 //                set(value) {}
 //            override var AutoIncrement: AutoIncrementProperty
@@ -78,7 +65,7 @@ import kotlin.reflect.KProperty
 //            override var NotNull: Boolean
 //                get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
 //                set(value) {}
-//            override var DataType: IDataType<Int>
+//            override var DataType: IDBDataType<Int>
 //                get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
 //                set(value) {}
 //            override var AutoIncrement: AutoIncrementProperty

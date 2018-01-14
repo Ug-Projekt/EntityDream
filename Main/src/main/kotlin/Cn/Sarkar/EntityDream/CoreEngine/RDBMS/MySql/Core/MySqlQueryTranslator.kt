@@ -12,6 +12,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBPlainDataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBPlainScaledDataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBScaledType
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.toLocalDBDmlString
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.Aggregate.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.FuncFromColumn
@@ -25,12 +26,13 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.ISelect
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Insert.InsertQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Select.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Update.UpdateQueryExpression
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 import org.joda.time.DateTime
 import sun.misc.BASE64Encoder
 import java.security.MessageDigest
 import java.util.*
 
-class MySqlQueryTranslator : IQueryTranslator {
+class MySqlQueryTranslator(override val DataContext: IDataContext) : IQueryTranslator {
     val params = ArrayList<Any>()
 
     val md5Algorithm by lazy { MessageDigest.getInstance("MD5") }
@@ -184,12 +186,7 @@ ${this.Columns.joinToString(",\n") { it.renderToCreateTableSqlString() }}
     fun IDBColumn<*>.renderToCreateTableSqlString(): String {
         val buffer = StringBuffer()
         buffer.append("$ColumnName ")
-        val type = when (DataType) {
-            is IDBPlainDataType<*> -> this.DataType.Name
-            is IDBPlainScaledDataType<*> -> "${this.DataType.Name}(${(this.DataType as IDBPlainScaledDataType<*>).ScaleValue})"
-            is IDBScaledType<*> -> "${this.DataType.Name}(${(this.DataType as IDBScaledType<*>).run { "${this.ScaleValue}, ${this.PrecisionValue}" }})"
-            else -> throw Exception("Not Support column type.")
-        }
+        val type = this.DataType.toLocalDBDmlString(DataContext)
         buffer.append(type)
 
         buffer.append(if (this.NotNull) " NOT NULL " else " NULL ")

@@ -8,7 +8,7 @@ Time: 5:21 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType
 
-interface IDataType<KOTLINDATATYPE> {
+interface IDBDataType<KOTLINDATATYPE> {
     var Name: String
     var DefaultValue: KOTLINDATATYPE
 }

@@ -8,5 +8,5 @@ Time: 5:54 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType
 
-interface IDBPlainDataType<KOTLINDATATYPE> : IDataType<KOTLINDATATYPE> {
+interface IDBPlainDataType<KOTLINDATATYPE> : IDBDataType<KOTLINDATATYPE> {
 }

@@ -8,7 +8,7 @@ Time: 3:50 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType
 
-interface IDBNumberType<KOTLINDATATYPE> : IDataType<KOTLINDATATYPE>
+interface IDBNumberType<KOTLINDATATYPE> : IDBDataType<KOTLINDATATYPE>
 {
     var Unsigned: Boolean
 }

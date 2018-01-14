@@ -9,6 +9,9 @@ Time: 6:07 PM
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core.Feature
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.*
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.Char
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.Double
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.Float
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.Int
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBPlainDataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBPlainScaledDataType
@@ -38,22 +41,40 @@ object DataTypeAdapter : PipeLineFeature<IPipeLineSubject, IDataContext>() {
     override fun PipeLineContext<IPipeLineSubject, IDataContext>.onExecute(subject: IPipeLineSubject) {
         if (subject is TypeAdapterSubject) {
             val input = subject.Input
+
             subject.OutPutString = when (input) {
 
-                is IDBPlainDataType -> when (input) {
-                    is SmallInt -> "SMALLINT${if (input.Unsigned) " UNSIGNED" else ""}"
-                    is MediumInt -> "MEDIUMINT${if (input.Unsigned) " UNSIGNED" else ""}"
-                    is Int -> "INT${if (input.Unsigned) " UNSIGNED" else ""}"
-                    is BigInt -> "BIGINT${if (input.Unsigned) " UNSIGNED" else ""}"
-                    is Binary -> "BLOB"
-                    else -> null
-                }
-                is IDBPlainScaledDataType -> when (input) {
-                    else -> null
-                }
-                is IDBScaledType -> when (input) {
-                    else -> null
-                }
+                is TinyInt -> "TINYINT${if (input.Unsigned) " UNSIGNED" else ""}"
+                is SmallInt -> "SMALLINT${if (input.Unsigned) " UNSIGNED" else ""}"
+                is MediumInt -> "MEDIUMINT${if (input.Unsigned) " UNSIGNED" else ""}"
+                is Int -> "INT${if (input.Unsigned) " UNSIGNED" else ""}"
+                is BigInt -> "BIGINT${if (input.Unsigned) " UNSIGNED" else ""}"
+
+                is Float -> "FLOAT${if (input.Unsigned) " UNSIGNED" else ""}"
+                is Double -> "DOUBLE${if (input.Unsigned) " UNSIGNED" else ""}"
+                is Decimal -> "DECIMAL${if (input.Unsigned) " UNSIGNED" else ""}"
+                is Money -> "DECIMAL${if (input.Unsigned) " UNSIGNED" else ""}"
+
+                is Binary -> "BLOB"
+                is MediumBinary -> "MEDIUMBLOB"
+                is LongBinary -> "LONGBLOB"
+
+                is Date -> "DATE"
+                is Time -> "TIME"
+                is DateTime -> "DATETIME"
+                is TimeStamp -> "TIMESTAMP"
+
+                is Bool -> "BOOLEAN"
+
+                is TinyText -> "TINYTEXT"
+                is MediumText -> "MEDIUMTEXT"
+                is Text -> "TEXT"
+                is LongText -> "LONGTEXT"
+
+                is Char -> "CHAR(${input.ScaleValue})"
+                is NChar -> "NCHAR(${input.ScaleValue})"
+                is VarChar -> "VARCHAR(${input.ScaleValue})"
+                is NVarChar -> "NVARCHAR(${input.ScaleValue})"
 
                 else -> null
             }

@@ -8,6 +8,6 @@ Time: 5:55 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType
 
-interface IDBPlainScaledDataType<KOTLINDATATYPE>  : IDataType<KOTLINDATATYPE> {
+interface IDBPlainScaledDataType<KOTLINDATATYPE>  : IDBDataType<KOTLINDATATYPE> {
     var ScaleValue: Int
 }

@@ -163,7 +163,7 @@ internal class DataContextKtTest {
 
     @Test
     fun printColumnDml(){
-        val tr = MySqlQueryTranslator()
+        val tr = MySqlQueryTranslator(db)
         tr.apply {
             println(User.renderToCreateTableSqlString())
         }

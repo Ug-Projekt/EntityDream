@@ -19,7 +19,7 @@ import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeature
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeatureMetaData
 
 class QueryTranslator(var context: PipeLineContext<IPipeLineSubject, IDataContext>) {
-    val translator = MySqlQueryTranslator()
+    val translator = MySqlQueryTranslator(context.featureContext)
     fun process(subject: TranslationSubject) {
         subject.translationResult = translator.Translate(subject.expression)
     }
