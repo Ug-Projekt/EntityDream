@@ -29,6 +29,7 @@ class User(DataContext: IDataContext) : DBEntity(DataContext, User) {
         val Money = doubleColumn("Money") notNull false precision 4 comment "پۇلى"
         val BirthDay = dateTimeColumn("BirthDay") notNull true comment "تۇغۇلغان ۋاقتى"
         val CompanyID = intColumn("CompanyID") notNull true reference Company.ID unsigned true comment "CompanyID"
+//        val Avatar = byteArrayColumn("Avatar") notNull false comment "باش سۈرەت"
     }
 
     var ID by User.ID
@@ -121,18 +122,19 @@ internal class DataContextKtTest {
     @Test
     fun insertCompany(){
 
-        val company = db.Companies.first { Company.WebSite equals "http://www.sarkar.cn" }
+        val company = db.Companies.first { Company.WebSite equals "kkkkk" }
 
         val usr = User(db).apply {
-            Name = "北京-白小飞"
+            Name = "يىڭى ئەزا"
             this.Age = 20
-            this.EMail = "北京-白小飞@163.com"
-            this.Pwd = "北京-白小飞"
-            this.Money = 664.414
-            this.CompanyID = company.ID
+            this.EMail = "yeganaaa@hotmail.com"
+            this.Pwd = "Developer653125"
+            this.Money = 22.45
+            this.Company = company
             this.BirthDay = DateTime(1994, 3, 1, 8, 9, 10)
 
         }
+
 
         db.Users.add(usr)
 
@@ -156,9 +158,12 @@ internal class DataContextKtTest {
     @Test
     fun selectCompanyUser()
     {
-        db.Users.where { User.BirthDay less DateTime(2000, 1, 1, 1, 2, 3) }.forEach {
-            println(it.BirthDay.toString("yyyy/MM/dd HH:mm:ss"))
+        db.Companies.where { Company.WebSite equals "http://www.sarkar.cn" }.first().Users.forEach {
+            println(it.Name)
+            it.Name = "ئىسمى"
         }
+
+        db.saveChanges()
     }
 
     @Test
@@ -168,10 +173,8 @@ internal class DataContextKtTest {
             println(User.renderToCreateTableSqlString())
         }
     }
+
 }
-
-
-
 
 
 

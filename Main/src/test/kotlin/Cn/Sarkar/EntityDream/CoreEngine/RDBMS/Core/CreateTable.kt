@@ -8,17 +8,27 @@ Time: 11:21 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core
 
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Util.clone
 import org.junit.Test
+import org.omg.CORBA.PERSIST_STORE
+import java.io.Serializable
 import java.sql.DriverManager
 
 internal class CreateTableTest {
-    val connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3308", "yeganaaa", "Developer653125")
 
     @Test
-    fun createDb()
-    {
-        val statement = connection.prepareStatement("create database CreateNew;")
-        val result = statement.executeUpdate()
-        println(result)
+    fun createDb() {
+
+        class Person(var Name: String = "", var Age: Byte = -1) : Serializable
+
+
+        val p1 = Person("yeganaaa", 23)
+        val p2 = p1
+
+        println(p1.Name)
+        p2.Name = "Hello"
+        println(p1.Name)
+
     }
 }
+

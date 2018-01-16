@@ -8,16 +8,17 @@ Time: 11:05 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Select
 
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBDataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.IDBFunction
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.SuperBlock
 import java.io.Serializable
 
 interface FromWhat : Serializable{
-    var DefaultValue: Any
+    var DataType: IDBDataType<*>
 }
 
-data class FromColumn(var SourceColumnName: String, var AliasName: String? = null, override var DefaultValue: Any) : FromWhat
-data class FromFunction(var Function: IDBFunction, var AliasName: String, override var DefaultValue: Any) : FromWhat
+data class FromColumn(var SourceColumnName: String, var AliasName: String? = null, override var DataType: IDBDataType<*>) : FromWhat
+data class FromFunction(var Function: IDBFunction, var AliasName: String, override var DataType: IDBDataType<*>) : FromWhat
 class Select(vararg select: FromWhat, var top: Int? = null, var offset: Int? = null, var distinct: Boolean = false) : SuperBlock
 {
     val selectors = ArrayList<FromWhat>()

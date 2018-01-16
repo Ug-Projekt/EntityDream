@@ -19,7 +19,7 @@ import kotlin.reflect.KProperty
 abstract class AbstractDBColumnConnector<KOTLINDATATYPE> : IDBColumn<KOTLINDATATYPE>
 {
     protected fun setup(){
-        this.Table.Columns = arrayOf(this, *Table.Columns)
+        this.Table.Columns = arrayOf(*Table.Columns, this)
     }
 
     override fun getValue(entity: IDBEntity, property: KProperty<*>): KOTLINDATATYPE {

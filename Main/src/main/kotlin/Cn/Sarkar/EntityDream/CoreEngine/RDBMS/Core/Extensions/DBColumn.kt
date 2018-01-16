@@ -17,6 +17,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBColumn
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBTable
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IsPrimaryKey
 import org.joda.time.DateTime
+import java.io.InputStream
 import java.sql.Date
 import java.sql.Time
 

@@ -75,6 +75,7 @@ abstract class IDataContext : IQueryContext {
         pipeLine.installFeature(QueryGrouper)
         pipeLine.installFeature(QueryExecuter)
         pipeLine.installFeature(SelectResultReader)
+        pipeLine.installFeature(DataReader)
         pipeLine.installFeature(InsertResultReader)
         pipeLine.installFeature(UpdateAndDeleteResultReader)
         pipeLine.installFeature(EntityFieldSetter)

@@ -28,11 +28,11 @@ val IDBColumn<*>.fullColumnName: String
 
 
 /*************************************************************************/
-val IDBTable.SelectAllColumns: Select get() = Select(*(this.Columns.map { FromColumn(it.fullColumnName, DefaultValue = it.DataType.DefaultValue!!, AliasName = it.ColumnName) }.toTypedArray()))
+val IDBTable.SelectAllColumns: Select get() = Select(*(this.Columns.map { FromColumn(it.fullColumnName, DataType = it.DataType, AliasName = it.ColumnName) }.toTypedArray()))
 val IDBTable.FromThis: From get() = From(FromTable(TableName))
 val IDBTable.SelectQuery: ISelectQueryExpression get() = SelectQueryExpression(this, SelectAllColumns, FromThis)
 /*************************************************************************/
-val IDBTable.FromColumns: Array<FromColumn> get() = arrayOf(*(this.Columns.map { FromColumn(it.ColumnName, DefaultValue = it.DataType.DefaultValue!!) }.toTypedArray()))
+val IDBTable.FromColumns: Array<FromColumn> get() = arrayOf(*(this.Columns.map { FromColumn(it.ColumnName, DataType = it.DataType) }.toTypedArray()))
 
 /*************************************************************************/
 
@@ -63,7 +63,7 @@ infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.where(condition: () -> Whe
 
 infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.andWhere(condition: (table: IDBTable) -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = applyUpdate { Where?.condition = Where!!.condition and condition(this.table) }
 infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.orWhere(condition: (table: IDBTable) -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = applyUpdate { Where?.condition = Where!!.condition or condition(this.table) }
-fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.slice(vararg columns: IDBColumn<*>) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = this.apply { this.Select.selectors.clear(); this.Select.selectors.addAll(columns.map { FromColumn(it.fullColumnName, DefaultValue = it.DataType.DefaultValue!!) }) }
+fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.slice(vararg columns: IDBColumn<*>) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = this.apply { this.Select.selectors.clear(); this.Select.selectors.addAll(columns.map { FromColumn(it.fullColumnName, DataType = it.DataType) }) }
 internal fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.removeFromColumnSelectorIfExists(column: IDBColumn<*>) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression {
 
     val col = this.Select.selectors.firstOrNull { it is FromColumn && it.SourceColumnName == column.fullColumnName } as? FromColumn
@@ -75,13 +75,13 @@ private fun IDBColumn<*>.generateFunction(select: Select, function: IDBParameter
     var fn: FromFunction
     val existingFromFunction = select.selectors.singleOrNull { it is FromFunction && it.AliasName == this.ColumnName } as? FromFunction
     if (existingFromFunction == null)
-        fn = FromFunction(function, ColumnName, defaultValue)
+        fn = FromFunction(function, ColumnName, DataType)
     else {
         select.selectors.remove(existingFromFunction)
         fn = FromFunction(
                 function.apply { this.Value = FuncFromFunction({ existingFromFunction.Function }) },
                 ColumnName,
-                defaultValue
+                DataType
         )
     }
     return fn

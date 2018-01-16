@@ -228,6 +228,9 @@ ${this.Columns.joinToString(",\n") { it.renderToCreateTableSqlString() }}
                 buffer.append(expression.GroupBy.run { if (this == null) "" else "GROUP BY ${ColumnName} "})
                 buffer.append(expression.Having.run {if (this == null) "" else "HAVING ${function.renderToString()} ${recursiveWhereBlock(condition)} "})
                 buffer.append(expression.OrderBy.run { if (this == null) "" else "ORDER BY ${this.Name} ${this.orderMode.Name} " })
+
+                if (expression.Select.offset != null && expression.Select.top == null) expression.Select.top = 0
+
                 buffer.append(expression.Select.top.run { if (this == null) "" else "LIMIT $this" })
                 buffer.append(expression.Select.offset.run { if (this == null) "" else ", $this" })
                 buffer.append(";")

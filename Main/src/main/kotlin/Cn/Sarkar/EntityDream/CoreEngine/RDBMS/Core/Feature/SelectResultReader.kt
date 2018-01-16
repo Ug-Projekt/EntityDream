@@ -8,20 +8,24 @@ Time: 8:34 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Feature
 
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBDataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.CorePipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.DataReaderSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.SelectResultSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.ISelectQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Select.FromColumn
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Select.FromFunction
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Select.validName
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Util.readResult
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.ValuesCacheItem
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.clonedPipeLine
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.execute
 import Cn.Sarkar.EntityDream.Pipeline.Core.Info.FeatureInfo
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineContext
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeature
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeatureMetaData
+import java.sql.ResultSet
 
 object SelectResultReader : PipeLineFeature<IPipeLineSubject, IDataContext>() {
     override val getMetaData: PipeLineFeatureMetaData by lazy { PipeLineFeatureMetaData(CorePipeLine.process, "Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Feature.SelectResultReader") }
@@ -51,7 +55,7 @@ object SelectResultReader : PipeLineFeature<IPipeLineSubject, IDataContext>() {
                         else -> throw Exception("Not Supported this 'Select'!")
                     }
 
-                    val value = result.readResult(name, it.DefaultValue)
+                    val value = result.readResult(featureContext, name, it.DataType)
                     row.put(name, value)
                 }
                 subject.values.add(row)
@@ -59,4 +63,7 @@ object SelectResultReader : PipeLineFeature<IPipeLineSubject, IDataContext>() {
 
         }
     }
+
+    private fun ResultSet.readResult(context: IDataContext, fieldName: String, dataType: IDBDataType<*>) = context.execute(context.clonedPipeLine, DataReaderSubject(this, fieldName, dataType)).Data
+
 }
