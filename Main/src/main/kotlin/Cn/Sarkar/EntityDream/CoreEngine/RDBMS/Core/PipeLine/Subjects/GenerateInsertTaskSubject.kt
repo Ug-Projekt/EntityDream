@@ -15,6 +15,6 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Insert.
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 
 class GenerateInsertTaskSubject(val context: IDataContext, val table: IDBTable, val entity: IDBEntity) : IPipeLineSubject {
-    override val operationName: String = "Generate Insert Task"
-    override val operationDescription: String = "Generate Insert Task"
+    override val Name: String = "Generate Insert Task"
+    override val Description: String = "Generate Insert Task"
 }

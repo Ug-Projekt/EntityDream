@@ -2,11 +2,14 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Feature
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.CorePipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.DataWriterSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.QueryExecutionSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.ISelectQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.IUpdateQueryExpression
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Util.WriteParameters
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.SqlParameter
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.clonedPipeLine
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.execute
 import Cn.Sarkar.EntityDream.Pipeline.Core.Info.FeatureInfo
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineContext
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeature
@@ -30,7 +33,7 @@ object QueryExecuter : PipeLineFeature<IPipeLineSubject, IDataContext>() {
             try {
                 subject.statement = subject.connection.prepareStatement(subject.group.query.sqlQuery, PreparedStatement.RETURN_GENERATED_KEYS)
                 subject.group.content.forEach {
-                    it.parameters.forEachIndexed { index, any -> subject.statement!!.WriteParameters(index + 1, any) }
+                    it.parameters.forEachIndexed { index, parameter -> subject.statement!!.WriteParameters(featureContext, index + 1, parameter) }
                     subject.statement!!.addBatch()
                 }
                 when(subject.group.query.expression)
@@ -47,5 +50,10 @@ object QueryExecuter : PipeLineFeature<IPipeLineSubject, IDataContext>() {
                 return
             }
         }
+    }
+
+    private fun PreparedStatement.WriteParameters(context: IDataContext, index: Int, parameter: SqlParameter)
+    {
+        context.execute(context.clonedPipeLine, DataWriterSubject(this, index, parameter))
     }
 }

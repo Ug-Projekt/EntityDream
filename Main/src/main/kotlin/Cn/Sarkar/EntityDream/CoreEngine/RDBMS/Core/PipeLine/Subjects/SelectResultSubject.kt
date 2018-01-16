@@ -12,7 +12,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.ValuesCache
 
 class SelectResultSubject(var executionSubject: QueryExecutionSubject) : IPipeLineSubject {
-    override val operationName: String = "Get Select Result"
-    override val operationDescription: String = "Get select query execution result."
+    override val Name: String = "Get Select Result"
+    override val Description: String = "Get select query execution result."
     var values: ValuesCache = ValuesCache()
 }

@@ -16,6 +16,8 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.Select
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.And
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Equal
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.WhereItemCondition
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.MappedParameter
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.SqlParameter
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 
 abstract class DBEntity(override var DataContext: IDataContext, override var Table: IDBTable) : IDBEntity {
@@ -32,21 +34,22 @@ internal val IDBEntity.uniqueKey: String get() = "${this.Table.TableName}::${thi
 /**
  * نۆۋەتتىكى Entity نىڭ PrimaryKey لىرىنىڭ ئىسمى ۋە قىممەتلىرى
  */
-internal val IDBEntity.PrimaryKeyValues: Array<KeyValuePair<String, Any>> get() = arrayOf(*(this.Table.PrimaryKey.map { KeyValuePair(it.fullColumnName, values!![it]!!) }.toTypedArray()))
+internal val IDBEntity.PrimaryKeyValues: Array<KeyValuePair<String, SqlParameter>> get() = arrayOf(*(this.Table.PrimaryKey.map { KeyValuePair(it.fullColumnName, MappedParameter(values!![it]!!, it.DataType) as SqlParameter) }.toTypedArray()))
 
 /**
  * قىممىتى ئاپتوماتىك ئاينىيدىغان ئىستون
  */
 internal val IDBTable.autoIncrementColumn: IDBColumn<*>? get() =  PrimaryKey.singleOrNull { it.AutoIncrement.autoIncrement }
 /**
-*خاسلىق
-*/
+ *خاسلىق
+ */
 internal val IDBEntity.autoIncrementField: IDBColumn<*>? get() =  Table.autoIncrementColumn
 
 /**
  * نۆۋەتتىكى Entity نىڭ مۇشۇ Entity  نى ئىزدەپ تىپىشقا بولىدىغان شەرتى،
  * ئادەتتە ئەڭ ئاسان ھەم ئاددىي ئۇسۇلدا ئەڭ ئاساسلىق مۇشۇ Entity نى تاپىدىغان شەرىتكە ئىرىشىشكە بولىدۇ
  */
+
 internal val IDBEntity.simpleWhereCondition: WhereItemCondition get(){
     val conditions = ArrayList<WhereItemCondition>()
     this.PrimaryKeyValues.forEach {
@@ -64,7 +67,7 @@ internal fun IDBEntity.generateRandomUnique() {
     if (values!![key] == null) values!!.put(key.ColumnName, -1)
 
     while (DataContext.insertedIntities[uniqueKey] != null) {
-        values!![key] = values!![key]!!.toInt() - 1
+        values!![key] = (values!![key]!! as Int) - 1
     }
 }
 

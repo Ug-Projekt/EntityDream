@@ -13,6 +13,6 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBEntity
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
 
 class SetEntityFieldValueSubject(val column: IDBColumn<*>, val entity: IDBEntity, var value: Any) : IPipeLineSubject {
-    override val operationName: String = "Entity Field Setter"
-    override val operationDescription: String = "Entity Field And ValuesCache Connector"
+    override val Name: String = "Entity Field Setter"
+    override val Description: String = "Entity Field And ValuesCache Connector"
 }

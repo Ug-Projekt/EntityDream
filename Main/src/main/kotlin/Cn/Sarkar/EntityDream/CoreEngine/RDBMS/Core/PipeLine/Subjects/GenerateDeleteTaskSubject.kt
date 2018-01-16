@@ -14,6 +14,6 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Where
 
 class GenerateDeleteTaskSubject(val entity: IDBEntity, var where: Where) : IPipeLineSubject {
-    override val operationName: String = "Generate DeleteTask, add to task queue"
-    override val operationDescription: String = "يىڭىدىن ئۆچۈرۈش ۋەزىپىسى ھاسىل قىلىپ تىزىملىككە "
+    override val Name: String = "Generate DeleteTask, add to task queue"
+    override val Description: String = "يىڭىدىن ئۆچۈرۈش ۋەزىپىسى ھاسىل قىلىپ تىزىملىككە "
 }

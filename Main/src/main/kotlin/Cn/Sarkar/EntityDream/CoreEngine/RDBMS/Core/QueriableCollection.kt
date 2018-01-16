@@ -14,10 +14,13 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.GenerateDel
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.GenerateInsertTaskSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.And
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Equal
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Where
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.WhereItemCondition
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.ISelectQueryExpression
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.MappedParameter
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Select.*
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Util.clone
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Util.deserializeFromByteArray
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Util.serializeToByteArray
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
@@ -73,6 +76,12 @@ class QueriableCollection<ENTITY : IDBEntity>(override var Context: IDataContext
             else this.Where!!.condition = And(this.Where!!.condition, where!!)
         }
 
+        if (Where != null)
+        {
+            val value = ((Where!!.condition as Equal))
+            println(value)
+            val cv = value.clone()
+        }
 
         cloneObjects()
     }

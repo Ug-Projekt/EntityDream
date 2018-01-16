@@ -14,8 +14,8 @@ import Cn.Sarkar.EntityDream.Pipeline.Core.Phase
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLine
 
 interface IPipeLineSubject {
-    val operationName: String
-    val operationDescription: String
+    val Name: String
+    val Description: String
 }
 
 class CorePipeLine : PipeLine<IPipeLineSubject, IDataContext>(before, beforeFilter, beforeProcess, process, afterProcess, afterFilter, after) {

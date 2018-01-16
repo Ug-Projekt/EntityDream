@@ -17,6 +17,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.GenerateIns
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Insert.InsertInto
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Insert.InsertQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Insert.Values
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.MappedParameter
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 import Cn.Sarkar.EntityDream.Pipeline.Core.Info.FeatureInfo
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineContext
@@ -48,26 +49,30 @@ object GenerateInsertTask : PipeLineFeature<IPipeLineSubject, IDataContext>(){
 
             val incrementField = subject.table.autoIncrementColumn
 
-            var kvs = entity.values!!.filter { it.value != null }
+            var kvs = entity.Table.Columns.filter { entity.values!![it] != null }
 
-            if (incrementField != null) {
-                entity.generateRandomUnique()
+
+            if (incrementField != null) { //ئەگەر ئاپتوماتىك ئاينىيدىغان خفسلىقى بولۇپ قالسا
+                entity.generateRandomUnique() //بىردىنبىر بولغان پەرىقلەندۈرۈش كودى چىقىشى يەنى نۆۋەتتىكى ئىلىمىنىت قوشۇلۇپ بولغاندىن كىيىن مۇشۇ ئىلىمىنىتنى مۇشۇ بىرىدنبىر بولغان قىممەت ئارقىلىق ئىزدەپ تاپىمىز
                 entity.DataContext.insertedIntities.put(entity.uniqueKey, entity)
 
-                kvs = kvs.filter { it.key != incrementField.ColumnName }
+                kvs = kvs.filter { it != incrementField } //ئاپتوماتىك ئاينىيدىغان خاسلىقىنى ساندانغا كىرگۈزىلىدىغان ئۇچۇرلار قاتارىدىن چىقىرۋەتسەك بولىدۇ
             }
 
 
             val expr = InsertQueryExpression(
                     entity.uniqueKey,
                     entity.Table,
-                    InsertInto(entity.Table.TableName, kvs.map { it.key }.toTypedArray()),
-                    Values(kvs.map { it.value!! }.toTypedArray())
+                    InsertInto(entity.Table.TableName, kvs.map { it.ColumnName }.toTypedArray()),
+                    Values(kvs.map { MappedParameter(entity.values!![it]!!, it.DataType) }.toTypedArray())
             )
 
             entity.DataContext.insertTasks.put(entity.uniqueKey, expr)
         }
     }
 }
+
+
+
 
 

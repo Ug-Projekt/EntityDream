@@ -13,7 +13,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.uniqueKey
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.simpleWhereCondition
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.CorePipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.GenerateUpdateTaskSubject
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.GenerateEntityFieldUpdateTaskSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Where
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Update.Set
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Update.Update
@@ -24,12 +24,12 @@ import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineContext
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeature
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeatureMetaData
 
-object GenerateUpdateTask : PipeLineFeature<IPipeLineSubject, IDataContext>() {
-    override val getMetaData: PipeLineFeatureMetaData = PipeLineFeatureMetaData(CorePipeLine.process, "Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Feature.GenerateUpdateTask")
+object GenerateEntityFieldUpdateTask : PipeLineFeature<IPipeLineSubject, IDataContext>() {
+    override val getMetaData: PipeLineFeatureMetaData = PipeLineFeatureMetaData(CorePipeLine.process, "Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Feature.GenerateEntityFieldUpdateTask")
     override val info: FeatureInfo by lazy {
         FeatureInfo(
-                "GenerateUpdateTask",
-                "يىڭىلاش ۋەزىپىسى ھاسىل قىلىدۇ ۋە ۋەزىپە تىزىملىكىگە قوشىدۇ",
+                "GenerateEntityFieldUpdateTask",
+                "ھەر بىر خاسلىققا قىممەت بىرىلگەن دەقىقىدە يىڭىلاش ۋەزىپىسى ھاسىل قىلىدۇ ۋە ۋەزىپە تىزىملىكىگە قوشىدۇ",
                 "Sarkar Software Technologys",
                 "yeganaaa",
                 1,
@@ -38,7 +38,7 @@ object GenerateUpdateTask : PipeLineFeature<IPipeLineSubject, IDataContext>() {
     }
 
     override fun PipeLineContext<IPipeLineSubject, IDataContext>.onExecute(subject: IPipeLineSubject) {
-        if (subject is GenerateUpdateTaskSubject) {
+        if (subject is GenerateEntityFieldUpdateTaskSubject) {
             var updateExpression = featureContext.updateTasks[subject.entity.uniqueKey]
             if (updateExpression == null) {
                 updateExpression = UpdateQueryExpression(subject.entity.Table, Update(subject.entity.Table.TableName), Set(), Where(subject.entity.simpleWhereCondition))

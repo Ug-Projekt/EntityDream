@@ -2,18 +2,19 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBNumberType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBDataType
+import java.io.Serializable
 import kotlin.properties.ReadWriteProperty
 
-class AutoIncrementProperty(var autoIncrement: Boolean, var start: Int = 1, var step: Int = 1)
+class AutoIncrementProperty(var autoIncrement: Boolean, var start: Int = 1, var step: Int = 1) : Serializable
 {
     companion object {
-        val default = AutoIncrementProperty(true, 1, 1)
-        val none = AutoIncrementProperty(false, 1, 1)
+        val default = AutoIncrementProperty(true, 0, 1)
+        val none = AutoIncrementProperty(false, 0, 1)
     }
 }
 
-data class UniqueProperty(var isUnique: Boolean = false, var uniqueGroupIndex: Int = 0)
-data class IndexProperty(var isIndex: Boolean = false, var groupIndex: Int = 0, var isUnique: Boolean = false)
+data class UniqueProperty(var isUnique: Boolean = false, var uniqueGroupIndex: Int = 0) : Serializable
+data class IndexProperty(var isIndex: Boolean = false, var groupIndex: Int = 0, var isUnique: Boolean = false) : Serializable
 
 //Index
 //Unique

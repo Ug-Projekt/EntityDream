@@ -13,6 +13,7 @@ import java.io.*
 fun <T : Serializable> T.serializeToByteArray() : ByteArray{
     val byteOutStream = ByteArrayOutputStream()
     val objectOutStream = ObjectOutputStream(byteOutStream)
+    println(this)
     objectOutStream.writeObject(this)
     objectOutStream.flush()
     objectOutStream.close()

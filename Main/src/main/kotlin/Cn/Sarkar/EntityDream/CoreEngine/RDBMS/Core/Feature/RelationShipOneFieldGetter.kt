@@ -16,6 +16,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueriableCollection
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.fullColumnName
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.And
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Equal
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.MappedParameter
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 import Cn.Sarkar.EntityDream.Pipeline.Core.Info.FeatureInfo
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineContext
@@ -43,7 +44,7 @@ object RelationShipOneFieldGetter : PipeLineFeature<IPipeLineSubject, IDataConte
             }
             val k = subject.relationShipColumn.ForeignKey!!.fullColumnName
             val v = subject.thisRefEntity.values!![subject.relationShipColumn]!!
-            val condition = Equal({k}, {v})
+            val condition = Equal({k}, { MappedParameter(v, subject.relationShipColumn.DataType) })
             val entityCollection = QueriableCollection(subject.thisRefEntity.DataContext, subject.relationShipColumn.ForeignKey!!.Table, condition, { subject.entityGenerator(subject.thisRefEntity.DataContext) })
             subject.selectResult = entityCollection.single()
             subject.delegateConnector.cachedValue = subject.selectResult

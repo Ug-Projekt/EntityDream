@@ -19,6 +19,6 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
 data class IDItem(var uniqueMd5Key: String, var id: Long)
 
 data class InsertResultSubject(var result: QueryExecutionSubject, var Ids: Array<IDItem>) : IPipeLineSubject {
-    override val operationName: String = "Insert Result Subject"
-    override val operationDescription: String = "يىڭى قوشۇلغان ئۇچۇرلارنىڭ نەتىجىسىنى ئوقۇش"
+    override val Name: String = "Insert Result Subject"
+    override val Description: String = "يىڭى قوشۇلغان ئۇچۇرلارنىڭ نەتىجىسىنى ئوقۇش"
 }

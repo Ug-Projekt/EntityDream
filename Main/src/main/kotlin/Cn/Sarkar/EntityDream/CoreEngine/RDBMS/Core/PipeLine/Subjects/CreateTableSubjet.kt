@@ -13,8 +13,8 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.CreateT
 
 class CreateTableSubjet(vararg expressions: CreateTableExpression) : IPipeLineSubject {
     val expressions = expressions
-    override val operationName: String = "CreateTableSubject"
-    override val operationDescription: String = "Craate a new table"
+    override val Name: String = "CreateTableSubject"
+    override val Description: String = "Craate a new table"
     var exception: Exception? = null
     var size: Int = 0
 }

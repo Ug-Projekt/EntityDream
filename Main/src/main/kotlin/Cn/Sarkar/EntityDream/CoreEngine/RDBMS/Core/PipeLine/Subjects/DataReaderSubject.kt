@@ -13,7 +13,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
 import java.sql.ResultSet
 
 class DataReaderSubject(val ResultSet: ResultSet, val FieldName: String, val DataType: IDBDataType<*>) : IPipeLineSubject {
-    override val operationName: String = "Result Set Reader"
-    override val operationDescription: String = "Result Set Reader"
+    override val Name: String = "Result Set Reader"
+    override val Description: String = "Result Set Reader"
     var Data: Any? = null
 }

@@ -73,7 +73,7 @@ internal class DataContextKtTest {
         override val info: FeatureInfo by lazy { FeatureInfo("Logger", "Demo", "Sarkar Software Technologys", "yeganaaa", 1, "v0.1") }
 
         override fun PipeLineContext<IPipeLineSubject, IDataContext>.onExecute(subject: IPipeLineSubject) {
-//                println((++index).toString() + "---" + subject.operationName + "***********" + subject::class.java.simpleName)
+//                println((++index).toString() + "---" + subject.Name + "***********" + subject::class.java.simpleName)
 
             if (subject is TranslationSubject) {
 

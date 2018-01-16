@@ -19,7 +19,7 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions
 //    object Person
 //    {
 //        val Name = object : IDBColumn<String> {
-//            override fun getValue(thisRef: IDBEntity, property: KProperty<*>): String {
+//            override fun getParameter(thisRef: IDBEntity, property: KProperty<*>): String {
 //                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //            }
 //
@@ -51,7 +51,7 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions
 //        }
 //
 //        val Age = object : IDBColumn<Int> {
-//            override fun getValue(thisRef: IDBEntity, property: KProperty<*>): Int {
+//            override fun getParameter(thisRef: IDBEntity, property: KProperty<*>): Int {
 //                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //            }
 //

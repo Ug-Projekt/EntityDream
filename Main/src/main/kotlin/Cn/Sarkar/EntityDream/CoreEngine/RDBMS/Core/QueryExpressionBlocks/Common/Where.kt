@@ -10,6 +10,7 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBColumn
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.fullColumnName
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.SqlParameter
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.SuperBlock
 import java.io.Serializable
 
@@ -30,18 +31,18 @@ class Or(vararg conditions: WhereItemCondition) : Cloneable, WhereItemCondition 
     }
 }
 
-class Equal(var first: () -> String, var last: () -> Any) : WhereItemCondition //تەڭ
-class NotEqual(var first: () -> String, var last: () -> Any) : WhereItemCondition //تەڭ ئەمەس
-class GreaterThen(var first: () -> String, var last: () -> Any) : WhereItemCondition  //چوڭ
-class LessThen(var first: () -> String, var last: () -> Any) : WhereItemCondition //كىچىك
-class GreaterOrEqualThen(var first: () -> String, var last: () -> Any) : WhereItemCondition //چوڭ ياكى تەڭ
-class LessOrEqualThen(var first: () -> String, var last: () -> Any) : WhereItemCondition //چوڭ ياكى كىچىك
-class Between(var first: () -> String, var from: () -> Any, var to: () -> Any) : WhereItemCondition  //ئارىلىقىدا
-class NotBetween(var first: () -> String, var from: () -> Any, var to: () -> Any) : WhereItemCondition  //ئارىلىقىدا ئەمەس
-class Like(var first: () -> String, var last: () -> Any) : WhereItemCondition  //Like
-class NotLike(var first: () -> String, var last: () -> Any) : WhereItemCondition  //Not Like
-class In(var first: () -> String, var others: () -> Array<Any>) : WhereItemCondition // ئىچىدە
-class NotIn(var first: () -> String, var others: () -> Array<Any>) : WhereItemCondition // ئىچىدە ئەمەس
+class Equal(var first: () -> String, var last: () -> SqlParameter) : WhereItemCondition //تەڭ
+class NotEqual(var first: () -> String, var last: () -> SqlParameter) : WhereItemCondition //تەڭ ئەمەس
+class GreaterThen(var first: () -> String, var last: () -> SqlParameter) : WhereItemCondition  //چوڭ
+class LessThen(var first: () -> String, var last: () -> SqlParameter) : WhereItemCondition //كىچىك
+class GreaterOrEqualThen(var first: () -> String, var last: () -> SqlParameter) : WhereItemCondition //چوڭ ياكى تەڭ
+class LessOrEqualThen(var first: () -> String, var last: () -> SqlParameter) : WhereItemCondition //چوڭ ياكى كىچىك
+class Between(var first: () -> String, var from: () -> SqlParameter, var to: () -> SqlParameter) : WhereItemCondition  //ئارىلىقىدا
+class NotBetween(var first: () -> String, var from: () -> SqlParameter, var to: () -> SqlParameter) : WhereItemCondition  //ئارىلىقىدا ئەمەس
+class Like(var first: () -> String, var last: () -> SqlParameter) : WhereItemCondition  //Like
+class NotLike(var first: () -> String, var last: () -> SqlParameter) : WhereItemCondition  //Not Like
+class In(var first: () -> String, var others: () -> Array<SqlParameter>) : WhereItemCondition // ئىچىدە
+class NotIn(var first: () -> String, var others: () -> Array<SqlParameter>) : WhereItemCondition // ئىچىدە ئەمەس
 
 class Where(
         var condition: WhereItemCondition

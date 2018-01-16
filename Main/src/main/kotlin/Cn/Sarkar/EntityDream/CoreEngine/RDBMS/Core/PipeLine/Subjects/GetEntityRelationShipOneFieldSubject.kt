@@ -21,8 +21,8 @@ data class GetEntityRelationShipOneFieldSubject<KOTLINDATATYPE : IDBEntity>(
         val thisRefEntity: IDBEntity,
         var selectResult: IDBEntity? = null
 ) : IPipeLineSubject {
-    override val operationName: String = "Get Entity RelationShip Mapped Field."
-    override val operationDescription: String = "Get Entity RelationShip Mapped Field."
+    override val Name: String = "Get Entity RelationShip Mapped Field."
+    override val Description: String = "Get Entity RelationShip Mapped Field."
 }
 
 

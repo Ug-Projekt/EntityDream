@@ -14,7 +14,7 @@ interface IDBEntity {
     var DataContext: IDataContext
     var Table: IDBTable
     var values: ValuesCacheItem?
-    var FromDB: Boolean
+    var FromDB: Boolean //is Loaded from database or new created
     companion object {
         //val autoDetectID = "****Auto Detect****"
     }

@@ -72,16 +72,18 @@ abstract class IDataContext : IQueryContext {
     }
 
     init {
+
         pipeLine.installFeature(QueryGrouper)
         pipeLine.installFeature(QueryExecuter)
         pipeLine.installFeature(SelectResultReader)
         pipeLine.installFeature(DataReader)
+        pipeLine.installFeature(DataWriter)
         pipeLine.installFeature(InsertResultReader)
         pipeLine.installFeature(UpdateAndDeleteResultReader)
         pipeLine.installFeature(EntityFieldSetter)
         pipeLine.installFeature(EntityFieldGetter)
         pipeLine.installFeature(GenerateInsertTask)
-        pipeLine.installFeature(GenerateUpdateTask)
+        pipeLine.installFeature(GenerateEntityFieldUpdateTask)
         pipeLine.installFeature(GenerateDeleteTask)
         pipeLine.installFeature(RelationShipOneFieldGetter)
         pipeLine.installFeature(RelationShipOneFieldSetter)

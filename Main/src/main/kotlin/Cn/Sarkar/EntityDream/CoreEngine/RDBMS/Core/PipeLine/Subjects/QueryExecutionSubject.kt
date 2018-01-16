@@ -14,8 +14,8 @@ import java.sql.PreparedStatement
 
 
 class QueryExecutionSubject(var group: QueryGroup, var connection: Connection) : IPipeLineSubject {
-    override val operationName: String = "Execute SQL Query"
-    override val operationDescription: String = "This is sql query execution operation"
+    override val Name: String = "Execute SQL Query"
+    override val Description: String = "This is sql query execution operation"
     var effectedRows: IntArray = IntArray(0, {0})
     var statement: PreparedStatement? = null
     var exception: Exception? = null

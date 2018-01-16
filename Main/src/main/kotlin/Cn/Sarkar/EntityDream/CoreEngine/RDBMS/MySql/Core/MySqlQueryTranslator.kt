@@ -13,6 +13,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBPlainScaledDataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBScaledType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.toLocalDBDmlString
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.fullColumnName
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.Aggregate.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.FuncFromColumn
@@ -24,7 +25,10 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.CreateT
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Delete.DeleteQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.ISelectQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Insert.InsertQueryExpression
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.MappedParameter
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.NormalParameter
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Select.*
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.SqlParameter
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Update.UpdateQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 import org.joda.time.DateTime
@@ -33,7 +37,7 @@ import java.security.MessageDigest
 import java.util.*
 
 class MySqlQueryTranslator(override val DataContext: IDataContext) : IQueryTranslator {
-    val params = ArrayList<Any>()
+    val params = ArrayList<SqlParameter>()
 
     val md5Algorithm by lazy { MessageDigest.getInstance("MD5") }
     fun encryptWithMD5(sourceString: String): String {
@@ -96,7 +100,7 @@ class MySqlQueryTranslator(override val DataContext: IDataContext) : IQueryTrans
         is Int, is Float, is Double -> this.toString()
         else -> this.toString()
     }
-    fun Any.renderToString(): String {
+    fun SqlParameter.renderToString(): String {
         params.add(this)
         return "?"
     }
@@ -115,17 +119,7 @@ class MySqlQueryTranslator(override val DataContext: IDataContext) : IQueryTrans
     }
 
     fun recursiveWhereBlock(where: WhereItemCondition, isTrunk: Boolean = false): String {
-        fun Any.renderHere() = run {
-            var retv = "?"
-            if (this is IDBColumn<*>){
-                retv = this.toString()
-            }
-            else
-            {
-                params.add(this)
-            }
-            retv
-        }
+        fun SqlParameter.renderHere() = this.run { params.add(this);"?" }
         return when (where) {
             is And -> {
                 if (isTrunk) where.conditions.joinToString(separator = " AND ") { recursiveWhereBlock(it) } else "(${where.conditions.joinToString(separator = " AND ") { recursiveWhereBlock(it) }}) "
@@ -166,11 +160,11 @@ class MySqlQueryTranslator(override val DataContext: IDataContext) : IQueryTrans
                 "${where.first()} NOT LIKE ${where.last().renderHere()} "
             }
             is In -> {
-                params.add(where.others().joinToString{ it.toSqlString() })
+                params.add(NormalParameter(where.others().joinToString{ it.toSqlString() }))
                 "${where.first()} IN (?) "
             }
             is NotIn -> {
-                params.add(where.others().joinToString{ it.toSqlString() })
+                params.add(NormalParameter(where.others().joinToString{ it.toSqlString() }))
                 "${where.first()} NOT IN (?) "
             }
             else -> throw Exception("Not Supported!قوللىمايدۇ")
@@ -268,3 +262,5 @@ ${this.Columns.joinToString(",\n") { it.renderToCreateTableSqlString() }}
         return retv
     }
 }
+
+

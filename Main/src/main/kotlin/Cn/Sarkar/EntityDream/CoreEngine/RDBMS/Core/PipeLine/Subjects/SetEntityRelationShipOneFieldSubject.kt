@@ -20,8 +20,8 @@ data class SetEntityRelationShipOneFieldSubject<KOTLINDATATYPE : IDBEntity>(
         val thisRefEntity: IDBEntity,
         val value: Any
 ) : IPipeLineSubject {
-    override val operationName: String = "Set Entity RelationShip Mapped One Field."
-    override val operationDescription: String = "Set Entity RelationShip Mapped One Field."
+    override val Name: String = "Set Entity RelationShip Mapped One Field."
+    override val Description: String = "Set Entity RelationShip Mapped One Field."
 }
 
 

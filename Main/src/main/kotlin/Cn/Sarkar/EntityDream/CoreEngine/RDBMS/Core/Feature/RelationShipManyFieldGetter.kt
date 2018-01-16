@@ -15,6 +15,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.GetEntityRe
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueriableCollection
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.fullColumnName
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Equal
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.MappedParameter
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 import Cn.Sarkar.EntityDream.Pipeline.Core.Info.FeatureInfo
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineContext
@@ -36,9 +37,9 @@ object RelationShipManyFieldGetter : PipeLineFeature<IPipeLineSubject, IDataCont
 
     override fun PipeLineContext<IPipeLineSubject, IDataContext>.onExecute(subject: IPipeLineSubject) {
         if (subject is GetEntityRelationShipManyFieldSubject<*>) {
-            val k = subject.relationShipColumn.fullColumnName
+            val k = subject.relationShipColumn
             val v = subject.thisRefEntity.values!![subject.relationShipColumn.ForeignKey!!]!!
-            val condition = Equal({k}, {v})
+            val condition = Equal({k.fullColumnName}, { MappedParameter(v, k.DataType) })
             val gen = {subject.entityGenerator(subject.thisRefEntity.DataContext)}
 
             subject.selectResult = QueriableCollection(subject.thisRefEntity.DataContext, subject.relationShipColumn.Table, condition, {gen()})

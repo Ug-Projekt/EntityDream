@@ -12,9 +12,10 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Feature
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.KeyValuePair
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.CorePipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.GenerateUpdateTaskSubject
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.GenerateEntityFieldUpdateTaskSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.SetEntityFieldValueSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.fullColumnName
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.MappedParameter
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.ValuesCacheItem
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.clonedPipeLine
@@ -41,7 +42,7 @@ object EntityFieldSetter : PipeLineFeature<IPipeLineSubject, IDataContext>() {
             val cpl = featureContext.clonedPipeLine
             if (subject.entity.FromDB) {
                 if (subject.value == subject.entity.values!![subject.column]) return
-                val result = featureContext.execute(cpl, GenerateUpdateTaskSubject(subject.entity, KeyValuePair(subject.column.fullColumnName, subject.value)))
+                val result = featureContext.execute(cpl, GenerateEntityFieldUpdateTaskSubject(subject.entity, KeyValuePair(subject.column.fullColumnName, MappedParameter(subject.value, subject.column.DataType))))
             }
             else
             {

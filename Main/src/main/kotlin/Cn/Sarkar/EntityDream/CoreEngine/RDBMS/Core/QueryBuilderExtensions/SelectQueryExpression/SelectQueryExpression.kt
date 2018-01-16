@@ -49,7 +49,6 @@ private fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.applyUpdate(applyAction:
     qc.Select = clonedSelect
     qc.From = clonedFrom
     qc.GroupBy = clonedGroupBy
-    qc.GroupBy = clonedGroupBy
     qc.Having = clonedHaving
     qc.OrderBy = clonedOrderby
     qc.Level = Level + 1

@@ -23,8 +23,8 @@ data class GetEntityRelationShipManyFieldSubject<KOTLINDATATYPE : IDBEntity>(
         val thisRefEntity: IDBEntity,
         var selectResult: IQueriableCollection<*>? = null
 ) : IPipeLineSubject {
-    override val operationName: String = "Get Entity RelationShip Mapped Many Field."
-    override val operationDescription: String = "Get Entity RelationShip Mapped Many Field."
+    override val Name: String = "Get Entity RelationShip Mapped Many Field."
+    override val Description: String = "Get Entity RelationShip Mapped Many Field."
 }
 
 
