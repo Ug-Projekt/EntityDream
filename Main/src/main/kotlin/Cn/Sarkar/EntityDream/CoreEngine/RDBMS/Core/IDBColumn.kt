@@ -5,7 +5,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType
 import java.io.Serializable
 import kotlin.properties.ReadWriteProperty
 
-class AutoIncrementProperty(var autoIncrement: Boolean, var start: Int = 1, var step: Int = 1) : Serializable
+class AutoIncrementProperty(var autoIncrement: Boolean, var start: Int = 1, var step: Int = 1)
 {
     companion object {
         val default = AutoIncrementProperty(true, 0, 1)
@@ -13,8 +13,8 @@ class AutoIncrementProperty(var autoIncrement: Boolean, var start: Int = 1, var 
     }
 }
 
-data class UniqueProperty(var isUnique: Boolean = false, var uniqueGroupIndex: Int = 0) : Serializable
-data class IndexProperty(var isIndex: Boolean = false, var groupIndex: Int = 0, var isUnique: Boolean = false) : Serializable
+data class UniqueProperty(var isUnique: Boolean = false, var uniqueGroupIndex: Int = 0)
+data class IndexProperty(var isIndex: Boolean = false, var groupIndex: Int = 0, var isUnique: Boolean = false)
 
 //Index
 //Unique

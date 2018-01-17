@@ -88,6 +88,7 @@ abstract class IDataContext : IQueryContext {
         pipeLine.installFeature(RelationShipOneFieldGetter)
         pipeLine.installFeature(RelationShipOneFieldSetter)
         pipeLine.installFeature(RelationShipManyFieldGetter)
+        pipeLine.installFeature(ObjectCloner)
     }
 }
 

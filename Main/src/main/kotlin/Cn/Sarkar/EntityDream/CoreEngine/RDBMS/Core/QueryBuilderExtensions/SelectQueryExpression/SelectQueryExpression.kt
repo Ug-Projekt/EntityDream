@@ -44,6 +44,7 @@ private fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.applyUpdate(applyAction:
         Level++
         return this
     }
+
     val qc = QueriableCollection<ENTITY>(this.Context, this.table, this.Where?.condition, ItemGenerator)
 
     qc.Select = clonedSelect
@@ -103,7 +104,8 @@ infix fun <T: Number, ENTITY : IDBEntity, COLLECTION> COLLECTION.avg(column: IDB
 fun <T, ENTITY : IDBEntity, COLLECTION> COLLECTION.count(column: IDBColumn<T>, distinct: Boolean = false) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = this.applyUpdate {
     slice()
 //    removeFromColumnSelectorIfExists(column)
-    this.Select.selectors.add(column.generateFunction(Select, Count(FuncFromColumn({ column.fullColumnName }), distinct), 0))
+    val fullColumnName = column.fullColumnName
+    this.Select.selectors.add(column.generateFunction(Select, Count(FuncFromColumn({ fullColumnName }), distinct), 0))
 }.run { Context.executeSelectQuery(this)[0][column] as Int }
 
 infix fun <T, ENTITY : IDBEntity, COLLECTION> COLLECTION.count(column: IDBColumn<T>) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = count(column, false)

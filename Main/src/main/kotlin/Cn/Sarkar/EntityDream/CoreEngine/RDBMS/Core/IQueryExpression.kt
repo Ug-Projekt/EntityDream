@@ -8,6 +8,4 @@ Time: 11:09 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core
 
-import java.io.Serializable
-
-interface IQueryExpression : Serializable
+interface IQueryExpression

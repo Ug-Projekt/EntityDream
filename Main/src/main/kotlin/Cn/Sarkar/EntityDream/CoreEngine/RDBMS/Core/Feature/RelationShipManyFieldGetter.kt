@@ -39,6 +39,8 @@ object RelationShipManyFieldGetter : PipeLineFeature<IPipeLineSubject, IDataCont
         if (subject is GetEntityRelationShipManyFieldSubject<*>) {
             val k = subject.relationShipColumn
             val v = subject.thisRefEntity.values!![subject.relationShipColumn.ForeignKey!!]!!
+
+
             val condition = Equal({k.fullColumnName}, { MappedParameter(v, k.DataType) })
             val gen = {subject.entityGenerator(subject.thisRefEntity.DataContext)}
 

@@ -13,7 +13,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.ISelect
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.SuperBlock
 import java.io.Serializable
 
-interface FromSelector : Serializable
+interface FromSelector
 
 class FromQueryContainer(var select: ISelectQueryExpression, var aliasName: String) : FromSelector
 class FromTable(var tableName: String) : FromSelector

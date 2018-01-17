@@ -74,7 +74,10 @@ object DataWriter : PipeLineFeature<IPipeLineSubject, IDataContext>() {
             }
             is MappedParameter -> {
                 when (parameter.DataType) {
-                    is TinyInt, is SmallInt, is MediumInt, is DBInt, is BigInt -> this.setInt(index, parameter.Value as Int)
+                    is TinyInt -> this.setByte(index, parameter.Value as Byte)
+                    is SmallInt -> this.setShort(index, parameter.Value as Short)
+                    is MediumInt, is DBInt -> this.setInt(index, parameter.Value as Int)
+                    is BigInt -> this.setLong(index, parameter.Value as Long)
 
                     is DBFloat -> this.setFloat(index, parameter.Value as Float)
                     is DBDouble -> this.setDouble(index, parameter.Value as Double)

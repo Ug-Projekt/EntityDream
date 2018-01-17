@@ -158,7 +158,7 @@ internal class DataContextKtTest {
     @Test
     fun selectCompanyUser()
     {
-        db.Companies.where { Company.WebSite equals "http://www.sarkar.cn" }.first().Users.forEach {
+        db.Companies.where { Company.WebSite equals "http://www.sarkar.cn" }.mid(Company.WebSite, 2, 4) .first().Users.mid(User.Name, 2, 3).forEach {
             println(it.Name)
             it.Name = "ئىسمى"
         }

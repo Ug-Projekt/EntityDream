@@ -99,5 +99,11 @@ fun IDataContext.createNewTables(vararg tables: IDBTable) : Boolean
     return result.exception == null
 }
 
-
+/**
+ * * ئوبىيكىت كىلونلاش
+ * * 对象克隆
+ * Clone Objects
+ */
+fun <T> T.cloneObjects(context: IDataContext) : T = context.execute(context.clonedPipeLine, ObjectCloneSubject(this as Any)).ClonedObject as? T ?:
+        throw Exception("This object is default not supported, please add your ObjectCloner Interceptor, نۆۋەتتىكى تىپنى كىلونلاشنى قوللىمايدۇ، ئۆزىڭىزنىڭ مۇشۇ ئوبىيكىتنى كىلونلاپ بىرىدىغان قىستۇرمىسىنى قوشۇڭ، 不支持克隆此对象， 请添加您的克隆插件。")
 

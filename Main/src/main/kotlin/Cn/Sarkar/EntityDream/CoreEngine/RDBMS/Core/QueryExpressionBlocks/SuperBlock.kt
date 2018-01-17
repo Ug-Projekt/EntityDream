@@ -8,7 +8,5 @@ Time: 11:04 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks
 
-import java.io.Serializable
-
-interface SuperBlock : Serializable {
+interface SuperBlock {
 }

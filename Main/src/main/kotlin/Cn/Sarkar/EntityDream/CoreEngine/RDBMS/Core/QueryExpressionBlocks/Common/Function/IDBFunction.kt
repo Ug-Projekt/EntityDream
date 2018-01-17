@@ -8,8 +8,6 @@ Time: 5:19 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function
 
-import java.io.Serializable
-
-interface IDBFunction : Serializable {
+interface IDBFunction {
     val Name: String
 }

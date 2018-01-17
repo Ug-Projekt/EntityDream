@@ -8,9 +8,7 @@ Time: 5:21 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType
 
-import java.io.Serializable
-
-interface IDBDataType<KOTLINDATATYPE> : Serializable{
+interface IDBDataType<KOTLINDATATYPE>{
     var Name: String
     var DefaultValue: KOTLINDATATYPE
 }

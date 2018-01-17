@@ -13,7 +13,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.SuperBlock
 import java.io.Serializable
 
-interface FromWhat : Serializable{
+interface FromWhat{
     var DataType: IDBDataType<*>
 }
 

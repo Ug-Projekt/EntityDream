@@ -255,7 +255,7 @@ ${this.Columns.joinToString(",\n") { it.renderToCreateTableSqlString() }}
         val query = buffer.toString()
         var fullQuery = query
         params.forEach {
-            fullQuery = fullQuery.replaceFirst("?", it.toSqlString())
+            fullQuery = fullQuery.replaceFirst("?", it.Value.toSqlString())
         }
         val retv = TranslateResult(encryptWithMD5(query), query, params.toList(), fullQuery, expression)
         params.clear()

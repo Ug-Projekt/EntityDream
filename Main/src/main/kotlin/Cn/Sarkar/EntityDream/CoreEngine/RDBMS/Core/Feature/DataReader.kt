@@ -45,7 +45,10 @@ object DataReader : PipeLineFeature<IPipeLineSubject, IDataContext>() {
 
     private fun ResultSet.readResult(fieldName: String, dataType: IDBDataType<*>) : Any? = when(dataType){
 
-        is TinyInt, is SmallInt, is MediumInt, is DBInt, is BigInt -> this.getInt(fieldName)
+        is TinyInt -> this.getByte(fieldName)
+        is SmallInt -> this.getShort(fieldName)
+        is MediumInt, is DBInt -> this.getInt(fieldName)
+        is BigInt -> this.getLong(fieldName)
 
         is DBFloat -> this.getFloat(fieldName)
         is DBDouble -> this.getDouble(fieldName)

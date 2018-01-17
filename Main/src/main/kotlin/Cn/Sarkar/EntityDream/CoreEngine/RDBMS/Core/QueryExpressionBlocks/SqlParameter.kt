@@ -11,7 +11,7 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBDataType
 import java.io.Serializable
 
-interface SqlParameter : Serializable{
+interface SqlParameter{
     var Value: Any
 }
 data class NormalParameter(override var Value: Any) : SqlParameter

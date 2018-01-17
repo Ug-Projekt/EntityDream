@@ -12,18 +12,17 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBColumn
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.fullColumnName
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.SqlParameter
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.SuperBlock
-import java.io.Serializable
 
-interface WhereItemCondition : Serializable
+interface WhereItemCondition
 
-class And(vararg conditions: WhereItemCondition) : Cloneable, WhereItemCondition //ھەمدە
+class And(vararg conditions: WhereItemCondition) : WhereItemCondition //ھەمدە
 {
     var conditions: ArrayList<WhereItemCondition> = ArrayList()
     init {
         this.conditions.addAll(conditions)
     }
 }
-class Or(vararg conditions: WhereItemCondition) : Cloneable, WhereItemCondition  //ياكى
+class Or(vararg conditions: WhereItemCondition) : WhereItemCondition  //ياكى
 {
     var conditions: ArrayList<WhereItemCondition> = ArrayList()
     init {

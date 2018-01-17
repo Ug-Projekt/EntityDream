@@ -8,21 +8,17 @@ Time: 9:03 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core
 
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.cloneObjects
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.executeSelectQuery
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.simpleWhereCondition
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.GenerateDeleteTaskSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.GenerateInsertTaskSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.And
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Equal
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Where
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.WhereItemCondition
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.ISelectQueryExpression
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.MappedParameter
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Select.*
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Util.clone
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Util.deserializeFromByteArray
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Util.serializeToByteArray
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.clonedPipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.execute
@@ -31,43 +27,22 @@ fun <TABLE : IDBTable, ENTITY : IDBEntity> QueriableCollection<ENTITY>.query(que
 
 class QueriableCollection<ENTITY : IDBEntity>(override var Context: IDataContext, override var table: IDBTable, private var where: WhereItemCondition? = null, override var ItemGenerator: () -> ENTITY) : ArrayList<ENTITY>(), ISelectQueryExpression by table.SelectQuery, IQueriableCollection<ENTITY> {
 
-    private var cachedSelectBytes: ByteArray = byteArrayOf()
-    private var cachedFromBytes: ByteArray = byteArrayOf()
-    private var cachedWhereBytes: ByteArray? = null
-    private var cachedGroupByBytes: ByteArray? = null
-    private var cachedHavingBytes: ByteArray? = null
-    private var cachedOrderbyBytes: ByteArray? = null
 
-    override val clonedSelect: Select get() = cachedSelectBytes.deserializeFromByteArray()
-    override val clonedFrom: From get() = cachedFromBytes.deserializeFromByteArray()
-    override val clonedWhere: Where? get() = cachedWhereBytes?.deserializeFromByteArray()
-    override val clonedGroupBy: GroupBy? get() = cachedGroupByBytes?.deserializeFromByteArray()
-    override val clonedHaving: Having? get() = cachedHavingBytes?.deserializeFromByteArray()
-    override val clonedOrderby: OrderBy? get() = cachedOrderbyBytes?.deserializeFromByteArray()
+    override val clonedSelect: Select get() = Select.cloneObjects(Context)
+    override val clonedFrom: From get() = From.cloneObjects(Context)
+    override val clonedWhere: Where? get() = Where?.cloneObjects(Context)
+    override val clonedGroupBy: GroupBy? get() = GroupBy?.cloneObjects(Context)
+    override val clonedHaving: Having? get() = Having?.cloneObjects(Context)
+    override val clonedOrderby: OrderBy? get() = OrderBy?.cloneObjects(Context)
     override var cached: Boolean = false
     override var Level: Int = 0
 
     override fun ValuesCacheItem.toEntity() : ENTITY = ItemGenerator().apply { values = this@toEntity; FromDB = true }
 
-    /**
-     * پەقەت نۆۋەتتىكى QueriableCollection قۇرۇلۇپ بولغاندىن كىيىن كىلونلايدىغان ئوبىيكىتلىرىنى ئۆزگەرتىشنىڭ زۆرۈرىيىتى بولمىغانلىقى ۋە
-     * ئۈنۈمنى ئاشۇرۇش ئۈچۈن ھەر قىتىم كىلونلايدىغان مۇھىم ئوبىيكىتلارنى غەملەككە كىلونلاپ ساقلىۋالدۇق
-     */
-    private fun cloneObjects() {
-
-        cachedFromBytes = From.serializeToByteArray()
-        cachedSelectBytes = Select.serializeToByteArray()
-        cachedWhereBytes = Where?.serializeToByteArray()
-        cachedGroupByBytes = GroupBy?.serializeToByteArray()
-        cachedHavingBytes = Having?.serializeToByteArray()
-        cachedOrderbyBytes = OrderBy?.serializeToByteArray()
-    }
-
-
     init {
         /**
          * ئەگەر نۆۋەتتىكى ئوبىيكىت بىرگە كۆپ ماسلىق مۇناسىۋەت تۈپەيلى كىلىپ چىققان ئوبىيكىت بولسا
-         * يەنە قايتىدىن بارلىق ئوبىيكىتلار ئىچىدىن ئىزدەشتىن ساقلىنىش ئۈچۈن where غا بىر شەرىت بىرىلىدۇ
+         * يەنە قايتىدىن بارلىق ئوبىيكىتلار ئىچىدىن ئىزدەشتىن ساقلىنىش ئۈچۈن where غا بىر شەرىت بىرىلىدۇ ۋە شۇ شەرىت ساقلاپ قىلىنىدۇ.
          * مەسىلەن
          * select xxxx from xxxx where xxxx AND {OneToManyObj}.{PrimaryKeyColumn} = {xxxx}
          */
@@ -75,15 +50,6 @@ class QueriableCollection<ENTITY : IDBEntity>(override var Context: IDataContext
             if (this.Where == null) this.Where = Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Where(where!!)
             else this.Where!!.condition = And(this.Where!!.condition, where!!)
         }
-
-        if (Where != null)
-        {
-            val value = ((Where!!.condition as Equal))
-            println(value)
-            val cv = value.clone()
-        }
-
-        cloneObjects()
     }
 
     fun loadFromLocal() {
