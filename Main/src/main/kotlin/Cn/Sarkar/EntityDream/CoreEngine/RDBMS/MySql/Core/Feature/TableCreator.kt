@@ -13,6 +13,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.CreateTableSubjet
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.TranslationSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core.Subject.NamingRuleSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.clonedPipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.execute
 import Cn.Sarkar.EntityDream.Pipeline.Core.Info.FeatureInfo
@@ -48,6 +49,13 @@ object TableCreator : PipeLineFeature<IPipeLineSubject, IDataContext>() {
             {
                 subject.exception = except
             }
+        }
+
+        if (subject is NamingRuleSubject)
+        {
+            subject.PrimaryKeyNamingRules = { "PrimaryKey__${it.joinToString(separator = "_") { it.ColumnName }}" }
+            subject.UniqueNamingRules = { "Unique__${it.joinToString(separator = "_") { it.ColumnName }}" }
+            subject.IndexNamingRules = { "Index__${it.joinToString(separator = "_") { it.ColumnName }}" }
         }
     }
 }

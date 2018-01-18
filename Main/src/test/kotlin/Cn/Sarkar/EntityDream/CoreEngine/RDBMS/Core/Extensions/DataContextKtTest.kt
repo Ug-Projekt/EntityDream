@@ -2,12 +2,16 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.CorePipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.CreateTableSubjet
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.TranslationSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueriableCollection
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.*
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.CreateTable.CreateTableExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core.MySqlQueryTranslator
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.MySqlDataContext
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.clonedPipeLine
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.execute
 import Cn.Sarkar.EntityDream.Pipeline.Core.Info.FeatureInfo
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineContext
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeature
@@ -21,14 +25,14 @@ import java.sql.DriverManager
 class User(DataContext: IDataContext) : DBEntity(DataContext, User) {
     companion object : DBTable("User") {
         override var Comment: String = "ئەزا"
-        val ID = idColumn("ID") comment "ID" primaryKey true
-        val Name = stringColumn("Name") isN true default "Name@Empty" size 100 comment "ئىسمى"
-        val Pwd = stringColumn("Pwd") isN false size 50 comment "پارولى" default "Password@Empty"
-        val Age = byteColumn("Age") unsigned true notNull true default 0 comment "يىشى"
+        val ID = idColumn("ID") comment "ID" primaryKey true indexGroupIndex 0
+        val Name = stringColumn("Name") isN true default "Name@Empty" size 100 comment "ئىسمى" unique true uniqueGroupIndex 0
+        val Pwd = stringColumn("Pwd") isN false size 50 comment "پارولى" default "Password@Empty" unique true uniqueGroupIndex 1
+        val Age = byteColumn("Age") unsigned true notNull true default 0 comment "يىشى" unique true uniqueGroupIndex 1
         val EMail = stringColumn("EMail") size 200 comment "ئىلخەت"
         val Money = doubleColumn("Money") notNull false precision 4 comment "پۇلى"
         val BirthDay = dateTimeColumn("BirthDay") notNull true comment "تۇغۇلغان ۋاقتى"
-        val CompanyID = intColumn("CompanyID") notNull true reference Company.ID unsigned true comment "CompanyID"
+        val CompanyID = intColumn("CompanyID") notNull true reference Company.ID unsigned true comment "CompanyID" primaryKey true
 //        val Avatar = byteArrayColumn("Avatar") notNull false comment "باش سۈرەت"
     }
 
@@ -160,7 +164,7 @@ internal class DataContextKtTest {
     {
         db.Companies.where { Company.WebSite equals "http://www.sarkar.cn" }.mid(Company.WebSite, 2, 4) .first().Users.mid(User.Name, 2, 3).forEach {
             println(it.Name)
-            it.Name = "ئىسمى"
+//            it.Name = "ئىسمى"
         }
 
         db.saveChanges()
@@ -168,13 +172,22 @@ internal class DataContextKtTest {
 
     @Test
     fun printColumnDml(){
-        val tr = MySqlQueryTranslator(db)
-        tr.apply {
-            println(User.renderToCreateTableSqlString())
-        }
+        val expr = CreateTableExpression(User)
+        val result = db.execute(db.clonedPipeLine, TranslationSubject(expr))
+        println(result.translationResult?.fullSqlQuery)
     }
 
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -9,6 +9,8 @@ Time: 1:57 AM
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.*
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.Binary
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.Text
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBPlainDataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBPlainScaledDataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBScaledType
@@ -31,6 +33,9 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Select.
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.SqlParameter
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Update.UpdateQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core.Subject.NamingRuleSubject
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.clonedPipeLine
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.execute
 import org.joda.time.DateTime
 import sun.misc.BASE64Encoder
 import java.security.MessageDigest
@@ -171,10 +176,40 @@ class MySqlQueryTranslator(override val DataContext: IDataContext) : IQueryTrans
         }
     }
 
+    fun IDBTable.generateConstraintDmls() : String
+    {
+        val gen = DataContext.execute(DataContext.clonedPipeLine, NamingRuleSubject())
+        val buffer = StringBuilder()
+
+        val constraints = ArrayList<String>()
+
+        if (gen.IndexNamingRules == null || gen.PrimaryKeyNamingRules == null || gen.UniqueNamingRules == null)
+            throw Exception("Not found naming rulesئىسىم ھاسىللىغۇچنى تاپالمىدى، 找不到命名生成器，")
+
+        if (PrimaryKey.isNotEmpty()) {
+            buffer.append(",\n")
+            val name = gen.PrimaryKeyNamingRules!!(this, PrimaryKey)
+            constraints.add("CONSTRAINT $name PRIMARY KEY (${this.PrimaryKey.joinToString { it.ColumnName }})")
+        }
+
+//        Columns.filter { !it.IsPrimaryKey && it.Index.isIndex && !it.DataType is Text && !it.DataType is Binary }.groupBy { it.Index.groupIndex }.forEach { g, v ->
+//            val name = gen.UniqueNamingRules!!(this, v.toTypedArray())
+//            buffer.append("INDEX $name ")
+//        }
+
+        constraints.addAll(Columns.filter { !it.IsPrimaryKey && it.Unique.isUnique }.groupBy { it.Unique.uniqueGroupIndex }.map {
+            val name = gen.UniqueNamingRules!!(this, it.value.toTypedArray())
+            "CONSTRAINT $name UNIQUE (${it.value.joinToString { it.ColumnName }})"
+        })
+        buffer.append(constraints.joinToString(separator = ",\n") { it })
+
+        return buffer.toString()
+    }
+
     fun IDBTable.renderToCreateTableSqlString() = """${this.TableName} (
 ${this.Columns.joinToString(",\n") { it.renderToCreateTableSqlString() }}
 
-
+${this.generateConstraintDmls()}
 )""".trimIndent()
 
     fun IDBColumn<*>.renderToCreateTableSqlString(): String {
@@ -249,6 +284,7 @@ ${this.Columns.joinToString(",\n") { it.renderToCreateTableSqlString() }}
             }
             is CreateTableExpression -> {
                 buffer.append("CREATE TABLE IF NOT EXISTS ")
+                buffer.append(expression.table.renderToCreateTableSqlString())
                 buffer.append(";")
             }
         }

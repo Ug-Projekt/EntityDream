@@ -28,5 +28,5 @@ fun IDBDataType<*>.toLocalDBDmlString(dataContext: IDataContext) : String {
     val cpl = dataContext.clonedPipeLine
 
     val result = dataContext.execute(cpl, TypeAdapterSubject(this))
-    return result.OutPutString ?: throw Exception("Cannot find type adapter, تىپ ماسلاشتۇرغۇچنى تاپالمىدى, 找不到对应的类型Adapter（匹配器）")
+    return result.OutPutString ?: throw Exception("Cannot find type adapter, تىپ ماسلاشتۇرغۇچنى تاپالمىدى, 找不到对应的类型Adapter（匹配器）$this")
 }
