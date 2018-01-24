@@ -35,6 +35,6 @@ abstract class AbstractDBColumnConnector<KOTLINDATATYPE> : IDBColumn<KOTLINDATAT
 
     override fun toString(): String = fullColumnName
     override var Comment: String = ""
-    override var Unique: UniqueProperty = UniqueProperty()
-    override var Index: IndexProperty = IndexProperty()
+
+    override var IndexLength: Int = -1
 }

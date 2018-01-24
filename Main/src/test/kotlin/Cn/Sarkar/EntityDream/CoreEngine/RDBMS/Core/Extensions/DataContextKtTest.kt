@@ -24,16 +24,23 @@ import java.sql.DriverManager
 
 class User(DataContext: IDataContext) : DBEntity(DataContext, User) {
     companion object : DBTable("User") {
+
         override var Comment: String = "ئەزا"
-        val ID = idColumn("ID") comment "ID" primaryKey true indexGroupIndex 0
-        val Name = stringColumn("Name") isN true default "Name@Empty" size 100 comment "ئىسمى" unique true uniqueGroupIndex 0
-        val Pwd = stringColumn("Pwd") isN false size 50 comment "پارولى" default "Password@Empty" unique true uniqueGroupIndex 1
-        val Age = byteColumn("Age") unsigned true notNull true default 0 comment "يىشى" unique true uniqueGroupIndex 1
+        val ID = idColumn("ID") comment "ID" primaryKey true
+        val Name = stringColumn("Name") isN true default "Name@Empty" size 100 comment "ئىسمى"
+        val Pwd = stringColumn("Pwd") isN false size 50 comment "پارولى" default "Password@Empty"
+        val Age = byteColumn("Age") unsigned true notNull true default 0 comment "يىشى"
         val EMail = stringColumn("EMail") size 200 comment "ئىلخەت"
-        val Money = doubleColumn("Money") notNull false precision 4 comment "پۇلى"
+        val Money = doubleColumn("Money") notNull false comment "پۇلى"
         val BirthDay = dateTimeColumn("BirthDay") notNull true comment "تۇغۇلغان ۋاقتى"
-        val CompanyID = intColumn("CompanyID") notNull true reference Company.ID unsigned true comment "CompanyID" primaryKey true
+        val CompanyID = intColumn("CompanyID") notNull true reference Company.ID unsigned true comment "CompanyID"
+
+        init {
+//            unique(Name, Pwd)
+            index(Name, Pwd) unique true
+        }
 //        val Avatar = byteArrayColumn("Avatar") notNull false comment "باش سۈرەت"
+
     }
 
     var ID by User.ID
@@ -50,9 +57,9 @@ class User(DataContext: IDataContext) : DBEntity(DataContext, User) {
 class Company(DataContext: IDataContext) : DBEntity(DataContext, Company) {
     companion object : DBTable("Company") {
 
-        val ID = idColumn("ID")
-        val Name = stringColumn("Name")
-        var WebSite = stringColumn("WebSite")
+        val ID = idColumn("ID") comment "ID"
+        val Name = stringColumn("Name") comment "ئىسمى"
+        var WebSite = stringColumn("WebSite") comment "تور ئادېرسى"
     }
 
     var ID by Company.ID
@@ -70,8 +77,6 @@ internal class DataContextKtTest {
     }
 
     val logger = object : PipeLineFeature<IPipeLineSubject, IDataContext>() {
-
-        var index = 0
 
         override val getMetaData: PipeLineFeatureMetaData by lazy { PipeLineFeatureMetaData(CorePipeLine.after, "Logger") }
         override val info: FeatureInfo by lazy { FeatureInfo("Logger", "Demo", "Sarkar Software Technologys", "yeganaaa", 1, "v0.1") }
@@ -172,12 +177,15 @@ internal class DataContextKtTest {
 
     @Test
     fun printColumnDml(){
-        val expr = CreateTableExpression(User)
-        val result = db.execute(db.clonedPipeLine, TranslationSubject(expr))
-        println(result.translationResult?.fullSqlQuery)
+        println(db.createNewTables(User, Company))
     }
 
+
+
 }
+
+
+
 
 
 

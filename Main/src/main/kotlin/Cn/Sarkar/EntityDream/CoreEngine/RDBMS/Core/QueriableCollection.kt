@@ -68,7 +68,7 @@ class QueriableCollection<ENTITY : IDBEntity>(override var Context: IDataContext
     override val size: Int
         get() {
 
-            val key = table.PrimaryKey.first()
+            val key = table.PrimaryKey.columns.first()
             val size = this count key
             return if (cached) super.size + size else size
         }

@@ -59,7 +59,7 @@ abstract class IDataContext : IQueryContext {
 
         ids.filter { it.id != -1L }.forEach {
             val entity = insertedIntities[it.uniqueMd5Key]!!
-            val col = entity.Table.PrimaryKey.single { it.AutoIncrement.autoIncrement }
+            val col = entity.Table.PrimaryKey.columns.single { it.AutoIncrement.autoIncrement }
             entity.values!![col.ColumnName] = it.id
             entity.FromDB = true
         }

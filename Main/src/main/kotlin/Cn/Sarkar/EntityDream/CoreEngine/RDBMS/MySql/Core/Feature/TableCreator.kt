@@ -13,6 +13,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.CreateTableSubjet
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.TranslationSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core.Subject.CreateForeignKeySubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core.Subject.NamingRuleSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.clonedPipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.execute
@@ -44,6 +45,28 @@ object TableCreator : PipeLineFeature<IPipeLineSubject, IDataContext>() {
                     val result = featureContext.execute(cpl, TranslationSubject(it))
                    subject.size += statement.executeUpdate(result.translationResult!!.fullSqlQuery)
                 }
+
+
+            }
+            catch (except: Exception)
+            {
+                subject.exception = except
+            }
+        }
+
+        if (subject is CreateForeignKeySubject)
+        {
+            try {
+
+                val cpl = featureContext.clonedPipeLine
+                val statement = featureContext.connection.createStatement()
+
+                subject.tables.forEach {
+                    it.Columns.filter { it.ForeignKey != null }.forEach {column ->
+                        val query = "ALTER TABLE ${it.TableName} ADD CONSTRAINT ${column.ColumnName}_ForeignKey FOREIGN KEY (${column.ColumnName}) REFERENCES ${column.ForeignKey!!.Table.TableName}( ${column.ForeignKey!!.ColumnName})"
+                        statement.executeUpdate(query)
+                    }
+                }
             }
             catch (except: Exception)
             {
@@ -53,9 +76,9 @@ object TableCreator : PipeLineFeature<IPipeLineSubject, IDataContext>() {
 
         if (subject is NamingRuleSubject)
         {
-            subject.PrimaryKeyNamingRules = { "PrimaryKey__${it.joinToString(separator = "_") { it.ColumnName }}" }
-            subject.UniqueNamingRules = { "Unique__${it.joinToString(separator = "_") { it.ColumnName }}" }
-            subject.IndexNamingRules = { "Index__${it.joinToString(separator = "_") { it.ColumnName }}" }
+            subject.PrimaryKeyNamingRules = { if (it.name == "") "PrimaryKey__${it.columns.joinToString(separator = "_") { it.ColumnName }}" else it.name }
+            subject.UniqueNamingRules = { if (it.name == "") "Unique__${it.columns.joinToString(separator = "_") { it.ColumnName }}" else it.name }
+            subject.IndexNamingRules = { if (it.name == "") "Index__${it.columns.joinToString(separator = "_") { it.ColumnName }}" else it.name }
         }
     }
 }

@@ -9,12 +9,13 @@ Time: 1:57 AM
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.*
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.Binary
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.Text
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBPlainDataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBPlainScaledDataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBScaledType
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.comment
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.toLocalDBDmlString
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.unique
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.fullColumnName
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.Aggregate.*
@@ -40,6 +41,7 @@ import org.joda.time.DateTime
 import sun.misc.BASE64Encoder
 import java.security.MessageDigest
 import java.util.*
+import java.util.Date
 
 class MySqlQueryTranslator(override val DataContext: IDataContext) : IQueryTranslator {
     val params = ArrayList<SqlParameter>()
@@ -186,21 +188,32 @@ class MySqlQueryTranslator(override val DataContext: IDataContext) : IQueryTrans
         if (gen.IndexNamingRules == null || gen.PrimaryKeyNamingRules == null || gen.UniqueNamingRules == null)
             throw Exception("Not found naming rulesئىسىم ھاسىللىغۇچنى تاپالمىدى، 找不到命名生成器，")
 
-        if (PrimaryKey.isNotEmpty()) {
+        /*PrimaryKey*/
+        if (PrimaryKey.columns.isNotEmpty()) {
             buffer.append(",\n")
             val name = gen.PrimaryKeyNamingRules!!(this, PrimaryKey)
-            constraints.add("CONSTRAINT $name PRIMARY KEY (${this.PrimaryKey.joinToString { it.ColumnName }})")
+            constraints.add("CONSTRAINT $name PRIMARY KEY (${this.PrimaryKey.columns.joinToString { it.ColumnName }})")
         }
 
-//        Columns.filter { !it.IsPrimaryKey && it.Index.isIndex && !it.DataType is Text && !it.DataType is Binary }.groupBy { it.Index.groupIndex }.forEach { g, v ->
-//            val name = gen.UniqueNamingRules!!(this, v.toTypedArray())
-//            buffer.append("INDEX $name ")
-//        }
+        /*Unique*/
+        Uniques.forEach {
+            val name = gen.UniqueNamingRules!!(this, it)
+            constraints.add("CONSTRAINT $name UNIQUE (${it.columns.joinToString { it.ColumnName }})")
+        }
 
-        constraints.addAll(Columns.filter { !it.IsPrimaryKey && it.Unique.isUnique }.groupBy { it.Unique.uniqueGroupIndex }.map {
-            val name = gen.UniqueNamingRules!!(this, it.value.toTypedArray())
-            "CONSTRAINT $name UNIQUE (${it.value.joinToString { it.ColumnName }})"
-        })
+        /*Index*/
+        Indexes.forEach {
+            val name = gen.IndexNamingRules!!(this, it)
+
+            constraints.add("${if (it.isUnique) "UNIQUE " else ""}INDEX $name (${it.columns.joinToString { when (it.DataType){
+                is Binary, is MediumBinary, is LongBinary, is Text, is MediumText, is LongText ->{
+                    if (it.IndexLength < 0) throw Exception("BLOB, TEXT column must be have index length, BLOB, TEXT ئىستونلار چوقۇم ئىندىكىس ئۇزۇنلۇقىنى بەلگىلىشى كىرەك، BLOB, TEXT 字段必须指定索引长度")
+                    "${it.ColumnName}(${it.IndexLength})"
+                }
+                else -> it.ColumnName
+            } }})")
+        }
+
         buffer.append(constraints.joinToString(separator = ",\n") { it })
 
         return buffer.toString()

@@ -30,16 +30,16 @@ abstract class DBEntity(override var DataContext: IDataContext, override var Tab
  * 每一个Entity的唯一的标示符
  * Entity Unique key
  */
-internal val IDBEntity.uniqueKey: String get() = "${this.Table.TableName}::${this.Table.PrimaryKey.joinToString { "${it.ColumnName}::${values!![it].toString()}" }}"
+internal val IDBEntity.uniqueKey: String get() = "${this.Table.TableName}::${this.Table.PrimaryKey.columns.joinToString { "${it.ColumnName}::${values!![it].toString()}" }}"
 /**
  * نۆۋەتتىكى Entity نىڭ PrimaryKey لىرىنىڭ ئىسمى ۋە قىممەتلىرى
  */
-internal val IDBEntity.PrimaryKeyValues: Array<KeyValuePair<String, SqlParameter>> get() = arrayOf(*(this.Table.PrimaryKey.map { KeyValuePair(it.fullColumnName, MappedParameter(values!![it]!!, it.DataType) as SqlParameter) }.toTypedArray()))
+internal val IDBEntity.PrimaryKeyValues: Array<KeyValuePair<String, SqlParameter>> get() = arrayOf(*(this.Table.PrimaryKey.columns.map { KeyValuePair(it.fullColumnName, MappedParameter(values!![it]!!, it.DataType) as SqlParameter) }.toTypedArray()))
 
 /**
  * قىممىتى ئاپتوماتىك ئاينىيدىغان ئىستون
  */
-internal val IDBTable.autoIncrementColumn: IDBColumn<*>? get() =  PrimaryKey.singleOrNull { it.AutoIncrement.autoIncrement }
+internal val IDBTable.autoIncrementColumn: IDBColumn<*>? get() =  PrimaryKey.columns.singleOrNull { it.AutoIncrement.autoIncrement }
 /**
  *خاسلىق
  */
@@ -63,7 +63,7 @@ internal val IDBEntity.simpleWhereCondition: WhereItemCondition get(){
 }
 
 internal fun IDBEntity.generateRandomUnique() {
-    val key = this.Table.PrimaryKey.single { it.AutoIncrement.autoIncrement } as IDBColumn<Number>
+    val key = this.Table.PrimaryKey!!.columns.single { it.AutoIncrement.autoIncrement } as IDBColumn<Number>
     if (values!![key] == null) values!!.put(key.ColumnName, -1)
 
     while (DataContext.insertedIntities[uniqueKey] != null) {

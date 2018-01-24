@@ -13,6 +13,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.CreateTable.CreateTableExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.ISelectQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core.Subject.CreateForeignKeySubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.clonedPipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.execute
 
@@ -96,7 +97,8 @@ fun IDataContext.createNewTables(vararg tables: IDBTable) : Boolean
 {
     val cpl = clonedPipeLine
     val result = execute(cpl, CreateTableSubjet(*tables.map { CreateTableExpression(it) }.toTypedArray()))
-    return result.exception == null
+    val result1 = execute(cpl, CreateForeignKeySubject(tables.toList().toTypedArray()))
+    return result.exception == null && result1.exception == null
 }
 
 /**
