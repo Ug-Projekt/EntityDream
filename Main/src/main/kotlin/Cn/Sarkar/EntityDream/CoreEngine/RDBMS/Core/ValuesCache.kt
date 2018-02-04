@@ -8,6 +8,8 @@ Time: 9:16 PM
 
 package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core
 
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.fullColumnName
+
 class ValuesCacheItem : LinkedHashMap<String, Any?>()
 {
     operator fun <T> get(column: IDBColumn<T>) : T? = get(column.ColumnName) as? T

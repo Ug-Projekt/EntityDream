@@ -131,16 +131,16 @@ internal class DataContextKtTest {
     @Test
     fun insertCompany(){
 
-        val company = db.Companies.first { Company.WebSite equals "kkkkk" }
+        val company = db.Companies.first { Company.WebSite equals "http://www.yourWebSite.com" }
 
         val usr = User(db).apply {
             Name = "يىڭى ئەزا"
-            this.Age = 20
-            this.EMail = "yeganaaa@hotmail.com"
-            this.Pwd = "Developer653125"
-            this.Money = 22.45
-            this.Company = company
-            this.BirthDay = DateTime(1994, 3, 1, 8, 9, 10)
+            Age = 20
+            EMail = "yeganaaa@hotmail.com"
+            Pwd = "Developer653125"
+            Money = 22.45
+            Company = company
+            BirthDay = DateTime(1994, 3, 1, 8, 9, 10)
 
         }
 
@@ -150,6 +150,21 @@ internal class DataContextKtTest {
         println(usr.ID)
         db.saveChanges()
         println(usr.ID)
+
+//        val myCompany = Company(db)
+//
+//        myCompany.Name = "شىنجاڭ پەم ئېلېكتىرون پەن تېخنىكا چەكلىك شىركىتى"
+//        myCompany.WebSite = "http://www.yourWebSite.com"
+//
+//        db.Companies.add(myCompany)
+//
+//        println("Insert before: ${myCompany.ID}")
+//
+//        db.saveChanges()
+//
+//        println("Insert After: ${myCompany.ID}")
+//
+//        val
 
     }
 
@@ -177,7 +192,8 @@ internal class DataContextKtTest {
 
     @Test
     fun printColumnDml(){
-        println(db.createNewTables(User, Company))
+        val result = db.createNewTables(User, Company)
+        println(result)
     }
 
 

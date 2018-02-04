@@ -52,7 +52,7 @@ object GenerateInsertTask : PipeLineFeature<IPipeLineSubject, IDataContext>(){
             var kvs = entity.Table.Columns.filter { entity.values!![it] != null }
 
 
-            if (incrementField != null) { //ئەگەر ئاپتوماتىك ئاينىيدىغان خفسلىقى بولۇپ قالسا
+            if (incrementField != null) { //ئەگەر ئاپتوماتىك ئاينىيدىغان خاسلىقى بولۇپ قالسا
                 entity.generateRandomUnique() //بىردىنبىر بولغان پەرىقلەندۈرۈش كودى چىقىشى يەنى نۆۋەتتىكى ئىلىمىنىت قوشۇلۇپ بولغاندىن كىيىن مۇشۇ ئىلىمىنىتنى مۇشۇ بىرىدنبىر بولغان قىممەت ئارقىلىق ئىزدەپ تاپىمىز
                 entity.DataContext.insertedIntities.put(entity.uniqueKey, entity)
 

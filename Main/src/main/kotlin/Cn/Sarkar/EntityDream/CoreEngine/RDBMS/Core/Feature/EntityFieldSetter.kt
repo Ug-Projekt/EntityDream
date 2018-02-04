@@ -47,7 +47,7 @@ object EntityFieldSetter : PipeLineFeature<IPipeLineSubject, IDataContext>() {
             else
             {
                 if (subject.entity.values == null) subject.entity.values = ValuesCacheItem()
-                subject.entity.values!!.put(subject.column.fullColumnName, subject.value)
+                subject.entity.values!!.put(subject.column.ColumnName, subject.value)
             }
         }
     }
