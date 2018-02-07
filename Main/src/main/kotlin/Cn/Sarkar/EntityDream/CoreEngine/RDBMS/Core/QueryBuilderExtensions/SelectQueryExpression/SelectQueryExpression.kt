@@ -134,23 +134,23 @@ infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.skip(number: Int) where CO
 Any
 * */
 infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.any(condition: () -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression, COLLECTION : Collection<ENTITY> = applyUpdate {
-    if (this.Where == null) this.Where = Where(condition()) else this.Where!!.condition = condition()
+    if (this.Where == null) this.Where = Where(condition()) else this.Where!!.condition = this.Where!!.condition and condition()
 }.run { size > 0 }
 
 infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.firstOrNull(condition: () -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = applyUpdate {
-    if (this.Where == null) this.Where = Where(condition()) else this.Where!!.condition = condition()
+    if (this.Where == null) this.Where = Where(condition()) else this.Where!!.condition = this.Where!!.condition and condition()
 }.run { this take 1 }.run {
     Context.executeSelectQuery(this).firstOrNull()?.toEntity()
 }
 
 infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.lastOrNull(condition: () -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = applyUpdate {
-    if (this.Where == null) this.Where = Where(condition()) else this.Where!!.condition = condition()
+    if (this.Where == null) this.Where = Where(condition()) else this.Where!!.condition = this.Where!!.condition and condition()
 }.run { this orderBy table.autoIncrementColumn!! take 1 }.run {
     Context.executeSelectQuery(this).firstOrNull()?.toEntity()
 }
 
 infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.singleOrNull(condition: () -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = applyUpdate {
-    if (this.Where == null) this.Where = Where(condition()) else this.Where!!.condition = condition()
+    if (this.Where == null) this.Where = Where(condition()) else this.Where!!.condition = this.Where!!.condition and condition()
 }.run { if (this.size > 1) throw Exception("Collection contains more elements!, توپلامدا بىردىن ئارتۇق ئىلىمىنىت مەۋجۇت، 集合存在多个元素"); this take 1 }.run {
     Select = table.SelectAllColumns
     Context.executeSelectQuery(this).singleOrNull()?.toEntity()

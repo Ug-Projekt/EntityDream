@@ -70,8 +70,7 @@ class Company(DataContext: IDataContext) : DBEntity(DataContext, Company) {
 
 internal class DataContextKtTest {
 
-    object db : MySqlDataContext(DriverManager.getConnection("jdbc:mysql://127.0.0.1:3308/Hello", "yeganaaa", "Developer653125"))
-    {
+    object db : MySqlDataContext(DriverManager.getConnection("jdbc:mysql://127.0.0.1:3308/Hello", "yeganaaa", "Developer653125")) {
         val Users = dbCollection(User) { User(it) }
         val Companies = dbCollection(Company) { Company(it) }
     }
@@ -100,7 +99,7 @@ internal class DataContextKtTest {
 
         val result = db.Users
         result.forEach {
-//            println("Age: ${it.Age}, Name: ${it.Name}, Money: ${it.Money} ID: ${it.ID}")
+            //            println("Age: ${it.Age}, Name: ${it.Name}, Money: ${it.Money} ID: ${it.ID}")
             println("${it.Name}, ${it.BirthDay.toString("yyyy/MM/dd HH:mm:ss")}")
         }
     }
@@ -129,7 +128,7 @@ internal class DataContextKtTest {
     }
 
     @Test
-    fun insertCompany(){
+    fun insertCompany() {
 
         val company = db.Companies.first { Company.WebSite equals "http://www.yourWebSite.com" }
 
@@ -172,7 +171,7 @@ internal class DataContextKtTest {
     fun selectCompany() {
 
 //        val newCompany = db.Companies.single { Companys.Name equals "NewCopany" }
-        val avgMoney = db.Users.where { User.Name startsWith "Hell" and (User.Age greater 18) } skip 0 take 10 avg User.Money
+        val avgMoney = db.Users.where { User.Name startsWith "Hell" and (User.Age greater 18) } skip 3 take 10 avg User.Money
 
         println(avgMoney)
 
@@ -180,9 +179,8 @@ internal class DataContextKtTest {
     }
 
     @Test
-    fun selectCompanyUser()
-    {
-        db.Companies.where { Company.WebSite equals "http://www.sarkar.cn" }.mid(Company.WebSite, 2, 4) .first().Users.mid(User.Name, 2, 3).forEach {
+    fun selectCompanyUser() {
+        db.Companies.where { Company.WebSite equals "http://www.sarkar.cn" }.mid(Company.WebSite, 2, 4).first().Users.mid(User.Name, 2, 3).forEach {
             println(it.Name)
 //            it.Name = "ئىسمى"
         }
@@ -191,28 +189,29 @@ internal class DataContextKtTest {
     }
 
     @Test
-    fun printColumnDml(){
+    fun printColumnDml() {
         val result = db.createNewTables(User, Company)
         println(result)
     }
 
+    @Test
+    fun ChangeData() {
+
+
+
+
+
+        val user = db.Companies.first { Company.WebSite equals "http://www.yourWebSite.com" and (Company.Name notEquals "Sarkar") }.Users.first { User.Age greater 18 and (User.Money greater 0.toDouble()) }
+
+        println(user.Name)
+
+        user.Name = "ئەركىيار"
+
+        db.saveChanges()
+    }
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
