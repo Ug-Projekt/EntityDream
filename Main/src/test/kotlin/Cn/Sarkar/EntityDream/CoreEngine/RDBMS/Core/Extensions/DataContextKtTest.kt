@@ -133,7 +133,7 @@ internal class DataContextKtTest {
         val company = db.Companies.first { Company.WebSite equals "http://www.yourWebSite.com" }
 
         val usr = User(db).apply {
-            Name = "يىڭى ئەزا"
+            Name = "مۇختەر مەخمۇت"
             Age = 20
             EMail = "yeganaaa@hotmail.com"
             Pwd = "Developer653125"
