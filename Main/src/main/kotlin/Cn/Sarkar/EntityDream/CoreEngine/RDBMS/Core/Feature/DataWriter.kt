@@ -76,7 +76,7 @@ object DataWriter : PipeLineFeature<IPipeLineSubject, IDataContext>() {
                 when (parameter.DataType) {
                     is TinyInt -> this.setByte(index, parameter.Value as Byte)
                     is SmallInt -> this.setShort(index, parameter.Value as Short)
-                    is MediumInt, is DBInt -> this.setInt(index, parameter.Value as Int)
+                    is MediumInt, is DBInt -> this.setInt(index, parameter.Value.toString().toInt())
                     is BigInt -> this.setLong(index, parameter.Value as Long)
 
                     is DBFloat -> this.setFloat(index, parameter.Value as Float)

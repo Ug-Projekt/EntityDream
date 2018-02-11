@@ -3,6 +3,7 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.CorePipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.CreateTableSubjet
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.SetEntityFieldValueSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.TranslationSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueriableCollection
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.*
@@ -80,12 +81,20 @@ internal class DataContextKtTest {
         override val getMetaData: PipeLineFeatureMetaData by lazy { PipeLineFeatureMetaData(CorePipeLine.after, "Logger") }
         override val info: FeatureInfo by lazy { FeatureInfo("Logger", "Demo", "Sarkar Software Technologys", "yeganaaa", 1, "v0.1") }
 
+//        var index = 0
+
         override fun PipeLineContext<IPipeLineSubject, IDataContext>.onExecute(subject: IPipeLineSubject) {
 //                println((++index).toString() + "---" + subject.Name + "***********" + subject::class.java.simpleName)
 
             if (subject is TranslationSubject) {
 
                 println("Generated SQL ->> " + subject.translationResult!!.fullSqlQuery)
+            }
+
+            if (subject is SetEntityFieldValueSubject)
+            {
+                if (subject.column == User.Name && subject.value == "ئابدۇقادىر")
+                    subject.value = "Stilly ئۆزگەرتىۋىتىلدى"
             }
         }
     }
@@ -106,17 +115,13 @@ internal class DataContextKtTest {
 
     @Test
     fun delete() {
-        val all = ArrayList<User>()
+        val user = db.Users.single { User.Pwd equals  "Developer653125" }
 
-        db.Users.forEach {
-            all.add(it)
-        }
 
-        all.forEach {
-            db.Users.remove(it)
-        }
+        user.Name = "يىگانە"
+        val age = user.Age
 
-        db.saveChanges()
+
     }
 
     @Test
@@ -130,14 +135,14 @@ internal class DataContextKtTest {
     @Test
     fun insertCompany() {
 
-        val company = db.Companies.first { Company.WebSite equals "http://www.yourWebSite.com" }
+        val company = db.Companies.first { Company.WebSite equals "http://www.sarkar.cn" and (Company.Name notEquals "NotEqualThis") }
 
         val usr = User(db).apply {
-            Name = "مۇختەر مەخمۇت"
-            Age = 20
-            EMail = "yeganaaa@hotmail.com"
-            Pwd = "Developer653125"
-            Money = 22.45
+            Name = "ئابدۇقادىر"
+            Age = 24
+            EMail = "Stilly@hotmail.com"
+            Pwd = "Developer000000"
+            Money = 30.45
             Company = company
             BirthDay = DateTime(1994, 3, 1, 8, 9, 10)
 
@@ -171,7 +176,7 @@ internal class DataContextKtTest {
     fun selectCompany() {
 
 //        val newCompany = db.Companies.single { Companys.Name equals "NewCopany" }
-        val avgMoney = db.Users.where { User.Name startsWith "Hell" and (User.Age greater 18) } skip 3 take 10 avg User.Money
+        val avgMoney = db.Users.where { User.Name notStartsWith "Hell" and (User.Age greater 18) } skip 0 take 10 avg User.Money
 
         println(avgMoney)
 
@@ -185,7 +190,7 @@ internal class DataContextKtTest {
 //            it.Name = "ئىسمى"
         }
 
-        db.saveChanges()
+//        db.saveChanges()
     }
 
     @Test
@@ -198,16 +203,43 @@ internal class DataContextKtTest {
     fun ChangeData() {
 
 
-
-
-
-        val user = db.Companies.first { Company.WebSite equals "http://www.yourWebSite.com" and (Company.Name notEquals "Sarkar") }.Users.first { User.Age greater 18 and (User.Money greater 0.toDouble()) }
+        val user = db.Companies.first { Company.WebSite equals "http://www.sarkar.cn" and (Company.Name notEquals "aaa") }.Users.first { User.Age greater 18 and (User.Money greater 0.toDouble()) and (User.Name startsWith "مۇختەر") }
 
         println(user.Name)
 
-        user.Name = "ئەركىيار"
+        user.Name = "ئىسىم ئۆزگەردى"
 
         db.saveChanges()
+    }
+
+    @Test
+    fun insertData() {
+        val company = Company(db).apply {
+            Name = "Sarkar Software Technologys"
+            WebSite = "http://www.sarkar.cn"
+        }
+
+        db.Companies.add(company)
+
+        println("Insert before: ${company.ID}")
+        db.saveChanges()
+        println("Insert after: ${company.ID}")
+
+        val usr = User(db).apply {
+            Name = "مۇختەر مەخمۇت"
+            Age = 24
+            EMail = "yeganaaa@hotmail.com"
+            Pwd = "Developer653125"
+            Money = 22.45
+            Company = company
+            BirthDay = DateTime(1994, 3, 1, 8, 9, 10)
+
+        }
+        db.Users.add(usr)
+
+        println("Insert before: ${usr.ID}")
+        db.saveChanges()
+        println("Insert after: ${usr.ID}")
     }
 
 
