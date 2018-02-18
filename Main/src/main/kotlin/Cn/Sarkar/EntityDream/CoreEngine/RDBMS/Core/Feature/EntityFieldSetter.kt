@@ -42,7 +42,7 @@ object EntityFieldSetter : PipeLineFeature<IPipeLineSubject, IDataContext>() {
             val cpl = featureContext.clonedPipeLine
             if (subject.entity.FromDB) {
                 if (subject.value == subject.entity.values!![subject.column]) return
-                val result = featureContext.execute(cpl, GenerateEntityFieldUpdateTaskSubject(subject.entity, KeyValuePair(subject.column.fullColumnName, MappedParameter(subject.value, subject.column.DataType))))
+                val result = featureContext.execute(cpl, GenerateEntityFieldUpdateTaskSubject(subject.entity, KeyValuePair(subject.column, MappedParameter(subject.value, subject.column.DataType))))
             }
             else
             {

@@ -26,7 +26,7 @@ import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeature
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeatureMetaData
 
 object DataTypeAdapter : PipeLineFeature<IPipeLineSubject, IDataContext>() {
-    override val getMetaData: PipeLineFeatureMetaData by lazy { PipeLineFeatureMetaData(CorePipeLine.process, "Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core.Feature.DataTypeAdapter") }
+    override val getMetaData: PipeLineFeatureMetaData by lazy { PipeLineFeatureMetaData(CorePipeLine.process, "Cn.Sarkar.EntityDream.CoreEngine.RDBMS.SQLite.Core.Feature.DataTypeAdapter") }
     override val info: FeatureInfo by lazy {
         FeatureInfo(
                 "DataTypeAdapter",

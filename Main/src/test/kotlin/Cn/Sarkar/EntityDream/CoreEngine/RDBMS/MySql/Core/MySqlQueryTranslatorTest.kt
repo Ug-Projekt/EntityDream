@@ -4,7 +4,7 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core
 //internal class MySqlQueryTranslatorTest {
 //
 //    val translator: IQueryTranslator
-//        get() = MySqlQueryTranslator()
+//        get() = SqLiteQueryTranslator()
 //
 //    @Test
 //    fun translate() {

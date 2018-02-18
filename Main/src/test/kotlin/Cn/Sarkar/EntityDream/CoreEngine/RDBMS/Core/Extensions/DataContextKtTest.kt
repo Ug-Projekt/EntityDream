@@ -2,17 +2,13 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.CorePipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.CreateTableSubjet
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.SetEntityFieldValueSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.TranslationSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueriableCollection
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.*
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.CreateTable.CreateTableExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core.MySqlQueryTranslator
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.MySqlDataContext
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.clonedPipeLine
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.execute
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.SQLite.SQLiteDataContext
 import Cn.Sarkar.EntityDream.Pipeline.Core.Info.FeatureInfo
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineContext
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeature
@@ -72,6 +68,7 @@ class Company(DataContext: IDataContext) : DBEntity(DataContext, Company) {
 internal class DataContextKtTest {
 
     object db : MySqlDataContext(DriverManager.getConnection("jdbc:mysql://127.0.0.1:3308/Hello", "yeganaaa", "Developer653125")) {
+//    object db : SQLiteDataContext(DriverManager.getConnection("jdbc:sqlite:/media/yeganaaa/aeb9a6f0-dc79-405d-a154-3355e7a240c3/Temp/data.db")) {
         val Users = dbCollection(User) { User(it) }
         val Companies = dbCollection(Company) { Company(it) }
     }
@@ -89,12 +86,6 @@ internal class DataContextKtTest {
             if (subject is TranslationSubject) {
 
                 println("Generated SQL ->> " + subject.translationResult!!.fullSqlQuery)
-            }
-
-            if (subject is SetEntityFieldValueSubject)
-            {
-                if (subject.column == User.Name && subject.value == "ئابدۇقادىر")
-                    subject.value = "Stilly ئۆزگەرتىۋىتىلدى"
             }
         }
     }
@@ -195,7 +186,7 @@ internal class DataContextKtTest {
 
     @Test
     fun printColumnDml() {
-        val result = db.createNewTables(User, Company)
+        val result = db.createNewTables( Company)
         println(result)
     }
 
@@ -204,19 +195,18 @@ internal class DataContextKtTest {
 
 
         val user = db.Companies.first { Company.WebSite equals "http://www.sarkar.cn" and (Company.Name notEquals "aaa") }.Users.first { User.Age greater 18 and (User.Money greater 0.toDouble()) and (User.Name startsWith "مۇختەر") }
-
         println(user.Name)
 
         user.Name = "ئىسىم ئۆزگەردى"
 
-        db.saveChanges()
+        println(db.saveChanges())
     }
 
     @Test
     fun insertData() {
         val company = Company(db).apply {
-            Name = "Sarkar Software Technologys"
-            WebSite = "http://www.sarkar.cn"
+            Name = "Ug-Project Software Technologys"
+            WebSite = "http://www.ug-project.cn"
         }
 
         db.Companies.add(company)

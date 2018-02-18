@@ -10,12 +10,7 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.General.*
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBPlainDataType
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBPlainScaledDataType
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType.IDBScaledType
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.comment
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.toLocalDBDmlString
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.unique
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.SelectQueryExpression.fullColumnName
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.Aggregate.*
@@ -28,7 +23,6 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.CreateT
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Delete.DeleteQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.ISelectQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Insert.InsertQueryExpression
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.MappedParameter
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.NormalParameter
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Select.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.SqlParameter
@@ -280,7 +274,7 @@ ${this.generateConstraintDmls()}
             }
             is UpdateQueryExpression -> {
 
-                buffer.append("UPDATE ${expression.update.TableName} SET ${expression.set.Values.joinToString { "${it.key}=${it.value.run { this.renderToString() }}" }} ")
+                buffer.append("UPDATE ${expression.update.TableName} SET ${expression.set.Values.joinToString { "${it.key.fullColumnName}=${it.value.run { this.renderToString() }}" }} ")
                 buffer.append("WHERE ${recursiveWhereBlock(expression.where.condition)}")
                 buffer.append(";")
 //                println(buffer)

@@ -38,5 +38,14 @@
         <property name="applicationName" value="DataGrip" />
       </driver-properties>
     </data-source>
+    <data-source source="LOCAL" name="data.db" uuid="15ac96f7-5026-4db7-b942-e72635348a4f">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:/media/yeganaaa/aeb9a6f0-dc79-405d-a154-3355e7a240c3/Temp/data.db</jdbc-url>
+      <driver-properties>
+        <property name="enable_load_extension" value="true" />
+      </driver-properties>
+    </data-source>
   </component>
 </project>

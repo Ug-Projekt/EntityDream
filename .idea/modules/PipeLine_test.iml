@@ -24,21 +24,4 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
-    <output-test url="file://$MODULE_DIR$/../../PipeLine/out/test/classes" />
-    <exclude-output />
-    <content url="file://$MODULE_DIR$/../../PipeLine/src/test">
-      <sourceFolder url="file://$MODULE_DIR$/../../PipeLine/src/test/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/../../PipeLine/src/test/kotlin" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/../../PipeLine/src/test/resources" type="java-test-resource" />
-    </content>
-    <orderEntry type="inheritedJdk" />
-    <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="PipeLine_main" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jre8:1.2.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.2.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jre7:1.2.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
-  </component>
-  <component name="TestModuleProperties" production-module="PipeLine_main" />
 </module>

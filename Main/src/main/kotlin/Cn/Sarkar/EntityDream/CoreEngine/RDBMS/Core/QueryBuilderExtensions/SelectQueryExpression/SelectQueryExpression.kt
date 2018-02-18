@@ -127,8 +127,8 @@ fun <T, ENTITY : IDBEntity, COLLECTION> COLLECTION.round(column: IDBColumn<T>, d
 infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.orderBy(column: IDBColumn<*>) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = this.applyUpdate { OrderBy = OrderBy(column.fullColumnName, Order.Asc) }
 
 infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.orderByDesc(column: IDBColumn<*>) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = this.applyUpdate { OrderBy = OrderBy(column.fullColumnName, Order.Desc) }
-infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.take(number: Int) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = this.applyUpdate { Select.offset = number }
-infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.skip(number: Int) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = this.applyUpdate { Select.top = number }
+infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.take(number: Int) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = this.applyUpdate { Select.top = number }
+infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.skip(number: Int) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = this.applyUpdate { Select.offset = number }
 
 /*
 Any

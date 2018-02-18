@@ -23,7 +23,7 @@ import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeature
 import Cn.Sarkar.EntityDream.Pipeline.Core.PipeLineFeatureMetaData
 
 object TableCreator : PipeLineFeature<IPipeLineSubject, IDataContext>() {
-    override val getMetaData: PipeLineFeatureMetaData by lazy { PipeLineFeatureMetaData(CorePipeLine.process, "Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core.Feature.TableCreator") }
+    override val getMetaData: PipeLineFeatureMetaData by lazy { PipeLineFeatureMetaData(CorePipeLine.process, "Cn.Sarkar.EntityDream.CoreEngine.RDBMS.SQLite.Core.Feature.TableCreator") }
     override val info: FeatureInfo by lazy { FeatureInfo(
             "Table Creator",
             "Create new table",

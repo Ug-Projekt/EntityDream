@@ -11,6 +11,7 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
 import java.sql.Connection
 import java.sql.PreparedStatement
+import java.sql.ResultSet
 
 
 class QueryExecutionSubject(var group: QueryGroup, var connection: Connection) : IPipeLineSubject {
@@ -18,6 +19,7 @@ class QueryExecutionSubject(var group: QueryGroup, var connection: Connection) :
     override val Description: String = "This is sql query execution operation"
     var effectedRows: IntArray = IntArray(0, {0})
     var statement: PreparedStatement? = null
+    var resultSet: ResultSet? = null
     var exception: Exception? = null
 }
 

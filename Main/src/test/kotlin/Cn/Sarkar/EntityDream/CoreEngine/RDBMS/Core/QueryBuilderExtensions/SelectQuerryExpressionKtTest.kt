@@ -2,7 +2,7 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions
 
 //internal class SelectQuerryExpressionKtTest {
 //
-//    val translator = MySqlQueryTranslator()
+//    val translator = SqLiteQueryTranslator()
 //
 //    object PersonTable : IDBTable{
 //        override var TableName: String = "Users"

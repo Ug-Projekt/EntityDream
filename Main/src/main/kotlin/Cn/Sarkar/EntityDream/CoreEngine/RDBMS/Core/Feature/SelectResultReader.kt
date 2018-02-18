@@ -43,7 +43,7 @@ object SelectResultReader : PipeLineFeature<IPipeLineSubject, IDataContext>() {
     override fun PipeLineContext<IPipeLineSubject, IDataContext>.onExecute(subject: IPipeLineSubject) {
         if (subject is SelectResultSubject) {
             val columns = (subject.executionSubject.group.query.expression as ISelectQueryExpression).Select.selectors
-            val result = subject.executionSubject.statement!!.resultSet
+            val result = subject.executionSubject.resultSet
             if (result == null) return
             while (result.next()) {
                 val row = ValuesCacheItem()

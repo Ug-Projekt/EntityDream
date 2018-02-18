@@ -12,7 +12,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.EntityFieldConnector.DataType
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
 
 class TypeAdapterSubject(var Input: IDBDataType<*>) : IPipeLineSubject {
-    override val Name: String = "Kotlin Data Type And DataBase(MySql, SqlServer, SqLite, Oracle ...) Data Type Adapter"
+    override val Name: String = "Kotlin Data Type And DataBase(MySql, SqlServer, SQLite, Oracle ...) Data Type Adapter"
     override val Description: String = "Kotlin Data Type And Each DataBase DataType Adapter"
     var OutPutString: String? = null
 }
