@@ -184,7 +184,6 @@ class MySqlQueryTranslator(override val DataContext: IDataContext) : IQueryTrans
 
         /*PrimaryKey*/
         if (PrimaryKey.columns.isNotEmpty()) {
-            buffer.append(",\n")
             val name = gen.PrimaryKeyNamingRules!!(this, PrimaryKey)
             constraints.add("CONSTRAINT $name PRIMARY KEY (${this.PrimaryKey.columns.joinToString { it.ColumnName }})")
         }
@@ -208,6 +207,7 @@ class MySqlQueryTranslator(override val DataContext: IDataContext) : IQueryTrans
             } }})")
         }
 
+        if (constraints.isNotEmpty()) buffer.append(",\n")
         buffer.append(constraints.joinToString(separator = ",\n") { it })
 
         return buffer.toString()

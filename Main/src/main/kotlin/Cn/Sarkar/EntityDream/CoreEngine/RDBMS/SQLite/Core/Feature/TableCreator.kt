@@ -43,6 +43,16 @@ object TableCreator : PipeLineFeature<IPipeLineSubject, IDataContext>() {
                 subject.expressions.forEach {
                     val result = featureContext.execute(cpl, TranslationSubject(it))
                    subject.size += statement.executeUpdate(result.translationResult!!.fullSqlQuery)
+
+                    /*Index*/
+                    val gen = featureContext.execute(featureContext.clonedPipeLine, NamingRuleSubject())
+                    val item = it
+                    it.table.Indexes.forEach {
+                        val name = gen.IndexNamingRules!!(item.table, it)
+                        val query = """CREATE ${if (it.isUnique) "UNIQUE " else ""}INDEX IF NOT EXISTS $name ON ${item.table.TableName} (${it.columns.joinToString { it.ColumnName }})"""
+                        println(query)
+                        statement.executeUpdate(query)
+                    }
                 }
 
 

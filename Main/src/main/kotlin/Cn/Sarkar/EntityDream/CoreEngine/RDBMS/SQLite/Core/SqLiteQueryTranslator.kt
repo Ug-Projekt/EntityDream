@@ -170,8 +170,7 @@ class SqLiteQueryTranslator(override val DataContext: IDataContext) : IQueryTran
         }
     }
 
-    fun IDBTable.generateConstraintDmls() : String
-    {
+    fun IDBTable.generateConstraintDmls() : String {
         val gen = DataContext.execute(DataContext.clonedPipeLine, NamingRuleSubject())
         val buffer = StringBuilder()
 
@@ -181,11 +180,10 @@ class SqLiteQueryTranslator(override val DataContext: IDataContext) : IQueryTran
             throw Exception("Not found naming rulesئىسىم ھاسىللىغۇچنى تاپالمىدى، 找不到命名生成器，")
 
         /*PrimaryKey*/
-        if (PrimaryKey.columns.isNotEmpty()) {
-            buffer.append(",\n")
-            val name = gen.PrimaryKeyNamingRules!!(this, PrimaryKey)
-            constraints.add("CONSTRAINT $name PRIMARY KEY (${this.PrimaryKey.columns.joinToString { it.ColumnName }})")
-        }
+//        if (PrimaryKey.columns.isNotEmpty()) {
+//            val name = gen.PrimaryKeyNamingRules!!(this, PrimaryKey)
+//            constraints.add("CONSTRAINT $name PRIMARY KEY (${this.PrimaryKey.columns.joinToString { it.ColumnName }})")
+//        }
 
         /*Unique*/
         Uniques.forEach {
@@ -206,6 +204,7 @@ class SqLiteQueryTranslator(override val DataContext: IDataContext) : IQueryTran
 //            } }})")
 //        }
 
+        if (constraints.isNotEmpty()) buffer.append(",\n")
         buffer.append(constraints.joinToString(separator = ",\n") { it })
 
         return buffer.toString()
@@ -223,7 +222,7 @@ ${this.generateConstraintDmls()}
         val type = this.DataType.toLocalDBDmlString(DataContext)
         buffer.append(type)
 
-        buffer.append(if (this.AutoIncrement.autoIncrement) " AUTOINCREMENT" else "")
+        buffer.append(if (this.AutoIncrement.autoIncrement) " PRIMARY KEY AUTOINCREMENT" else "")
         buffer.append(if (this.NotNull) " NOT NULL " else " NULL ")
         if (this.NotNull && this.getDefaultValue() != null && !this.AutoIncrement.autoIncrement) {
             if (!(this.DataType.DefaultValue is String && this.getDefaultValue() == ""))

@@ -186,7 +186,7 @@ internal class DataContextKtTest {
 
     @Test
     fun printColumnDml() {
-        val result = db.createNewTables( Company)
+        val result = db.createNewTables( User, Company)
         println(result)
     }
 
