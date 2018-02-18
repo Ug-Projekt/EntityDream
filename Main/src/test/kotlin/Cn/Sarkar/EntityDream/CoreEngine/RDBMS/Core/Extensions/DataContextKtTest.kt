@@ -67,8 +67,8 @@ class Company(DataContext: IDataContext) : DBEntity(DataContext, Company) {
 
 internal class DataContextKtTest {
 
-    object db : MySqlDataContext(DriverManager.getConnection("jdbc:mysql://127.0.0.1:3308/Hello", "yeganaaa", "Developer653125")) {
-//    object db : SQLiteDataContext(DriverManager.getConnection("jdbc:sqlite:/media/yeganaaa/aeb9a6f0-dc79-405d-a154-3355e7a240c3/Temp/data.db")) {
+//    object db : MySqlDataContext(DriverManager.getConnection("jdbc:mysql://127.0.0.1:3308/Hello", "yeganaaa", "Developer653125")) {
+    object db : SQLiteDataContext(DriverManager.getConnection("jdbc:sqlite:/media/yeganaaa/aeb9a6f0-dc79-405d-a154-3355e7a240c3/Temp/data.db")) {
         val Users = dbCollection(User) { User(it) }
         val Companies = dbCollection(Company) { Company(it) }
     }
@@ -194,10 +194,11 @@ internal class DataContextKtTest {
     fun ChangeData() {
 
 
-        val user = db.Companies.first { Company.WebSite equals "http://www.sarkar.cn" and (Company.Name notEquals "aaa") }.Users.first { User.Age greater 18 and (User.Money greater 0.toDouble()) and (User.Name startsWith "مۇختەر") }
+        val user = db.Companies.first { Company.WebSite equals "http://www.sarkar.cn" and (Company.Name notEquals "aaa") }.Users.first { User.Age greater 18 and (User.Money greater 0.toDouble()) and (User.Name notStartsWith "مۇختەر") }
         println(user.Name)
 
-        user.Name = "ئىسىم ئۆزگەردى"
+//        user.Name = "ئىسىم ئۆزگەردى"
+        db.Users.remove(user)
 
         println(db.saveChanges())
     }

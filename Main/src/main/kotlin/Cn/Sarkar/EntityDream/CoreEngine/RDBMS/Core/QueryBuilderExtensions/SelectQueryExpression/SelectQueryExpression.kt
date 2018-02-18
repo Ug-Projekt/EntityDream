@@ -95,7 +95,7 @@ infix fun <T : Number, ENTITY : IDBEntity, COLLECTION> COLLECTION.sum(column: ID
     this.Select.selectors.add(column.generateFunction(Select, Sum(FuncFromColumn({ column.fullColumnName })), 0f))
 }.run { Context.executeSelectQuery(this)[0][column] as T }
 
-infix fun <T: Number, ENTITY : IDBEntity, COLLECTION> COLLECTION.avg(column: IDBColumn<T>) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = this.applyUpdate {
+infix fun <T : Number, ENTITY : IDBEntity, COLLECTION> COLLECTION.avg(column: IDBColumn<T>) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = this.applyUpdate {
     slice()
 //    removeFromColumnSelectorIfExists(column)
     this.Select.selectors.add(column.generateFunction(Select, Avg(FuncFromColumn({ column.fullColumnName }))))
@@ -157,8 +157,12 @@ infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.singleOrNull(condition: ()
 }
 
 
+infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.first(condition: () -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = firstOrNull(condition)
+        ?: throw NoSuchElementException("\nCollection not contains the element,\n توپلامدا بۇنداق ئىلىمىنىت تىپىلمىدى، \n集合中没有存在测元素")
 
-infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.first(condition: () -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = firstOrNull(condition)!!
-infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.last(condition: () -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = lastOrNull(condition)!!
-infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.single(condition: () -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = singleOrNull(condition)!!
+infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.last(condition: () -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = lastOrNull(condition)
+        ?: throw NoSuchElementException("\nCollection not contains the element,\n توپلامدا بۇنداق ئىلىمىنىت تىپىلمىدى، \n集合中没有存在测元素")
+
+infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.single(condition: () -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = singleOrNull(condition)
+        ?: throw NoSuchElementException("\nCollection not contains the element,\n توپلامدا بۇنداق ئىلىمىنىت تىپىلمىدى، \n集合中没有存在测元素")
 
