@@ -23,7 +23,7 @@ class User(DataContext: IDataContext) : DBEntity(DataContext, User) {
     companion object : DBTable("User") {
 
         override var Comment: String = "ئەزا"
-        val ID = idColumn("ID") comment "ID" primaryKey true
+        val ID = intColumn("ID") comment "ID"
         val Name = stringColumn("Name") isN true default "Name@Empty" size 100 comment "ئىسمى"
         val Pwd = stringColumn("Pwd") isN false size 50 comment "پارولى" default "Password@Empty"
         val Age = byteColumn("Age") unsigned true notNull true default 0 comment "يىشى"
@@ -33,8 +33,10 @@ class User(DataContext: IDataContext) : DBEntity(DataContext, User) {
         val CompanyID = intColumn("CompanyID") notNull true reference Company.ID unsigned true comment "CompanyID"
 
         init {
-//            unique(Name, Pwd)
+            unique(Name, Pwd, EMail)
             index(Name, Pwd) unique true
+
+            primaryKey(Name, Pwd, EMail)
         }
 //        val Avatar = byteArrayColumn("Avatar") notNull false comment "باش سۈرەت"
 
@@ -217,7 +219,7 @@ internal class DataContextKtTest {
         println("Insert after: ${company.ID}")
 
         val usr = User(db).apply {
-            Name = "مۇختەر مەخمۇت"
+            Name = "مۇتەللىپ مەخمۇت"
             Age = 24
             EMail = "yeganaaa@hotmail.com"
             Pwd = "Developer653125"

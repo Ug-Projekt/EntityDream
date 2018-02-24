@@ -180,10 +180,10 @@ class SqLiteQueryTranslator(override val DataContext: IDataContext) : IQueryTran
             throw Exception("Not found naming rulesئىسىم ھاسىللىغۇچنى تاپالمىدى، 找不到命名生成器，")
 
         /*PrimaryKey*/
-//        if (PrimaryKey.columns.isNotEmpty()) {
-//            val name = gen.PrimaryKeyNamingRules!!(this, PrimaryKey)
-//            constraints.add("CONSTRAINT $name PRIMARY KEY (${this.PrimaryKey.columns.joinToString { it.ColumnName }})")
-//        }
+        if (PrimaryKey.columns.filter { !it.AutoIncrement.autoIncrement }.isNotEmpty()) {
+            val name = gen.PrimaryKeyNamingRules!!(this, PrimaryKey)
+            constraints.add("CONSTRAINT $name PRIMARY KEY (${this.PrimaryKey.columns.joinToString { it.ColumnName }})")
+        }
 
         /*Unique*/
         Uniques.forEach {
