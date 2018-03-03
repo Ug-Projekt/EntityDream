@@ -6,7 +6,7 @@ Date : 1/25/18
 Time: 1:14 AM
  */
 
-package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.SQLite.Core.Subject
+package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBTable
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject

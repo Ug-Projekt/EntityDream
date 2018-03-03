@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal">
+    <data-source name="@192.168.1.109" uuid="c3f143e0-38af-4fee-927b-e2207a018838">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" />
+      <introspection-schemas>*:Album,Hello,Wechat,information_schema,mysql,performance_schema,phpmyadmin,test</introspection-schemas>
+    </data-source>
+    <data-source name="@127.0.0.1" uuid="22bc955f-090b-4f26-a417-c78d674ef563">
+      <database-info product="MySQL" version="5.7.20" jdbc-version="4.0" driver-name="MySQL Connector Java" driver-version="mysql-connector-java-5.1.44 ( Revision: b3cda4f864902ffdde495b9df93937c3e20009be )">
+        <extra-name-characters>#@</extra-name-characters>
+        <identifier-quote-string>`</identifier-quote-string>
+      </database-info>
+      <case-sensitivity plain-identifiers="exact" quoted-identifiers="exact" />
+      <secret-storage>master_key</secret-storage>
+      <user-name>yeganaaa</user-name>
+      <introspection-schemas>*:CreateNew,Hello,New,Permissions,SarkarMMS,information_schema,mysql,performance_schema,sys</introspection-schemas>
+    </data-source>
+    <data-source name="newsmms@data.sarkar.cn" uuid="21bdf06e-a00d-4cdf-b55b-fa59201f5a53">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" />
+      <introspection-schemas>newsmms:dbo</introspection-schemas>
+    </data-source>
+    <data-source name="data.db" uuid="15ac96f7-5026-4db7-b942-e72635348a4f">
+      <database-info product="SQLite" version="3.16.1" jdbc-version="2.1" driver-name="SQLiteJDBC" driver-version="native" />
+      <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed" />
+      <secret-storage>master_key</secret-storage>
+      <auth-required>false</auth-required>
+      <introspection-schemas>*:main</introspection-schemas>
+    </data-source>
+  </component>
+</project>

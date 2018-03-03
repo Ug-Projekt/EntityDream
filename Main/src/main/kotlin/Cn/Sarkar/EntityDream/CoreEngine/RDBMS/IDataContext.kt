@@ -15,6 +15,8 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IDBEntity
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.IQueryContext
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.CorePipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.SaveChangesEventState
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.SaveChangesEventSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Delete.DeleteQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Insert.InsertQueryExpression
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Update.UpdateQueryExpression
@@ -52,6 +54,9 @@ abstract class IDataContext : IQueryContext {
     }
 
     open fun saveChanges(): Int {
+        val pip = clonedPipeLine
+        execute(pip, SaveChangesEventSubject(SaveChangesEventState.Begin)) //Emit save changes begin event.
+
         var retv = 0
         val ids = executeInsertQuery()
         retv = ids.size
@@ -68,6 +73,8 @@ abstract class IDataContext : IQueryContext {
         insertTasks.clear()
         deleteTasks.clear()
         updateTasks.clear()
+
+        execute(pip, SaveChangesEventSubject(SaveChangesEventState.Over)) //Emit save changes over event.
         return retv
     }
 

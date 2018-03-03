@@ -61,6 +61,7 @@ object GenerateInsertTask : PipeLineFeature<IPipeLineSubject, IDataContext>(){
 
 
             val expr = InsertQueryExpression(
+                    subject.entity,
                     entity.uniqueKey,
                     entity.Table,
                     InsertInto(entity.Table.TableName, kvs.map { it.ColumnName }.toTypedArray()),

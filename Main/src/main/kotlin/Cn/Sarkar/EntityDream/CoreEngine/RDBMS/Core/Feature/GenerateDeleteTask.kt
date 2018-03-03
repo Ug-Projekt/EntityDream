@@ -38,7 +38,7 @@ object GenerateDeleteTask : PipeLineFeature<IPipeLineSubject, IDataContext>() {
         if (subject is GenerateDeleteTaskSubject) {
             var deleteExpression = featureContext.deleteTasks[subject.entity.uniqueKey]
             if (deleteExpression == null) {
-                deleteExpression = DeleteQueryExpression(subject.entity.Table, DeleteFrom(subject.entity.Table.TableName), subject.where)
+                deleteExpression = DeleteQueryExpression(subject.entity, subject.entity.Table, DeleteFrom(subject.entity.Table.TableName), subject.where)
                 featureContext.deleteTasks.put(subject.entity.uniqueKey, deleteExpression)
             }
         }

@@ -10,10 +10,10 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core.Feature
 
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.CorePipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.IPipeLineSubject
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.CreateForeignKeySubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.CreateTableSubjet
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.PipeLine.Subjects.TranslationSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
-import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core.Subject.CreateForeignKeySubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.MySql.Core.Subject.NamingRuleSubject
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.clonedPipeLine
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.execute
@@ -44,6 +44,8 @@ object TableCreator : PipeLineFeature<IPipeLineSubject, IDataContext>() {
                 subject.expressions.forEach {
                     val result = featureContext.execute(cpl, TranslationSubject(it))
                    subject.size += statement.executeUpdate(result.translationResult!!.fullSqlQuery)
+                    val query = "ALTER TABLE ${it.table.TableName} COMMENT = '${it.table.Comment}';"
+                    statement.executeUpdate(query)
                 }
 
 

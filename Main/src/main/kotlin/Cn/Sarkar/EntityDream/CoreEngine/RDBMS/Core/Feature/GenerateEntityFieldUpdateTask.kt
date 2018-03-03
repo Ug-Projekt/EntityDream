@@ -41,7 +41,7 @@ object GenerateEntityFieldUpdateTask : PipeLineFeature<IPipeLineSubject, IDataCo
         if (subject is GenerateEntityFieldUpdateTaskSubject) {
             var updateExpression = featureContext.updateTasks[subject.entity.uniqueKey]
             if (updateExpression == null) {
-                updateExpression = UpdateQueryExpression(subject.entity.Table, Update(subject.entity.Table.TableName), Set(), Where(subject.entity.simpleWhereCondition))
+                updateExpression = UpdateQueryExpression(subject.entity, subject.entity.Table, Update(subject.entity.Table.TableName), Set(), Where(subject.entity.simpleWhereCondition))
                 featureContext.updateTasks.put(subject.entity.uniqueKey, updateExpression)
             }
 

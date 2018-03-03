@@ -101,6 +101,21 @@ class DBStringColumn(
 
 fun IDBTable.stringColumn(ColumnName: String) = DBStringColumn(this, ColumnName)
 
+class DBCharColumn(
+        override var Table: IDBTable,
+        override var ColumnName: String,
+        override var NotNull: Boolean = true,
+        override var DataType: IDBDataType<String> = NChar(100),
+        override var AutoIncrement: AutoIncrementProperty = AutoIncrementProperty(false),
+        override var ForeignKey: IDBColumn<*>? = null
+) : AbstractDBColumnConnector<String>() {
+    init {
+        setup()
+    }
+}
+
+fun IDBTable.charColumn(ColumnName: String) = DBCharColumn(this, ColumnName)
+
 class DBIntColumn(
         override var Table: IDBTable,
         override var ColumnName: String,
@@ -115,6 +130,21 @@ class DBIntColumn(
 }
 
 fun IDBTable.intColumn(ColumnName: String) = DBIntColumn(this, ColumnName)
+
+class DBLongColumn(
+        override var Table: IDBTable,
+        override var ColumnName: String,
+        override var NotNull: Boolean = true,
+        override var DataType: IDBDataType<Long> = BigInt(0),
+        override var AutoIncrement: AutoIncrementProperty = AutoIncrementProperty(false),
+        override var ForeignKey: IDBColumn<*>? = null
+) : AbstractDBColumnConnector<Long>() {
+    init {
+        setup()
+    }
+}
+
+fun IDBTable.longColumn(ColumnName: String) = DBLongColumn(this, ColumnName)
 
 class DBTinyIntColumn(
         override var Table: IDBTable,
