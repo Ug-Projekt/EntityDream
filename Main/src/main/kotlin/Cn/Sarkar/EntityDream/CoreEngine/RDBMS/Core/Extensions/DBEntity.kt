@@ -72,4 +72,4 @@ internal fun IDBEntity.generateRandomUnique() {
 }
 
 fun <ENTITY: IDBEntity, KOTLINDATATYPE: IDBEntity>ENTITY.hasOne(relationShipColumn: IDBColumn<*>, entityGenerator: (context: IDataContext) -> KOTLINDATATYPE) : RelationShipOneFieldConnector<ENTITY, KOTLINDATATYPE> = RelationShipOneFieldConnector(relationShipColumn, entityGenerator)
-fun <ENTITY: IDBEntity, KOTLINDATATYPE: IQueriableCollection<*>>ENTITY.hasMany(relationShipColumn: IDBColumn<*>, entityGenerator: (context: IDataContext) -> ENTITY) = RelationShipManyFieldConnector<ENTITY, KOTLINDATATYPE>(relationShipColumn, entityGenerator)
+fun <ENTITY: IDBEntity, KOTLINDATATYPE: IDBEntity>ENTITY.hasMany(relationShipColumn: IDBColumn<*>, entityGenerator: (context: IDataContext) -> KOTLINDATATYPE) = RelationShipManyFieldConnector<ENTITY, KOTLINDATATYPE>(relationShipColumn, entityGenerator)

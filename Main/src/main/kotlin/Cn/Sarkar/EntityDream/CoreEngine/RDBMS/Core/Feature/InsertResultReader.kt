@@ -50,7 +50,7 @@ object InsertResultReader : PipeLineFeature<IPipeLineSubject, IDataContext>() {
             val incrementColumn = ics.singleOrNull()
             if (incrementColumn != null) {
                 subject.result.group.content.forEach {
-                    keys.next()
+                    val readable = keys.next()
                     when (incrementColumn.DataType)
                     {
                         is Int -> ids.add(IDItem(it.uniqueIdentificationKey, keys.getInt(1).toLong()))

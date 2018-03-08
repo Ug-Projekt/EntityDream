@@ -11,6 +11,7 @@ package Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryBuilderExtensions.Selec
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.autoIncrementColumn
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.Extensions.executeSelectQuery
+import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.And
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.Aggregate.*
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.FuncFromColumn
 import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.Core.QueryExpressionBlocks.Common.Function.FuncFromFunction
@@ -59,7 +60,7 @@ private fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.applyUpdate(applyAction:
     return qc
 }
 
-infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.where(condition: () -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = applyUpdate { if (this.Where == null) this.Where = Where(condition()) else this.Where!!.condition = condition() }
+infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.where(condition: () -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = applyUpdate { if (this.Where == null) this.Where = Where(condition()) else this.Where!!.condition = this.Where!!.condition and condition() }
 
 infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.andWhere(condition: (table: IDBTable) -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = applyUpdate { Where?.condition = Where!!.condition and condition(this.table) }
 infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.orWhere(condition: (table: IDBTable) -> WhereItemCondition) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = applyUpdate { Where?.condition = Where!!.condition or condition(this.table) }
@@ -127,8 +128,8 @@ fun <T, ENTITY : IDBEntity, COLLECTION> COLLECTION.round(column: IDBColumn<T>, d
 infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.orderBy(column: IDBColumn<*>) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = this.applyUpdate { OrderBy = OrderBy(column.fullColumnName, Order.Asc) }
 
 infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.orderByDesc(column: IDBColumn<*>) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = this.applyUpdate { OrderBy = OrderBy(column.fullColumnName, Order.Desc) }
-infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.take(number: Int) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = this.applyUpdate { Select.top = number }
-infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.skip(number: Int) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = this.applyUpdate { Select.offset = number }
+infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.take(number: Int) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = this.applyUpdate { Select.offset = number }
+infix fun <ENTITY : IDBEntity, COLLECTION> COLLECTION.skip(number: Int) where COLLECTION : IQueriableCollection<ENTITY>, COLLECTION : ISelectQueryExpression = this.applyUpdate { Select.top = number }
 
 /*
 Any

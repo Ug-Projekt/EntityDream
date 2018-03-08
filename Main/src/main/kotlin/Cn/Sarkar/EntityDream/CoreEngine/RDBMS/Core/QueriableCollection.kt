@@ -65,6 +65,11 @@ class QueriableCollection<ENTITY : IDBEntity>(override var Context: IDataContext
         return super.iterator()
     }
 
+    override fun toArray(): Array<Any> {
+        loadFromLocal()
+        return super.toArray()
+    }
+
     override val size: Int
         get() {
 

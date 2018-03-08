@@ -34,23 +34,20 @@ object QueryExecuter : PipeLineFeature<IPipeLineSubject, IDataContext>() {
                 subject.statement = subject.connection.prepareStatement(subject.group.query.sqlQuery, PreparedStatement.RETURN_GENERATED_KEYS)
                 val isSingleContent = subject.group.content.size == 1
 
-                //SQLite دىگەن چوشقىنىڭ بالىسى ئۈچۈن
+
                 if (!isSingleContent) {
-                    var index = 1
                     subject.group.content.forEach {
-                        it.parameters.forEachIndexed { index, parameter -> subject.statement!!.WriteParameters(featureContext, index + 1, parameter) }
-                        if (index < subject.group.content.size) subject.statement!!.addBatch()
-                        index++
+                        it.parameters.forEachIndexed { i, parameter -> subject.statement!!.WriteParameters(featureContext, i + 1, parameter) }
+                        subject.statement!!.addBatch()
                     }
                 } else {
-                    //SQLite دىگەن چوشقىنىڭ بالىسى ئۈچۈن
+
                     subject.group.content.single().parameters.forEachIndexed { index, parameter -> subject.statement!!.WriteParameters(featureContext, index + 1, parameter) }
                 }
 
-                when(subject.group.query.expression)
-                {
+                when (subject.group.query.expression) {
                     is ISelectQueryExpression -> subject.resultSet = subject.statement!!.executeQuery()
-                    //SQLite دىگەن چوشقىنىڭ بالىسى ئۈچۈن
+
                     is IUpdateQueryExpression -> subject.effectedRows = if (isSingleContent) intArrayOf(subject.statement!!.executeUpdate()) else subject.statement!!.executeBatch()
                     else -> throw Exception("""Query must be instanceof ISelectQueryExpression or IUpdateQueryExpression
                         چوقۇم Query IUpdateQueryExpression ياكى IUpdateQueryExpression غا ۋارىسلىق قىلىشى كىرەك
@@ -64,8 +61,7 @@ object QueryExecuter : PipeLineFeature<IPipeLineSubject, IDataContext>() {
         }
     }
 
-    private fun PreparedStatement.WriteParameters(context: IDataContext, index: Int, parameter: SqlParameter)
-    {
+    private fun PreparedStatement.WriteParameters(context: IDataContext, index: Int, parameter: SqlParameter) {
         context.execute(context.clonedPipeLine, DataWriterSubject(this, index, parameter))
     }
 }

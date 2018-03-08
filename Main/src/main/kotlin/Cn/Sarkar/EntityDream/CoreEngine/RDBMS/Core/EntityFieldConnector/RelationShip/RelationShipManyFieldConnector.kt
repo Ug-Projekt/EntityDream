@@ -18,12 +18,12 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.execute
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-class RelationShipManyFieldConnector<ENTITY: IDBEntity, KOTLINDATATYPE: IQueriableCollection<*>>(private val relationShipColumn: IDBColumn<*>, private val entityGenerator: (context: IDataContext) -> ENTITY) : ReadOnlyProperty<ENTITY, KOTLINDATATYPE> {
+class RelationShipManyFieldConnector<ENTITY: IDBEntity, KOTLINDATATYPE: IDBEntity>(private val relationShipColumn: IDBColumn<*>, private val entityGenerator: (context: IDataContext) -> KOTLINDATATYPE) : ReadOnlyProperty<ENTITY, IQueriableCollection<KOTLINDATATYPE>> {
 
-    override fun getValue(thisRef: ENTITY, property: KProperty<*>): KOTLINDATATYPE {
+    override fun getValue(thisRef: ENTITY, property: KProperty<*>): IQueriableCollection<KOTLINDATATYPE> {
         val cpl = thisRef.DataContext.clonedPipeLine
-        val result = thisRef.DataContext.execute(cpl, GetEntityRelationShipManyFieldSubject(relationShipColumn, this as RelationShipManyFieldConnector<*, IQueriableCollection<*>>, entityGenerator, thisRef, null))
-        return result.selectResult as? KOTLINDATATYPE ?: throw Exception("قايتۇرماقچى بولغان قىممەتنى ئىشلەتكىلى بولمايدۇ، قىممەت قۇرۇق بولماسلىقى كىرەك،Result is null, result not available, 返回值不允许Null值。")
+        val result = thisRef.DataContext.execute(cpl, GetEntityRelationShipManyFieldSubject(relationShipColumn, this as RelationShipManyFieldConnector<*, *>, entityGenerator, thisRef, null))
+        return result.selectResult as? IQueriableCollection<KOTLINDATATYPE> ?: throw Exception("قايتۇرماقچى بولغان قىممەتنى ئىشلەتكىلى بولمايدۇ، قىممەت قۇرۇق بولماسلىقى كىرەك،Result is null, result not available, 返回值不允许Null值。")
     }
 }
 

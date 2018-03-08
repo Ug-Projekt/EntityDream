@@ -80,6 +80,8 @@ fun IDataContext.executeInsertQuery(): Array<IDItem> {
 
     groupSubject.groups.forEach { queryMd5Key, groupItem ->
         val result1 = execute(cpl, QueryExecutionSubject(groupItem, this.connection))
+        if (result1.exception != null) throw result1.exception!!
+
         val result2 = execute(cpl, InsertResultSubject(result1, arrayOf()))
         retv.addAll(result2.Ids)
     }

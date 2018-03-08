@@ -18,7 +18,7 @@ import Cn.Sarkar.EntityDream.CoreEngine.RDBMS.IDataContext
 
 data class GetEntityRelationShipManyFieldSubject<KOTLINDATATYPE : IDBEntity>(
         val relationShipColumn: IDBColumn<*>,
-        var delegateConnector: RelationShipManyFieldConnector<*, IQueriableCollection<*>>,
+        var delegateConnector: RelationShipManyFieldConnector<*, *>,
         var entityGenerator: (context: IDataContext) -> KOTLINDATATYPE,
         val thisRefEntity: IDBEntity,
         var selectResult: IQueriableCollection<*>? = null
