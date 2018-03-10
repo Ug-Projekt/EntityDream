@@ -71,5 +71,5 @@ internal fun IDBEntity.generateRandomUnique() {
     }
 }
 
-fun <ENTITY: IDBEntity, KOTLINDATATYPE: IDBEntity>ENTITY.hasOne(relationShipColumn: IDBColumn<*>, entityGenerator: (context: IDataContext) -> KOTLINDATATYPE) : RelationShipOneFieldConnector<ENTITY, KOTLINDATATYPE> = RelationShipOneFieldConnector(relationShipColumn, entityGenerator)
-fun <ENTITY: IDBEntity, KOTLINDATATYPE: IDBEntity>ENTITY.hasMany(relationShipColumn: IDBColumn<*>, entityGenerator: (context: IDataContext) -> KOTLINDATATYPE) = RelationShipManyFieldConnector<ENTITY, KOTLINDATATYPE>(relationShipColumn, entityGenerator)
+fun <THISENTITY: IDBEntity, DESTINATIONENTITY: IDBEntity>THISENTITY.hasOne(relationShipColumn: IDBColumn<*>, entityGenerator: (context: IDataContext) -> DESTINATIONENTITY) : RelationShipOneFieldConnector<THISENTITY, DESTINATIONENTITY> = RelationShipOneFieldConnector(relationShipColumn, entityGenerator)
+fun <THISENTITY: IDBEntity, DESTINATIONENTITY: IDBEntity>THISENTITY.hasMany(relationShipColumn: IDBColumn<*>, entityGenerator: (context: IDataContext) -> DESTINATIONENTITY) = RelationShipManyFieldConnector<THISENTITY, DESTINATIONENTITY>(relationShipColumn, entityGenerator)
